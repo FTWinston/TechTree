@@ -25,52 +25,52 @@ namespace TreeViewer
 
             using (Graphics g = Graphics.FromImage(image))
             {
-                foreach (var list in sortedNodes)
-                    foreach (var node in list.Value)
+                foreach (var node in sortedNodes)
+                {
+                    float xpos = node.Depth * depthIncrement, xCenter = xpos + nodeWidth / 2f;
+                    float ypos = node.RowPos * insetIncrement, yCenter = ypos + nodeHeight / 2f;
+
+                    foreach (var child in node.ChildLinks)
                     {
-                        float xpos = node.Depth * depthIncrement, xCenter = xpos + nodeWidth / 2f;
-                        float ypos = node.RowPos * insetIncrement, yCenter = ypos + nodeHeight / 2f;
-
-                        foreach (var child in node.ChildLinks)
-                        {
-                            g.DrawLine(linkPen, xCenter, yCenter,
-                                child.Depth * depthIncrement + nodeWidth / 2f,
-                                child.RowPos * insetIncrement + nodeHeight / 2f);
-                        }
-
-                        g.FillEllipse(nodeBrush, xpos, ypos, nodeWidth, nodeHeight);
+                        g.DrawLine(linkPen, xCenter, yCenter,
+                            child.Depth * depthIncrement + nodeWidth / 2f,
+                            child.RowPos * insetIncrement + nodeHeight / 2f);
                     }
+
+                    g.FillEllipse(nodeBrush, xpos, ypos, nodeWidth, nodeHeight);
+                }
             }
             return image;
         }
 
-        private static void RearrangeNodes(SortedList<int, List<NodeHolder>> sortedNodes, out int maxBreadth)
+        private static void RearrangeNodes(List<NodeHolder> sortedNodes, out int maxBreadth)
         {
-            // we need a fitness function to decide how elegant the overall thing is:
-            //  Node lines passing too close to other nodes (e.g. through them) is very bad
-            //  Needless "angled" connections is bad - child nodes generally want to be in-line with their parent
-
-            // we then want to run a GA (I don't think regular hill-climbing will cut it). Mutations are:
-            
-
-            var integrator = new Integrator();
+            var integrator = new TreeIntegrator();
             sortedNodes = integrator.Run(sortedNodes, 1000, 0);
 
-            // if there's a blank on the front of every depth, remove them
+            // if there are blanks on the front of every depth, remove them
+            // also determine the max row pos of any node
 
-            // if there's a blank on the end of every depth (of max row size), remove them
+            int minRowPos = int.MaxValue;
+            foreach (NodeHolder node in sortedNodes)
+                minRowPos = Math.Min(minRowPos, node.RowPos);
 
-            maxBreadth = 1;
-            for (int depth = 1; depth < sortedNodes.Count; depth++)
+            int depth = 0; maxBreadth = 0;
+            foreach (NodeHolder node in sortedNodes)
             {
-                var nodesAtDepth = sortedNodes[depth];
-                maxBreadth = Math.Max(maxBreadth, nodesAtDepth.Last().RowPos + 1);
+                node.RowPos -= minRowPos;
+
+                if (node.Depth != depth)
+                {
+                    depth = node.Depth;
+                    maxBreadth = Math.Max(maxBreadth, node.RowPos);
+                }
             }
         }
 
-        private static SortedList<int, List<NodeHolder>> SortByDepth(TechTree.TechTree tree)
+        private static List<NodeHolder> SortByDepth(TechTree.TechTree tree)
         {
-            var nodesByDepth = new SortedList<int, List<NodeHolder>>();
+            var nodesByDepth = new SortedList<int, int>();
             var processedNodes = new List<NodeHolder>();
             var toProcess = new List<TreeNode>();
             toProcess.Add(tree.RootNode);
@@ -80,18 +80,15 @@ namespace TreeViewer
                 TreeNode node = toProcess[0]; toProcess.RemoveAt(0);
 
                 int depth = Depth(node);
-                List<NodeHolder> nodesAtDepth;
-                if (!nodesByDepth.TryGetValue(depth, out nodesAtDepth))
-                {
-                    nodesAtDepth = new List<NodeHolder>();
-                    nodesByDepth[depth] = nodesAtDepth;
-                }
+                int numAtDepth;
+                if (!nodesByDepth.TryGetValue(depth, out numAtDepth))
+                    numAtDepth = 0;
 
-                var nodeHolder = new NodeHolder(node, depth, nodesAtDepth.Count * 2);
+                var nodeHolder = new NodeHolder(node, depth, numAtDepth * 2);
                 foreach (var parent in node.Prerequisites)
                     nodeHolder.AddLink(parent, processedNodes);
 
-                nodesAtDepth.Add(nodeHolder);
+                nodesByDepth[depth] = ++numAtDepth;
                 processedNodes.Add(nodeHolder);
 
                 foreach (TreeNode child in node.Unlocks)
@@ -99,7 +96,7 @@ namespace TreeViewer
                         toProcess.Add(child);
             }
 
-            return nodesByDepth;
+            return processedNodes;
         }
 
         private static int Depth(TreeNode node)
@@ -142,56 +139,108 @@ namespace TreeViewer
             }
         }
 
-        private class Integrator : SimulatedAnnealing<SortedList<int, List<NodeHolder>>>
+        private class TreeIntegrator : SimulatedAnnealing<List<NodeHolder>>
         {
-            private SortedList<int, List<NodeHolder>> Clone(SortedList<int, List<NodeHolder>> state)
+            private List<NodeHolder> Clone(List<NodeHolder> state)
             {
-                var newState = new SortedList<int, List<NodeHolder>>();
+                var newState = new List<NodeHolder>();
 
-                foreach (var kvp in state)
-                {
-                    List<NodeHolder> newList = new List<NodeHolder>();
-                    newList.AddRange(kvp.Value);
-                    newState.Add(kvp.Key, newList);
-                }
+                foreach (var holder in state)
+                    newState.Add(new NodeHolder(holder.Node, holder.Depth, holder.RowPos));
 
                 return newState;
             }
 
-            public override SortedList<int, List<NodeHolder>> SelectNeighbour(SortedList<int, List<NodeHolder>> state)
+            public override List<NodeHolder> SelectNeighbour(List<NodeHolder> state)
             {
                 var newState = Clone(state);
 
-                if (Random.NextDouble() < 0.7)
-                {//  Swap a pair (on the same depth), along with all their child nodes
+                if (Random.NextDouble() < 0.667)
+                {// Swap a pair (on the same depth), along with all their child nodes
+                 // one might be a "blank" ... but there's no point in swapping two blanks.
                     throw new NotImplementedException();
                 }
                 else
                 {
                     if (Random.NextDouble() < 0.3)
-                    {// remove a blank node, if we can find one
-                        throw new NotImplementedException();
-                        return newState;
+                    {// see if we have any blank nodes
+                        int numBlanks = 0;
+
+                        int lastDepth = 0, lastPos = -1;
+                        foreach (var node in newState)
+                        {
+                            if (node.Depth == lastDepth)
+                            {
+                                numBlanks += node.RowPos - lastPos;
+                            }
+                            else
+                            {
+                                lastDepth = node.Depth;
+                                numBlanks += node.RowPos;
+                            }
+                            lastPos = node.RowPos;
+                        }
+
+                        if (numBlanks > 0)
+                        {// we have blanks, so remove one
+                            int blankToRemove = Random.Next(numBlanks), currentBlank = -1;
+                            lastDepth = 0; lastPos = -1;
+
+                            for (int i = 0; i < newState.Count; i++)
+                            {
+                                var node = newState[i];
+                                if (node.Depth == lastDepth)
+                                {
+                                    currentBlank += node.RowPos - lastPos;
+                                }
+                                else
+                                {
+                                    lastDepth = node.Depth;
+                                    currentBlank += node.RowPos;
+                                }
+                                lastPos = node.RowPos;
+
+                                if (currentBlank >= blankToRemove)
+                                {
+                                    for (int j = i; j < newState.Count; j++)
+                                    {
+                                        var node2 = newState[j];
+                                        if (node2.Depth == lastDepth)
+                                            node2.RowPos--;
+                                        else
+                                            break;
+                                    }
+                                    return newState;
+                                }
+                            }
+                        }
                     }
 
-                    // insert a blank node in somewhere
-                    throw new NotImplementedException();
+                    // insert a blank node in somewhere, picked randomly
+                    int pos = Random.Next(newState.Count), depth = newState[pos].Depth;
+                    for (int i = pos; i < newState.Count; i++)
+                    {
+                        var node = newState[i];
+                        if (node.Depth == depth)
+                            node.RowPos++;
+                        else
+                            break;
+                    }
                 }
 
                 return newState;
             }
 
-            public override double DetermineEnergy(SortedList<int, List<NodeHolder>> state)
+            public override double DetermineEnergy(List<NodeHolder> state)
             {
                 double energy = 0;
 
                 // this currently ONLY considers the angles of connections, and not whether any overlap other nodes
                 // that's probably ok for a pure tree, but isn't sufficient when nodes have multiple parents.
 
-                foreach (var kvp in state)
-                    foreach (var node in kvp.Value)
-                        foreach (var child in node.ChildLinks)
-                            energy += DetermineEnergyComponent(child.Depth - node.Depth, Math.Abs(child.RowPos - node.RowPos));
+                foreach (var node in state)
+                    foreach (var child in node.ChildLinks)
+                        energy += DetermineEnergyComponent(child.Depth - node.Depth, Math.Abs(child.RowPos - node.RowPos));
 
                 return energy;
             }
