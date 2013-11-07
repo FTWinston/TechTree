@@ -11,66 +11,93 @@ namespace TreeViewer
     {
         public static Bitmap WriteImage(TechTree.TechTree tree, int width, int height)
         {
-            int depth, breadth;
-            var sortedNodes = SortByDepth(tree, out depth, out breadth);
+            var sortedNodes = SortByDepth(tree);
+
+            int depth = sortedNodes.Count, breadth;
+            RearrangeNodes(sortedNodes, out breadth);
+
             Brush nodeBrush = new SolidBrush(Color.DarkGray);
             Pen linkPen = new Pen(Color.Black, height / 300f);
             Bitmap image = new Bitmap(width, height);
 
-            float nodeWidth = width * 0.5f / (depth - 0.5f), nodeHeight = Math.Min(nodeWidth / 1.41421356f, height * 0.5f / (breadth - 0.5f));
-            float depthIncrement = nodeWidth * 2f, insetIncrement = nodeHeight * 2f;
+            float nodeWidth = width * 0.5f / (depth - 0.5f), nodeHeight = Math.Min(nodeWidth / 1.41421356f, height * 1f / breadth);
+            float depthIncrement = nodeWidth * 2f, insetIncrement = nodeHeight;
 
             using (Graphics g = Graphics.FromImage(image))
             {
-                foreach (var node in sortedNodes)
-                {
-                    float xpos = node.Depth * depthIncrement, xCenter = xpos + nodeWidth/2f;
-                    float ypos = node.Node == tree.RootNode ? (height-nodeHeight)/2f : node.RowPos * insetIncrement, yCenter = ypos + nodeHeight/2f;
-
-                    foreach (var child in node.ChildLinks)
+                foreach (var list in sortedNodes)
+                    foreach (var node in list.Value)
                     {
-                        g.DrawLine(linkPen, xCenter, yCenter,
-                            child.Depth * depthIncrement + nodeWidth / 2f,
-                            child.RowPos * insetIncrement + nodeHeight / 2f);
-                    }
+                        float xpos = node.Depth * depthIncrement, xCenter = xpos + nodeWidth / 2f;
+                        float ypos = node.RowPos * insetIncrement, yCenter = ypos + nodeHeight / 2f;
 
-                    g.FillEllipse(nodeBrush, xpos, ypos, nodeWidth, nodeHeight);
-                }
+                        foreach (var child in node.ChildLinks)
+                        {
+                            g.DrawLine(linkPen, xCenter, yCenter,
+                                child.Depth * depthIncrement + nodeWidth / 2f,
+                                child.RowPos * insetIncrement + nodeHeight / 2f);
+                        }
+
+                        g.FillEllipse(nodeBrush, xpos, ypos, nodeWidth, nodeHeight);
+                    }
             }
             return image;
         }
 
-        private static List<NodeHolder> SortByDepth(TechTree.TechTree tree, out int maxDepth, out int maxBreadth)
+        private static void RearrangeNodes(SortedList<int, List<NodeHolder>> sortedNodes, out int maxBreadth)
         {
-            var nodesByDepth = new SortedList<int, int>();
+            // we need a fitness function to decide how elegant the overall thing is:
+            //  Node lines passing too close to other nodes (e.g. through them) is very bad
+            //  Needless "angled" connections is bad - child nodes generally want to be in-line with their parent
+
+            // we then want to run a GA (I don't think regular hill-climbing will cut it). Mutations are:
+            //  Swapping a pair (on the same depth), along with all their child nodes
+            //  Inserting a blank node
+            //  Removing a blank node
+
+            maxBreadth = 1;
+            for (int depth = 1; depth < sortedNodes.Count; depth++)
+            {
+                var nodesAtDepth = sortedNodes[depth];
+                maxBreadth = Math.Max(maxBreadth, nodesAtDepth.Last().RowPos + 1);
+            }
+
+            // the root node should be centered, vertically
+            sortedNodes[0][0].RowPos = maxBreadth / 2;
+        }
+
+        private static SortedList<int, List<NodeHolder>> SortByDepth(TechTree.TechTree tree)
+        {
+            var nodesByDepth = new SortedList<int, List<NodeHolder>>();
             var processedNodes = new List<NodeHolder>();
             var toProcess = new List<TreeNode>();
             toProcess.Add(tree.RootNode);
 
-            maxBreadth = 0;
             while (toProcess.Count > 0)
             {
                 TreeNode node = toProcess[0]; toProcess.RemoveAt(0);
 
                 int depth = Depth(node);
-                int numAtDepth;
-                if (!nodesByDepth.TryGetValue(depth, out numAtDepth))
-                    numAtDepth = 0;
-                
-                var nodeHolder = new NodeHolder(node, depth, numAtDepth++);
+                List<NodeHolder> nodesAtDepth;
+                if (!nodesByDepth.TryGetValue(depth, out nodesAtDepth))
+                {
+                    nodesAtDepth = new List<NodeHolder>();
+                    nodesByDepth[depth] = nodesAtDepth;
+                }
+
+                var nodeHolder = new NodeHolder(node, depth, nodesAtDepth.Count * 2);
                 foreach (var parent in node.Prerequisites)
                     nodeHolder.AddLink(parent, processedNodes);
-                nodesByDepth[depth] = numAtDepth;
+
+                nodesAtDepth.Add(nodeHolder);
                 processedNodes.Add(nodeHolder);
-                maxBreadth = Math.Max(maxBreadth, numAtDepth);
 
                 foreach (TreeNode child in node.Unlocks)
                     if (!toProcess.Contains(child))
                         toProcess.Add(child);
             }
 
-            maxDepth = nodesByDepth.Count;
-            return processedNodes;
+            return nodesByDepth;
         }
 
         private static int Depth(TreeNode node)
@@ -88,7 +115,7 @@ namespace TreeViewer
         {
             public TreeNode Node { get; private set; }
             public int Depth { get; private set; }
-            public int RowPos { get; private set; }
+            public int RowPos { get; set; }
             public List<NodeHolder> ChildLinks = new List<NodeHolder>();
 
             public NodeHolder(TreeNode node, int depth, int rowPos)
