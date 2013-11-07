@@ -51,9 +51,14 @@ namespace TreeViewer
             //  Needless "angled" connections is bad - child nodes generally want to be in-line with their parent
 
             // we then want to run a GA (I don't think regular hill-climbing will cut it). Mutations are:
-            //  Swapping a pair (on the same depth), along with all their child nodes
-            //  Inserting a blank node
-            //  Removing a blank node
+            
+
+            var integrator = new Integrator();
+            sortedNodes = integrator.Run(sortedNodes, 1000, 0);
+
+            // if there's a blank on the front of every depth, remove them
+
+            // if there's a blank on the end of every depth (of max row size), remove them
 
             maxBreadth = 1;
             for (int depth = 1; depth < sortedNodes.Count; depth++)
@@ -61,9 +66,6 @@ namespace TreeViewer
                 var nodesAtDepth = sortedNodes[depth];
                 maxBreadth = Math.Max(maxBreadth, nodesAtDepth.Last().RowPos + 1);
             }
-
-            // the root node should be centered, vertically
-            sortedNodes[0][0].RowPos = maxBreadth / 2;
         }
 
         private static SortedList<int, List<NodeHolder>> SortByDepth(TechTree.TechTree tree)
@@ -137,6 +139,66 @@ namespace TreeViewer
                     if (test.Node == node)
                         return test;
                 return null;
+            }
+        }
+
+        private class Integrator : SimulatedAnnealing<SortedList<int, List<NodeHolder>>>
+        {
+            private SortedList<int, List<NodeHolder>> Clone(SortedList<int, List<NodeHolder>> state)
+            {
+                var newState = new SortedList<int, List<NodeHolder>>();
+
+                foreach (var kvp in state)
+                {
+                    List<NodeHolder> newList = new List<NodeHolder>();
+                    newList.AddRange(kvp.Value);
+                    newState.Add(kvp.Key, newList);
+                }
+
+                return newState;
+            }
+
+            public override SortedList<int, List<NodeHolder>> SelectNeighbour(SortedList<int, List<NodeHolder>> state)
+            {
+                var newState = Clone(state);
+
+                if (Random.NextDouble() < 0.7)
+                {//  Swap a pair (on the same depth), along with all their child nodes
+                    throw new NotImplementedException();
+                }
+                else
+                {
+                    if (Random.NextDouble() < 0.3)
+                    {// remove a blank node, if we can find one
+                        throw new NotImplementedException();
+                        return newState;
+                    }
+
+                    // insert a blank node in somewhere
+                    throw new NotImplementedException();
+                }
+
+                return newState;
+            }
+
+            public override double DetermineEnergy(SortedList<int, List<NodeHolder>> state)
+            {
+                double energy = 0;
+
+                // this currently ONLY considers the angles of connections, and not whether any overlap other nodes
+                // that's probably ok for a pure tree, but isn't sufficient when nodes have multiple parents.
+
+                foreach (var kvp in state)
+                    foreach (var node in kvp.Value)
+                        foreach (var child in node.ChildLinks)
+                            energy += DetermineEnergyComponent(child.Depth - node.Depth, Math.Abs(child.RowPos - node.RowPos));
+
+                return energy;
+            }
+
+            private double DetermineEnergyComponent(double depthDiff, double posDiff)
+            {
+                return posDiff / depthDiff;
             }
         }
     }
