@@ -45,7 +45,7 @@
             // 
             // btnGenerate
             // 
-            this.btnGenerate.Location = new System.Drawing.Point(234, 10);
+            this.btnGenerate.Location = new System.Drawing.Point(260, 10);
             this.btnGenerate.Name = "btnGenerate";
             this.btnGenerate.Size = new System.Drawing.Size(75, 23);
             this.btnGenerate.TabIndex = 2;
@@ -58,9 +58,9 @@
             this.chkManualSeed.AutoSize = true;
             this.chkManualSeed.Location = new System.Drawing.Point(167, 14);
             this.chkManualSeed.Name = "chkManualSeed";
-            this.chkManualSeed.Size = new System.Drawing.Size(61, 17);
+            this.chkManualSeed.Size = new System.Drawing.Size(87, 17);
             this.chkManualSeed.TabIndex = 3;
-            this.chkManualSeed.Text = "Manual";
+            this.chkManualSeed.Text = "Manual seed";
             this.chkManualSeed.UseVisualStyleBackColor = true;
             this.chkManualSeed.CheckedChanged += new System.EventHandler(this.chkManualSeed_CheckedChanged);
             // 
