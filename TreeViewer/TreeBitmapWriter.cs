@@ -158,15 +158,41 @@ namespace TreeViewer
                 if (Random.NextDouble() < 0.667)
                 {// Swap a pair (on the same depth), along with all their child nodes
                  // one might be a "blank" ... but there's no point in swapping two blanks.
+
+                    int nodePos = Random.Next(newState.Count), initNodePos = nodePos;
+                    NodeHolder firstNode;
+                    while ( true )
+                    {
+                        if (nodePos >= newState.Count)
+                            nodePos = 0;
+
+                        firstNode = newState[nodePos];
+
+                        // there must be another node (or a blank) at the same depth. If this node isn't first, then it's ok.
+                        if (firstNode.RowPos > 0)
+                            break;
+
+                        // if another node follows it, then it's also ok
+                        NodeHolder nextNode = newState[nodePos < newState.Count - 1 ? nodePos + 1 : 0];
+                        if (nextNode.Depth == firstNode.Depth)
+                            break;
+
+                        // otherwise, this is the only one on its level, it's not good.
+                        if (nodePos == lastNodePos)
+                            return newState; // looped through every node, can't find two nodes on the same level to swap, anywhere.
+                        nodePos++;
+                    }
+
+                    // select the second node ... consider the full range of possible node and blanks at this depth
+
+                    // now that the two node are selected, we need to swap them
                     throw new NotImplementedException();
                 }
                 else
                 {
                     if (Random.NextDouble() < 0.3)
                     {// see if we have any blank nodes
-                        int numBlanks = 0;
-
-                        int lastDepth = 0, lastPos = -1;
+                        int numBlanks = 0, lastDepth = 0, lastPos = -1;
                         foreach (var node in newState)
                         {
                             if (node.Depth == lastDepth)
