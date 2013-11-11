@@ -49,7 +49,7 @@ namespace TreeViewer
 
         public virtual double Temperature(double completionFraction)
         {
-            return (1.0 - completionFraction) * 50.0;
+            return (1.0 - completionFraction) * 5000.0;
         }
     }
 }

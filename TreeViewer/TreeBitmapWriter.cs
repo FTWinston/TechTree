@@ -152,8 +152,10 @@ namespace TreeViewer
                 {
                     var newNode = newState[i]; var oldNode = state[i];
 
-                    foreach (var link in oldNode.ChildLinks)
-                        newNode.ChildLinks.Add(FindNode(newState, link.Node));
+                    foreach (var oldLink in oldNode.ChildLinks)
+                    {
+                        newNode.ChildLinks.Add(FindNode(newState, oldLink.Node));
+                    }
                 }
 
                 return newState;
@@ -165,6 +167,16 @@ namespace TreeViewer
                     if (holder.Node == node)
                         return holder;
                 return null;
+            }
+
+            private void DetermineDepthExtent(List<NodeHolder> state, int index, out int minIndex, out int maxIndex)
+            {
+                int depth = state[index].Depth;
+                minIndex = maxIndex = index;
+                while (maxIndex < state.Count - 1 && state[maxIndex + 1].Depth == depth)
+                    maxIndex++;
+                while (minIndex > 0 && state[minIndex - 1].Depth == depth)
+                    minIndex--;
             }
 
             public override List<NodeHolder> SelectNeighbour(List<NodeHolder> state)
@@ -179,27 +191,9 @@ namespace TreeViewer
                 else
                 {
                     if (Random.NextDouble() < 0.3)
-                    {// see if we have any blank nodes
-                        int numBlanks = 0, lastDepth = -1, lastPos = 0;
-                        foreach (var node in newState)
-                        {
-                            if (node.Depth == lastDepth)
-                            {
-                                numBlanks += node.RowPos - lastPos - 1;
-                            }
-                            else
-                            {
-                                lastDepth = node.Depth;
-                                numBlanks += node.RowPos;
-                            }
-                            lastPos = node.RowPos;
-                        }
-
-                        if (numBlanks > 0)
-                        {// we have blanks, so remove one
-                            RemoveBlank(newState, numBlanks);
+                    {// remove a blank node, if we have one
+                        if (RemoveBlank(newState))
                             return newState;
-                        }
                     }
 
                     // insert a blank node in somewhere, picked randomly
@@ -209,24 +203,21 @@ namespace TreeViewer
                 return newState;
             }
 
+            
             private void SwapTwoNodes(List<NodeHolder> state)
             {
-                int minNodeIndex, maxNodeIndex, firstNodeIndex = Random.Next(state.Count), nodesVisited = 0;
+                int firstNodeIndex = Random.Next(state.Count), minIndex, maxIndex, nodesVisited = 0;
                 NodeHolder firstNode;
                 while (true)
                 {
+                    DetermineDepthExtent(state, firstNodeIndex, out minIndex, out maxIndex);
                     firstNode = state[firstNodeIndex];
 
-                    // there must be another node (or a blank) at the same depth. If this node isn't first, then it's ok.
-                    if (firstNode.RowPos > 0)
+                    // there's more than 1 node at this depth if minIndex != maxIndex. Alternatively, there's a blank at this depth if the RowPos != 0.
+                    if (firstNode.RowPos != 0 || minIndex != maxIndex)
                         break;
 
-                    // if another node follows it, then it's also ok
-                    NodeHolder nextNode = state[firstNodeIndex < state.Count - 1 ? firstNodeIndex + 1 : 0];
-                    if (nextNode.Depth == firstNode.Depth)
-                        break;
-
-                    // otherwise, this is the only one on its level, it's not good.
+                    // this is the only node on its level, which isn't any good. Try the next node.
                     if (++nodesVisited >= state.Count)
                         return; // looped through every node, can't find two nodes on the same level to swap, anywhere.
 
@@ -235,93 +226,144 @@ namespace TreeViewer
                         firstNodeIndex = 0;
                 }
 
-                // determine the extent of all nodes at this depth
-                minNodeIndex = maxNodeIndex = firstNodeIndex;
-                while (maxNodeIndex < state.Count - 1 && state[maxNodeIndex + 1].Depth == firstNode.Depth)
-                    maxNodeIndex++;
-                while (minNodeIndex > 0 && state[minNodeIndex - 1].Depth == firstNode.Depth)
-                    minNodeIndex--;
+                int maxPosAtDepth = firstNode.RowPos;
+                for (int i = minIndex; i <= maxIndex; i++)
+                    maxPosAtDepth = Math.Max(maxPosAtDepth, state[i].RowPos);
+                
+                if (maxPosAtDepth == 0)
+                    return;
 
                 // select the second pos to swap with
                 int secondNodePos;
                 do
                 {
-                    secondNodePos = Random.Next(state[maxNodeIndex].RowPos + 1);
+                    secondNodePos = Random.Next(maxPosAtDepth + 1);
                 } while (secondNodePos == firstNode.RowPos);
 
                 // now find if there's a node in this pos or not
-                NodeHolder secondNode = null; int secondNodeIndex = -1, testNodeIndex = firstNodeIndex;
-                int increment = secondNodePos < firstNode.RowPos ? -1 : 1;
-
-                while (testNodeIndex > minNodeIndex && testNodeIndex < maxNodeIndex)
+                NodeHolder secondNode = null;
+                for (int i = minIndex; i <= maxIndex; i++)
                 {
-                    testNodeIndex += increment;
-                    int pos = state[testNodeIndex].RowPos;
-
-                    if (pos == secondNodePos)
-                    {
-                        secondNode = state[testNodeIndex];
-                        secondNodeIndex = testNodeIndex;
+                    secondNode = state[i];
+                    if (secondNode.RowPos == secondNodePos)
                         break;
-                    }
-                    else if ((increment < 0 && pos < secondNodePos)
-                        || (increment > 0 && pos > secondNodePos))
-                        break;
-                }
-
-                // now that the two node are selected, we need to swap them. For now, not swapping child nodes or anything
-                if (secondNode == null)
-                {
-                    // shunt the other nodes up/down (their actual indices, not their RowPoses)
-                    if (increment < 0)
-                    {// we want to insert AFTER testNodeIndex, and shuffle everything up to (and including) firstNodeIndex
-                        for (int i = firstNodeIndex - 1; i > testNodeIndex; i--)
-                            state[i + 1] = state[i];
-                        if (firstNodeIndex != testNodeIndex + 1)
-                            state[testNodeIndex + 1] = firstNode;
-                    }
                     else
-                    {// we want to insert BEFORE testNodeIndex, and shuffle everything from 1 before testNodeIndex down to firstNodeIndex
-                        for (int i = firstNodeIndex + 1; i < testNodeIndex; i++)
-                            state[i - 1] = state[i];
-                        if (firstNodeIndex != testNodeIndex - 1)
-                            state[testNodeIndex - 1] = firstNode;
-                    }
+                        secondNode = null;
+                }
+                
+                // now that the two node are selected, we need to swap them. For now, not swapping child nodes, or shunting up actual indices
 
+                if (secondNode == null)
+                {// just change the firstNode to be in the new position
                     firstNode.RowPos = secondNodePos;
                 }
                 else
-                {// a straight up swap
-                    state[firstNodeIndex] = secondNode;
-                    state[secondNodeIndex] = firstNode;
-
+                {// swap the two nodes' positions
                     int tmp = secondNode.RowPos;
                     secondNode.RowPos = firstNode.RowPos;
                     firstNode.RowPos = tmp;
                 }
             }
 
-            private void InsertBlank(List<NodeHolder> newState)
+            private void InsertBlank(List<NodeHolder> state)
             {
-                int pos = Random.Next(newState.Count), depth = newState[pos].Depth;
-                for (int i = pos; i < newState.Count; i++)
+                int index = Random.Next(state.Count), minIndex, maxIndex;
+                DetermineDepthExtent(state, index, out minIndex, out maxIndex);
+
+                int pos = state[index].RowPos;
+                for (int i = minIndex; i<=maxIndex; i++)
                 {
-                    var node = newState[i];
-                    if (node.Depth == depth)
+                    var node = state[i];
+                    if ( node.RowPos >= pos )
                         node.RowPos++;
-                    else
-                        break;
                 }
             }
 
-            private void RemoveBlank(List<NodeHolder> newState, int numBlanks)
+            private bool RemoveBlank(List<NodeHolder> state)
             {
-                int blankToRemove = Random.Next(numBlanks), currentBlank = -1;
-                int lastDepth = -1, lastPos = 0;
-
-                for (int i = 0; i < newState.Count; i++)
+                // pick a node, ensure there's a blank at that depth
+                int testNodeIndex = Random.Next(state.Count), minIndex, maxIndex, nodesVisited = 0;
+                NodeHolder testNode;
+                while (true)
                 {
-                    var node = newState[i];
+                    DetermineDepthExtent(state, testNodeIndex, out minIndex, out maxIndex);
+                    testNode = state[testNodeIndex];
+
+                    // there's a blank at this depth if there's any node with a RowPos > maxIndex - minIndex
+                    if (testNode.RowPos > maxIndex - minIndex)
+                        break;
+
+                    // this is the only node on its level, which isn't any good. Try the next node.
+                    if (++nodesVisited >= state.Count)
+                        return false; // looped through every node, can't find two nodes on the same level to swap, anywhere.
+
+                    testNodeIndex++;
+                    if (testNodeIndex >= state.Count)
+                        testNodeIndex = 0;
+                }
+
+                /*
+                int minNodeIndex, maxNodeIndex, testNodeIndex = Random.Next(state.Count), nodesVisited = 0;
+                NodeHolder testNode;
+                while (true)
+                {
+                    testNode = state[testNodeIndex];
+
+                    // there must be a blank at the same depth
+                    if (testNode.RowPos > 0)
+                        break;
+                    if (testNodeIndex < state.Count - 1 && state[testNodeIndex + 1].Depth == testNode.Depth)
+                        break;
+                    if (testNodeIndex > 0 && state[testNodeIndex - 1].Depth == testNode.Depth)
+                        break;
+
+                    // this is the only node on its level, which isn't any good. Try the next node.
+                    if (++nodesVisited >= state.Count)
+                        return false; // looped through every node, can't find two nodes on the same level to swap, anywhere.
+
+                    testNodeIndex++;
+                    if (testNodeIndex >= state.Count)
+                        testNodeIndex = 0;
+                }
+
+                // determine the extent of all nodes at this depth
+                minNodeIndex = maxNodeIndex = testNodeIndex;
+                int maxPosAtDepth = testNode.RowPos;
+                while (maxNodeIndex < state.Count - 1 && state[maxNodeIndex + 1].Depth == testNode.Depth)
+                {
+                    maxNodeIndex++;
+                    maxPosAtDepth = Math.Max(maxPosAtDepth, state[maxNodeIndex].RowPos);
+                }
+                while (minNodeIndex > 0 && state[minNodeIndex - 1].Depth == testNode.Depth)
+                {
+                    minNodeIndex--;
+                    maxPosAtDepth = Math.Max(maxPosAtDepth, state[minNodeIndex].RowPos);
+                }
+
+
+                int numBlanks = 0, lastDepth = -1, lastPos = 0;
+                foreach (var node in state)
+                {
+                    if (node.Depth == lastDepth)
+                    {
+                        numBlanks += node.RowPos - lastPos - 1;
+                    }
+                    else
+                    {
+                        lastDepth = node.Depth;
+                        numBlanks += node.RowPos;
+                    }
+                    lastPos = node.RowPos;
+                }
+
+
+
+                int blankToRemove = Random.Next(numBlanks), currentBlank = -1;
+                lastDepth = -1; lastPos = 0;
+
+                for (int i = 0; i < state.Count; i++)
+                {
+                    var node = state[i];
                     if (node.Depth == lastDepth)
                     {
                         currentBlank += node.RowPos - lastPos - 1;
@@ -335,17 +377,20 @@ namespace TreeViewer
 
                     if (currentBlank >= blankToRemove)
                     {
-                        for (int j = i; j < newState.Count; j++)
+                        for (int j = i; j < state.Count; j++)
                         {
-                            var node2 = newState[j];
+                            var node2 = state[j];
                             if (node2.Depth == lastDepth)
                                 node2.RowPos--;
                             else
                                 break;
                         }
-                        return;
+                        return false;
                     }
                 }
+
+                return true;*/
+                return false;
             }
 
             public override double DetermineEnergy(List<NodeHolder> state)
