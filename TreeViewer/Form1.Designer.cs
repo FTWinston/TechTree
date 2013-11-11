@@ -32,6 +32,7 @@
             this.btnGenerate = new System.Windows.Forms.Button();
             this.chkManualSeed = new System.Windows.Forms.CheckBox();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.btnSort = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -76,11 +77,23 @@
             this.pictureBox1.TabIndex = 4;
             this.pictureBox1.TabStop = false;
             // 
+            // btnSort
+            // 
+            this.btnSort.Enabled = false;
+            this.btnSort.Location = new System.Drawing.Point(341, 10);
+            this.btnSort.Name = "btnSort";
+            this.btnSort.Size = new System.Drawing.Size(75, 23);
+            this.btnSort.TabIndex = 5;
+            this.btnSort.Text = "Sort";
+            this.btnSort.UseVisualStyleBackColor = true;
+            this.btnSort.Click += new System.EventHandler(this.btnSort_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(740, 446);
+            this.Controls.Add(this.btnSort);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.chkManualSeed);
             this.Controls.Add(this.btnGenerate);
@@ -99,6 +112,7 @@
         private System.Windows.Forms.Button btnGenerate;
         private System.Windows.Forms.CheckBox chkManualSeed;
         private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.Button btnSort;
     }
 }
 

@@ -16,6 +16,7 @@ namespace TreeViewer
             InitializeComponent();
         }
 
+        TechTree.TechTree tree;
         private void btnGenerate_Click(object sender, EventArgs e)
         {
             Random r = new Random();
@@ -26,13 +27,20 @@ namespace TreeViewer
                 txtSeed.Text = seed.ToString();
             }
 
-            TechTree.TechTree tree = new TechTree.TechTree(seed);
+            tree = new TechTree.TechTree(seed);
             pictureBox1.Image = TreeBitmapWriter.WriteImage(tree, pictureBox1.Width, pictureBox1.Height);
+            btnSort.Enabled = true;
         }
 
         private void chkManualSeed_CheckedChanged(object sender, EventArgs e)
         {
             txtSeed.ReadOnly = !chkManualSeed.Checked;
+        }
+
+        private void btnSort_Click(object sender, EventArgs e)
+        {
+            tree.SortLayout();
+            pictureBox1.Image = TreeBitmapWriter.WriteImage(tree, pictureBox1.Width, pictureBox1.Height);
         }
     }
 }
