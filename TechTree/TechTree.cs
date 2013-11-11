@@ -119,50 +119,47 @@ namespace TechTree
                 {
                     // determine the "forces" acting on each node
                     var nodes = depth.Value;
-                    int[] forces = new int[nodes.Count];
-                    for (int i = 0; i < forces.Length; i++)
+                    int largestIndex = -1; float largestForce = 0;
+                    for (int i = 0; i < nodes.Count; i++)
                     {
                         var node = nodes[i];
+                        float parentForce = 0, childForce = 0;
                         foreach (var parent in node.Prerequisites)
-                            forces[i] += parent.RowPos - node.RowPos;
+                            parentForce += parent.RowPos - node.RowPos;
 
                         foreach (var child in node.Unlocks)
-                            forces[i] += child.RowPos - node.RowPos;
-                    }
+                            childForce += child.RowPos - node.RowPos;
 
-                    // apply the calculated forces to rearrange the nodes
-                    for (int i = 0; i < forces.Length; i++)
-                    {
-                        if (forces[i] == 0)
-                            continue;
-                        var node = nodes[i];
+                        if (node.Prerequisites.Count > 0)
+                            parentForce /= node.Prerequisites.Count;
+                        if (node.Unlocks.Count > 0)
+                            childForce /= node.Unlocks.Count;
 
-                        var targetPos = Math.Max(0, node.RowPos + forces[i]);
-                        int increment = targetPos > node.RowPos ? 1 : -1;
+                        var force = parentForce + childForce;
 
-                        for (int testPos = node.RowPos + increment; testPos != targetPos; testPos += increment)
+                        if (Math.Abs(force) > Math.Abs(largestForce))
                         {
-                            TreeNode other = FindNodeAtPos(nodes, testPos);
-                            if (other == null)
-                            {// if there's a RowPos free, move into it.
-                                node.RowPos = testPos;
-                                anyChange = true;
-                                break;
-                            }
-                            else if (testPos == node.RowPos + 1 && i < forces.Length - 1 && forces[i + 1] <= 0)
-                            {// if there's a node immediately below that wants to move up (or wants to stay put), and we want to move down, swap, but ensure we won't get moved by ITS force
-                                var tmp = node.RowPos;
-                                node.RowPos = testPos;
-                                other.RowPos = tmp;
-                                nodes[i + 1].RowPos = tmp;
-                                forces[i + 1] = 0;
-                                anyChange = true;
-                                break;
-                            }
+                            largestForce = force;
+                            largestIndex = i;
                         }
-
-                        nodes.Sort();
                     }
+
+                    if (Math.Abs(largestForce) <= 0.5f)
+                        continue;
+
+                    // apply the largest force only to the nodes at this depth .. and only move one step, not the full distance
+                    var nodeToMove = nodes[largestIndex];
+
+                    int increment = Math.Max(0, nodeToMove.RowPos + largestForce) > nodeToMove.RowPos ? 1 : -1;
+                    var targetPos = nodeToMove.RowPos + increment;
+
+                    foreach (var test in nodes)
+                        if (test.RowPos == targetPos)
+                            test.RowPos -= increment;
+
+                    nodeToMove.RowPos = targetPos;
+
+                    nodes.Sort();
                 }
 
                 if (!anyChange)
