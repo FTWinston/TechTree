@@ -133,7 +133,10 @@ namespace TechTree
                         if (node.Prerequisites.Count > 0)
                             parentForce /= node.Prerequisites.Count;
                         if (node.Unlocks.Count > 0)
+                        {
                             childForce /= node.Unlocks.Count;
+                            childForce *= node.CountDescendents() * 0.5f + 1;
+                        }
 
                         var force = parentForce + childForce;
 
@@ -202,6 +205,14 @@ namespace TechTree
                     return result;
 
                 return RowPos.CompareTo(other.RowPos);
+            }
+
+            internal int CountDescendents()
+            {
+                int num = 0;
+                foreach (var node in Unlocks)
+                    num += node.CountDescendents();
+                return num;
             }
         }
     }

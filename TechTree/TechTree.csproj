@@ -45,6 +45,12 @@
     <Compile Include="BuyableInfo.cs" />
     <Compile Include="TechTree.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TreeDrawing\DPoint.cs" />
+    <Compile Include="TreeDrawing\HeuristicLabTreeDrawing.cs" />
+    <Compile Include="TreeDrawing\ITreeNode.cs" />
+    <Compile Include="TreeDrawing\LayeredTreeDraw.cs" />
+    <Compile Include="TreeDrawing\TreeConnection.cs" />
+    <Compile Include="TreeDrawing\TreeNodeGroup.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
