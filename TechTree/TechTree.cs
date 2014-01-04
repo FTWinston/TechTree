@@ -18,7 +18,8 @@ namespace TechTree
 
         Random r;
 
-        public TechTree(int seed, int? treeBreadth = null, int? numBuildings = null)
+        public TechTree(int seed) : this(seed, null, null) { }
+        public TechTree(int seed, int? treeBreadth, int? numBuildings)
         {
             r = new Random(seed);
 
@@ -97,77 +98,26 @@ namespace TechTree
 
         public void SortLayout()
         {
-            var nodesByDepth = new SortedList<int, List<TreeNode>>();
+            SortByDescendents(RootNode);
+        }
 
-            foreach (var node in AllNodes)
+        private int SortByDescendents(TreeNode node)
+        {
+            node.Unlocks.Sort((n1, n2) => -n1.CountDescendents().CompareTo(n2.CountDescendents()));
+
+            int maxRowPos = node.RowPos;
+            foreach (var child in node.Unlocks)
             {
-                List<TreeNode> nodesAtDepth;
-                if (!nodesByDepth.TryGetValue(node.Depth, out nodesAtDepth))
-                {
-                    nodesAtDepth = new List<TreeNode>();
-                    nodesByDepth.Add(node.Depth, nodesAtDepth);
-                }
-
-                nodesAtDepth.Add(node);
+                child.RowPos = maxRowPos;
+                maxRowPos = SortByDescendents(child) + 1;
             }
 
-            bool anyChange = false;
-            for (int iteration = 0; iteration < 1; iteration++)
+            if (node.Unlocks.Count > 0)
             {
-                // operate on each depth in turn
-                foreach (var depth in nodesByDepth)
-                {
-                    // determine the "forces" acting on each node
-                    var nodes = depth.Value;
-                    int largestIndex = -1; float largestForce = 0;
-                    for (int i = 0; i < nodes.Count; i++)
-                    {
-                        var node = nodes[i];
-                        float parentForce = 0, childForce = 0;
-                        foreach (var parent in node.Prerequisites)
-                            parentForce += parent.RowPos - node.RowPos;
-
-                        foreach (var child in node.Unlocks)
-                            childForce += child.RowPos - node.RowPos;
-
-                        if (node.Prerequisites.Count > 0)
-                            parentForce /= node.Prerequisites.Count;
-                        if (node.Unlocks.Count > 0)
-                        {
-                            childForce /= node.Unlocks.Count;
-                            childForce *= node.CountDescendents() * 0.5f + 1;
-                        }
-
-                        var force = parentForce + childForce;
-
-                        if (Math.Abs(force) > Math.Abs(largestForce))
-                        {
-                            largestForce = force;
-                            largestIndex = i;
-                        }
-                    }
-
-                    if (Math.Abs(largestForce) <= 0.5f)
-                        continue;
-
-                    // apply the largest force only to the nodes at this depth .. and only move one step, not the full distance
-                    var nodeToMove = nodes[largestIndex];
-
-                    int increment = Math.Max(0, nodeToMove.RowPos + largestForce) > nodeToMove.RowPos ? 1 : -1;
-                    var targetPos = nodeToMove.RowPos + increment;
-
-                    foreach (var test in nodes)
-                        if (test.RowPos == targetPos)
-                            test.RowPos -= increment;
-
-                    nodeToMove.RowPos = targetPos;
-
-                    nodes.Sort();
-                }
-
-                if (!anyChange)
-                    break;
+                maxRowPos--;
+                node.RowPos = (node.RowPos + maxRowPos) / 2;
             }
+            return maxRowPos;
         }
 
         private static TreeNode FindNodeAtPos(List<TreeNode> nodes, int testPos)
@@ -209,7 +159,7 @@ namespace TechTree
 
             internal int CountDescendents()
             {
-                int num = 0;
+                int num = Unlocks.Count;
                 foreach (var node in Unlocks)
                     num += node.CountDescendents();
                 return num;
