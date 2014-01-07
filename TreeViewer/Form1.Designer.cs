@@ -84,7 +84,7 @@
             this.btnSort.Name = "btnSort";
             this.btnSort.Size = new System.Drawing.Size(75, 23);
             this.btnSort.TabIndex = 5;
-            this.btnSort.Text = "Sort";
+            this.btnSort.Text = "Condense";
             this.btnSort.UseVisualStyleBackColor = true;
             this.btnSort.Click += new System.EventHandler(this.btnSort_Click);
             // 

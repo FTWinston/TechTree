@@ -42,7 +42,15 @@ namespace TechTree
                 newNode.Prerequisites.Add(parent);
             }
 
-            SortByDepth();
+            PositionNodes();
+        }
+
+        private static int Sort(TreeNode n1, TreeNode n2)
+        {
+            int depth = n1.Depth.CompareTo(n2.Depth);
+            if (depth != 0)
+                return depth;
+            return n1.RowPos.CompareTo(n2.RowPos);
         }
 
         private TreeNode SelectNode(int treeBreadth)
@@ -57,7 +65,7 @@ namespace TechTree
             return current;
         }
 
-        private void SortByDepth()
+        private void PositionNodes()
         {
             var nodesByDepth = new SortedList<int, int>();
             AllNodes = new List<TreeNode>();
@@ -99,6 +107,8 @@ namespace TechTree
         public void SortLayout()
         {
             SortByDescendents(RootNode);
+            AllNodes.Sort((n1, n2) => Sort(n1, n2));
+            //CondenseLayout(RootNode);
         }
 
         private int SortByDescendents(TreeNode node)
@@ -106,18 +116,70 @@ namespace TechTree
             node.Unlocks.Sort((n1, n2) => -n1.CountDescendents().CompareTo(n2.CountDescendents()));
 
             int maxRowPos = node.RowPos;
+            if (node.Unlocks.Count == 0)
+                return maxRowPos;
+
+            TreeNode lastChild = null;
             foreach (var child in node.Unlocks)
             {
                 child.RowPos = maxRowPos;
                 maxRowPos = SortByDescendents(child) + 1;
+                lastChild = child;
             }
 
-            if (node.Unlocks.Count > 0)
-            {
-                maxRowPos--;
-                node.RowPos = (node.RowPos + maxRowPos) / 2;
-            }
+            maxRowPos--;
+            node.RowPos = (node.RowPos + maxRowPos) / 2;
             return maxRowPos;
+        }
+
+        public void CondenseLayout()
+        {
+            while (CondenseLayout(RootNode))
+                ;
+        }
+
+        private bool CondenseLayout(TreeNode node)
+        {
+            // if any of this node's descendents can have its entire sub-tree's rowpos reduced by 1, then do that.
+            // that will make more efficient use of space.
+
+            bool retVal = false;
+            foreach (var child in node.Unlocks)
+            {
+                if (CanDecrementRowPos(node, child) && child.RowPos > node.RowPos) // use child.MaxRowPos instead of child.RowPos here?
+                {
+                    DecrementRowPos(child);
+                    retVal = true;
+                }
+
+                if ( CondenseLayout(child) )
+                    retVal = true;
+            }
+            return retVal;
+        }
+
+        private bool CanDecrementRowPos(TreeNode parent, TreeNode node)
+        {
+            if (node.RowPos == 0)
+                return false;
+            int pos = AllNodes.IndexOf(node);
+            TreeNode prev = AllNodes[pos > 0 ? pos - 1 : 0];
+
+            if (prev.Depth != node.Depth || prev.RowPos >= node.RowPos - 1)
+                return false;
+
+            foreach (var child in node.Unlocks)
+                if ( !CanDecrementRowPos(node, child) )
+                    return false;
+
+            return true;
+        }
+
+        private void DecrementRowPos(TreeNode node)
+        {
+            node.RowPos--;
+            foreach (var child in node.Unlocks)
+                DecrementRowPos(child);
         }
 
         private static TreeNode FindNodeAtPos(List<TreeNode> nodes, int testPos)

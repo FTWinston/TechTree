@@ -28,6 +28,7 @@ namespace TreeViewer
             }
 
             tree = new TechTree.TechTree(seed);
+            tree.SortLayout();
             pictureBox1.Image = TreeBitmapWriter.WriteImage(tree, pictureBox1.Width, pictureBox1.Height);
             btnSort.Enabled = true;
         }
@@ -39,7 +40,7 @@ namespace TreeViewer
 
         private void btnSort_Click(object sender, EventArgs e)
         {
-            tree.SortLayout();
+            tree.CondenseLayout();
             pictureBox1.Image = TreeBitmapWriter.WriteImage(tree, pictureBox1.Width, pictureBox1.Height);
         }
     }

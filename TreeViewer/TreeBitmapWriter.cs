@@ -15,7 +15,7 @@ namespace TreeViewer
             Pen linkPen = new Pen(Color.Black, height / 300f);
             Bitmap image = new Bitmap(width, height);
 
-            float nodeWidth = width * 0.5f / (tree.MaxDepth + 0.5f), nodeHeight = Math.Min(nodeWidth / 1.41421356f, height * 0.5f / (tree.MaxRowPos + 0.5f));
+            float nodeWidth = width * 0.5f / (tree.MaxRowPos + 0.5f), nodeHeight = Math.Min(nodeWidth / 1.41421356f, height * 0.5f / (tree.MaxDepth + 0.5f));
             float depthIncrement = nodeHeight * 2f, insetIncrement = nodeWidth * 2f;
 
             using (Graphics g = Graphics.FromImage(image))
