@@ -165,13 +165,15 @@ namespace TechTree
             int pos = AllNodes.IndexOf(node);
             TreeNode prev = AllNodes[pos > 0 ? pos - 1 : 0];
 
-            if (prev.Depth != node.Depth || prev.RowPos >= node.RowPos - 1)
+            if (prev.Depth == node.Depth && prev.RowPos >= node.RowPos - 1)
                 return false;
 
-            foreach (var child in node.Unlocks)
-                if ( !CanDecrementRowPos(node, child) )
+            if (node.Unlocks.Count > 0)
+            {// check the first child node, to see if IT can shunt up. The rest can be assumed to be ok. This works because the bigger trees are always leftmost.
+                if (!CanDecrementRowPos(node, node.Unlocks[0]))
                     return false;
-
+            }
+            
             return true;
         }
 
