@@ -134,62 +134,119 @@ namespace TechTree
 
         public void CondenseLayout()
         {
-            while (CondenseLayout(RootNode))
-                ;
+            bool anyMovement = false;
+            while (CondenseLayout(RootNode, true))
+                anyMovement = true;
+
+            if (anyMovement)
+            {
+                int maxRowPos = 0;
+                foreach (var node in AllNodes)
+                    maxRowPos = Math.Max(maxRowPos, node.RowPos);
+
+                MaxRowPos = maxRowPos;
+            }
+
+            anyMovement = false;
+            while (CondenseLayout(RootNode, false))
+                anyMovement = true;
+
+            if (anyMovement)
+            {
+                int minRowPos = int.MaxValue;
+                foreach (var node in AllNodes)
+                    minRowPos = Math.Min(minRowPos, node.RowPos);
+
+                if (minRowPos > 0)
+                {
+                    foreach (var node in AllNodes)
+                        node.RowPos -= minRowPos;
+
+                    MaxRowPos -= minRowPos;
+                }
+            }
         }
 
-        private bool CondenseLayout(TreeNode node)
+        private bool CondenseLayout(TreeNode node, bool leftward)
         {
             // if any of this node's descendents can have its entire sub-tree's rowpos reduced by 1, then do that.
             // that will make more efficient use of space.
 
             bool retVal = false;
-            foreach (var child in node.Unlocks)
+            for (int i = leftward ? 0 : node.Unlocks.Count - 1; leftward ? i < node.Unlocks.Count : i >= 0; i += leftward ? 1 : -1)
             {
-                if (CanDecrementRowPos(node, child) && child.RowPos > node.RowPos) // use child.MaxRowPos instead of child.RowPos here?
+                var child = node.Unlocks[i];
+                if (CanShiftRowPos(node, child, leftward) && (leftward ? child.RowPos > node.RowPos : child.RowPos < node.RowPos))
                 {
-                    DecrementRowPos(child);
+                    ShiftRowPos(child, leftward);
                     retVal = true;
                 }
 
-                if ( CondenseLayout(child) )
+                if (CondenseLayout(child, leftward))
                     retVal = true;
             }
             return retVal;
         }
 
-        private bool CanDecrementRowPos(TreeNode parent, TreeNode node)
+        private bool CanShiftRowPos(TreeNode parent, TreeNode node, bool leftward)
         {
-            if (node.RowPos == 0)
+            if (leftward ? node.RowPos == 0 : node.RowPos == MaxRowPos)
                 return false;
             int pos = AllNodes.IndexOf(node);
-            TreeNode prev = AllNodes[pos > 0 ? pos - 1 : 0];
-
-            if (prev.Depth == node.Depth && prev.RowPos >= node.RowPos - 1)
+            TreeNode adjacent = AllNodes[leftward ? (pos > 0 ? pos - 1 : 0) : (pos < AllNodes.Count - 1 ? pos + 1 : 0)];
+            if (adjacent.Depth == node.Depth && (leftward ? (adjacent.RowPos >= node.RowPos - 1) : (adjacent.RowPos <= node.RowPos + 1)))
                 return false;
 
             if (node.Unlocks.Count > 0)
-            {// check the first child node, to see if IT can shunt up. The rest can be assumed to be ok. This works because the bigger trees are always leftmost.
-                if (!CanDecrementRowPos(node, node.Unlocks[0]))
-                    return false;
+            {
+                var endNodes = new SortedList<TreeNode, TreeNode>();
+                if (leftward)
+                    FindLeftmostAtEachLevel(node, endNodes);
+                else
+                {
+                    int[] bestRowPos = new int[MaxDepth+1];
+                    FindRightmostAtEachLevel(node, endNodes, bestRowPos);
+                }
+
+                // if the endmost child node at each level can shunt up, the rest are only shunting after it, anyway
+                foreach (var kvp in endNodes)
+                    if (!CanShiftRowPos(kvp.Key, kvp.Value, leftward))
+                        return false;
             }
             
             return true;
         }
 
-        private void DecrementRowPos(TreeNode node)
-        {
-            node.RowPos--;
-            foreach (var child in node.Unlocks)
-                DecrementRowPos(child);
+        private void FindLeftmostAtEachLevel(TreeNode node, SortedList<TreeNode, TreeNode> endNodes)
+        {// This can be simplified greatly, because the bigger trees are always leftmost, so the leftmost nodes are ALWAYS the leftmost chain
+            do
+            {
+                var end = node.Unlocks[0];
+                endNodes.Add(node, end);
+
+                node = end;
+            } while (node.Unlocks.Count > 0);
         }
 
-        private static TreeNode FindNodeAtPos(List<TreeNode> nodes, int testPos)
+        private void FindRightmostAtEachLevel(TreeNode node, SortedList<TreeNode, TreeNode> endNodes, int[] bestRowPos)
         {
-            foreach (TreeNode test in nodes)
-                if (test.RowPos == testPos)
-                    return test;
-            return null;
+            var test = node.Unlocks[node.Unlocks.Count - 1];
+            if (test.RowPos >= bestRowPos[test.Depth])
+            {
+                endNodes[node] = test;
+                bestRowPos[test.Depth] = test.RowPos;
+            }
+
+            foreach (var child in node.Unlocks)
+                if (child.Unlocks.Count > 0)
+                    FindRightmostAtEachLevel(child, endNodes, bestRowPos);
+        }
+
+        private void ShiftRowPos(TreeNode node, bool leftward)
+        {
+            node.RowPos += leftward ? -1 : 1;
+            foreach (var child in node.Unlocks)
+                ShiftRowPos(child, leftward);
         }
 
         public class TreeNode : IComparable<TreeNode>
