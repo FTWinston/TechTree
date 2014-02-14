@@ -1,7 +1,7 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TechTree", "TechTree\TechTree.csproj", "{F55AF3EA-9F09-42D1-BAF2-D87635E41368}"
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Express 2012 for Windows Desktop
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameLogic", "GameLogic\GameLogic.csproj", "{F55AF3EA-9F09-42D1-BAF2-D87635E41368}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TreeViewer", "TreeViewer\TreeViewer.csproj", "{D51E3043-56D3-42F0-822A-AA86D0754BB5}"
 EndProject

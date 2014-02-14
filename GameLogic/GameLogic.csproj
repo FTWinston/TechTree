@@ -8,8 +8,8 @@
     <ProjectGuid>{F55AF3EA-9F09-42D1-BAF2-D87635E41368}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TechTree</RootNamespace>
-    <AssemblyName>TechTree</AssemblyName>
+    <RootNamespace>TechTree.GameLogic</RootNamespace>
+    <AssemblyName>GameLogic</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
