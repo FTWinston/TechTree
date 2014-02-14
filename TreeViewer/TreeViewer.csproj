@@ -78,7 +78,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Game\GameLogic.csproj">
+    <ProjectReference Include="..\GameLogic\GameLogic.csproj">
       <Project>{F55AF3EA-9F09-42D1-BAF2-D87635E41368}</Project>
       <Name>GameLogic</Name>
     </ProjectReference>
