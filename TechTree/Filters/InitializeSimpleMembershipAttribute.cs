@@ -38,7 +38,7 @@ namespace TechTree.Filters
                         }
                     }
 
-                    WebSecurity.InitializeDatabaseConnection("DefaultConnection", "UserProfile", "UserId", "UserName", autoCreateTables: true);
+                    WebSecurity.InitializeDatabaseConnection("DefaultConnection", "Players", "ID", "Name", autoCreateTables: true);
                 }
                 catch (Exception ex)
                 {

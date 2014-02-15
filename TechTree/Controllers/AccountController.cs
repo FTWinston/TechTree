@@ -79,7 +79,10 @@ namespace TechTree.Controllers
                 // Attempt to register the user
                 try
                 {
-                    WebSecurity.CreateUserAndAccount(model.UserName, model.Password);
+                    WebSecurity.CreateUserAndAccount(model.UserName, model.Password, new {
+                        Wins = 0,
+                        Losses = 0
+                    });
                     WebSecurity.Login(model.UserName, model.Password);
                     return RedirectToAction("Index", "Home");
                 }
@@ -263,14 +266,14 @@ namespace TechTree.Controllers
             if (ModelState.IsValid)
             {
                 // Insert a new user into the database
-                using (UsersContext db = new UsersContext())
+                using (GameContext db = new GameContext())
                 {
-                    UserProfile user = db.UserProfiles.FirstOrDefault(u => u.UserName.ToLower() == model.UserName.ToLower());
+                    Player player = db.Players.FirstOrDefault(p => p.Name.ToLower() == model.UserName.ToLower());
                     // Check if user already exists
-                    if (user == null)
+                    if (player == null)
                     {
                         // Insert name into the profile table
-                        db.UserProfiles.Add(new UserProfile { UserName = model.UserName });
+                        db.Players.Add(new Player { Name = model.UserName, Wins = 0, Losses = 0 });
                         db.SaveChanges();
 
                         OAuthWebSecurity.CreateOrUpdateAccount(provider, providerUserId, model.UserName);

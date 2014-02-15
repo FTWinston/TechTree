@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="c4af5a8f756845009aa90c4cdfb1608a" Name="Diagram1" >
+        <EntityTypeShape EntityType="GameModel.Game" Width="1.5" PointX="6.375" PointY="2.375" />
+        <EntityTypeShape EntityType="GameModel.Player" Width="1.5" PointX="10.875" PointY="2.375" />
+        <EntityTypeShape EntityType="GameModel.GamePlayer" Width="1.5" PointX="8.625" PointY="2.375" />
+        <AssociationConnector Association="GameModel.GamePlayers_Games" />
+        <AssociationConnector Association="GameModel.Games_Players" />
+        <AssociationConnector Association="GameModel.GamePlayers_Players" />
+        <EntityTypeShape EntityType="GameModel.GameData" Width="1.5" PointX="4.125" PointY="2.375" />
+        <AssociationConnector Association="GameModel.GameData_Games" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>
