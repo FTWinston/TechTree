@@ -34,6 +34,8 @@
     <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="StatusID" Type="int" Nullable="false" />
     <Property Name="CurrentPlayerID" Type="int" Nullable="true" />
+    <Property Name="CreatedOn" Type="datetime" Nullable="false" />
+    <Property Name="LastUpdated" Type="datetime" Nullable="false" />
   </EntityType>
   <EntityType Name="Players">
     <Key>
@@ -147,6 +149,8 @@
           <NavigationProperty Name="CurrentPlayer" ToRole="Player" FromRole="Game" Relationship="GameModel.Games_Players" />
           <Property Type="Int32" Name="CurrentPlayerID" Nullable="true" />
           <NavigationProperty Name="GameData" Relationship="GameModel.GameData_Games" FromRole="Game" ToRole="GameData" />
+          <Property Type="DateTime" Name="CreatedOn" Nullable="false" />
+          <Property Type="DateTime" Name="LastUpdated" Nullable="false" />
         </EntityType>
         <EnumType Name="GameStatus">
           <Member Name="PublicSetup" />
@@ -251,6 +255,8 @@
           <ScalarProperty Name="ID" ColumnName="ID" />
           <ScalarProperty Name="StatusID" ColumnName="StatusID" />
           <ScalarProperty Name="CurrentPlayerID" ColumnName="CurrentPlayerID" />
+          <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+          <ScalarProperty Name="LastUpdated" ColumnName="LastUpdated" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

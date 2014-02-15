@@ -1,0 +1,21 @@
+﻿@if (Request.IsAuthenticated) {
+    <div class="float-right">
+        <nav>
+            <ul id="menu">
+                <li>@Html.ActionLink("Home", "Index", "Home")</li>
+                <li>@Html.ActionLink("News", "News", "Home")</li>
+                <li>@Html.ActionLink("Search", "Search", "Home")</li>
+                <li>@Html.ActionLink(User.Identity.Name, "Profile", "Home")</li>
+                <li>@Html.ActionLink("Options", "Manage", "Account")</li>
+                <li>@using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm" })) {
+                    @Html.AntiForgeryToken()
+                    <a href="javascript:document.getElementById('logoutForm').submit()">Log off</a>
+                }</li>
+            </ul>
+        </nav>
+    </div>
+} else {
+    <div class="float-right">
+        Please log in to continue
+    </div>
+}

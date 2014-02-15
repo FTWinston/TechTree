@@ -1,0 +1,23 @@
+﻿@{
+    ViewBag.Title = "Search";
+}
+
+<hgroup class="title">
+    <h1>@ViewBag.Title</h1>
+</hgroup>
+
+<section id="searchForm">
+<h3>Enter a player name or game ID below.</h3>
+@using (Html.BeginForm("Search", "Home", FormMethod.Post)) {
+    <fieldset>
+        <legend>Search Form</legend>
+        <ol>
+            <li>
+                @Html.TextBox("expression")
+                @Html.ValidationMessage("expression")
+            </li>
+        </ol>
+        <input type="submit" value="Search" />
+    </fieldset>
+}
+</section>

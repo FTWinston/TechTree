@@ -2,7 +2,7 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, and Azure
 -- --------------------------------------------------
--- Date Created: 02/15/2014 00:29:11
+-- Date Created: 02/15/2014 13:11:46
 -- Generated from EDMX file: C:\Users\Winston\Documents\Visual Studio 2012\Projects\TechTree\TechTree\Models\GameModel.edmx
 -- --------------------------------------------------
 
@@ -31,7 +31,9 @@ GO
 CREATE TABLE [dbo].[Games] (
     [ID] int IDENTITY(1,1) NOT NULL,
     [StatusID] int  NOT NULL,
-    [CurrentPlayerID] int  NULL
+    [CurrentPlayerID] int  NULL,
+    [CreatedOn] datetime  NOT NULL,
+    [LastUpdated] datetime  NOT NULL
 );
 GO
 

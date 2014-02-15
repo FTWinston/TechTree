@@ -11,7 +11,7 @@ namespace TechTree.Controllers
         //
         // GET: /Game/
 
-        public ActionResult Index()
+        public ActionResult Index(int id)
         {
             return View();
         }
