@@ -13,6 +13,13 @@ namespace TechTree.Controllers
         {
             ViewBag.Message = "Modify this template to jump-start your ASP.NET MVC application.";
 
+            using (GameContext db = new GameContext())
+            {
+                Player player = db.Players.FirstOrDefault(p => p.Name.ToLower() == User.Identity.Name);
+                ViewBag.playerID = player.ID;
+                ViewBag.games = db.Games.Where(g => g.GamePlayers.Where(gp => gp.PlayerID == player.ID).Count() > 0).ToList();
+            }
+
             return View();
         }
 
