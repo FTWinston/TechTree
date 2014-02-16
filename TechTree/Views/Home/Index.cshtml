@@ -1,6 +1,9 @@
-﻿@{
+﻿@model TechTree.Models.HomePageModel
+
+@{
     ViewBag.Title = "Home Page";
 }
+
 @section featured {
     <section class="featured">
         <div class="content-wrapper">
@@ -51,19 +54,16 @@
     
     <h3>My Games</h3>
     <ul>
-        @if ( ViewBag.games.Count > 0 ) {
-            foreach (var game in ViewBag.games) {
-                <li>
-                    @Html.ActionLink(
-                        game.CurrentPlayerID == ViewBag.playerID && game.StatusID == TechTree.Models.GameStatus.InProgress
-                            ? string.Format("{0} (your turn)", (string)game.ID)
-                            : (string)game.ID,
-                        "Index", "Game", new {id = game.ID}, null)
-                </li>
+        @if ( Model.HasAnyGames ) {
+            foreach (var game in Model.CurrentGamesMyTurn) {
+                <li>@Html.ActionLink(game.ID + " (your turn)", "Index", "Game", new {id = game.ID}, null)</li>
+            }
+            
+            foreach (var game in Model.CurrentGamesNotMyTurn) {
+                <li>@Html.ActionLink(game.ID.ToString(), "Index", "Game", new {id = game.ID}, null)</li>
             }
         }
-        else
-        {
+        else {
             <li>You have no active games</li>
         }
     </ul>

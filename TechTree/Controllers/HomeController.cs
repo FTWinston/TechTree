@@ -11,16 +11,28 @@ namespace TechTree.Controllers
     {
         public ActionResult Index()
         {
-            ViewBag.Message = "Modify this template to jump-start your ASP.NET MVC application.";
+            ViewBag.Message = "Welcome to Tech Tree. This is very much a work in progress. Tread softly.";
+
+            var model = new HomePageModel();
+            var myGames = new List<Game>();
+            Player player;
 
             using (GameContext db = new GameContext())
             {
-                Player player = db.Players.FirstOrDefault(p => p.Name.ToLower() == User.Identity.Name);
-                ViewBag.playerID = player.ID;
-                ViewBag.games = db.Games.Where(g => g.GamePlayers.Where(gp => gp.PlayerID == player.ID).Count() > 0).ToList();
+                player = db.Players.FirstOrDefault(p => p.Name.ToLower() == User.Identity.Name);
+                myGames = db.Games
+                    .Where(g => g.StatusID != GameStatus.Finished && g.GamePlayers.Where(gp => gp.PlayerID == player.ID).Count() > 0)
+                    .OrderBy(g => g.ID)
+                    .ToList();
             }
 
-            return View();
+            foreach (var game in myGames)
+                if (game.CurrentPlayerID == player.ID)
+                    model.CurrentGamesMyTurn.Add(game);
+                else
+                    model.CurrentGamesNotMyTurn.Add(game);
+
+            return View(model);
         }
 
         public ActionResult News()
@@ -91,11 +103,7 @@ namespace TechTree.Controllers
             if (player == null)
                 return RedirectToAction("Index");
 
-            ViewBag.Name = player.Name;
-            ViewBag.Wins = player.Wins;
-            ViewBag.Losses = player.Losses;
-            
-            return View();
+            return View(player);
         }
     }
 }

@@ -222,6 +222,7 @@
     <Compile Include="Models\GameStatus.cs">
       <DependentUpon>GameModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\HomePageModel.cs" />
     <Compile Include="Models\Player.cs">
       <DependentUpon>GameModel.tt</DependentUpon>
     </Compile>

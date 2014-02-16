@@ -1,21 +1,23 @@
-﻿@{
-    ViewBag.Title = "Profile";
+﻿@model TechTree.Models.Player
+
+@{    
+    ViewBag.Title = "Profile: " + Model.Name;
 }
 
 <hgroup class="title">
     <h1>Player profile:</h1>
-    <h2>@ViewBag.Name</h2>
+    <h2>@Model.Name</h2>
 </hgroup>
 
 <article>
     <table>
         <tr>
             <td>Games won:</td>
-            <td>@ViewBag.Wins</td>
+            <td>@Model.Wins</td>
         </tr>
         <tr>
             <td>Games lost:</td>
-            <td>@ViewBag.Losses</td>
+            <td>@Model.Losses</td>
         </tr>
     </table>
 </article>
