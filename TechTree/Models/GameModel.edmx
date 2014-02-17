@@ -10,6 +10,7 @@
     <EntitySet Name="Players" EntityType="GameModel.Store.Players" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="GamePlayers" EntityType="GameModel.Store.GamePlayers" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="GameData" EntityType="GameModel.Store.GameData" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="GameModes" EntityType="GameModel.Store.GameModes" store:Type="Tables" Schema="dbo" />
     <AssociationSet Name="GamePlayers_Games" Association="GameModel.Store.GamePlayers_Games">
       <End Role="GamePlayer" EntitySet="GamePlayers" />
       <End Role="Game" EntitySet="Games" />
@@ -26,6 +27,10 @@
       <End Role="GameData" EntitySet="GameData" />
       <End Role="Game" EntitySet="Games" />
     </AssociationSet>
+    <AssociationSet Name="GameGameMode" Association="GameModel.Store.Games_GameModes">
+      <End Role="Game" EntitySet="Games" />
+      <End Role="GameMode" EntitySet="GameModes" />
+    </AssociationSet>
   </EntityContainer>
   <EntityType Name="Games">
     <Key>
@@ -33,6 +38,7 @@
     </Key>
     <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="StatusID" Type="int" Nullable="false" />
+    <Property Name="GameModeID" Type="int" Nullable="false" />
     <Property Name="CurrentPlayerID" Type="int" Nullable="true" />
     <Property Name="CreatedOn" Type="datetime" Nullable="false" />
     <Property Name="LastUpdated" Type="datetime" Nullable="false" />
@@ -64,6 +70,15 @@
     <Property Name="GameID" Type="int" Nullable="false" />
     <Property Name="TypeID" Type="int" Nullable="false" />
     <Property Name="Data" Type="nvarchar(max)" Nullable="false" />
+  </EntityType>
+  <EntityType Name="GameModes">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" Nullable="false" />
+    <Property Name="Name" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="MinPlayers" Type="int" Nullable="false" />
+    <Property Name="MaxPlayers" Type="int" Nullable="false" />
   </EntityType>
   <Association Name="GamePlayers_Games">
     <End Role="GamePlayer" Type="GameModel.Store.GamePlayers" Multiplicity="*" />
@@ -113,6 +128,18 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <Association Name="Games_GameModes">
+    <End Role="Game" Type="GameModel.Store.Games" Multiplicity="*" />
+    <End Role="GameMode" Type="GameModel.Store.GameModes" Multiplicity="1" />
+    <ReferentialConstraint>
+      <Principal Role="GameMode">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Game">
+        <PropertyRef Name="GameModeID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
 </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
@@ -138,6 +165,11 @@
             <End Role="GameData" EntitySet="GameData" />
             <End Role="Game" EntitySet="Games" />
           </AssociationSet>
+          <EntitySet Name="GameModes" EntityType="GameModel.GameMode" />
+          <AssociationSet Name="GameGameMode" Association="GameModel.Games_GameModes">
+            <End Role="Game" EntitySet="Games" />
+            <End Role="GameMode" EntitySet="GameModes" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="Game">
           <Key>
@@ -147,7 +179,9 @@
           <Property Type="GameModel.GameStatus" Name="StatusID" Nullable="false" />
           <NavigationProperty Name="GamePlayers" Relationship="GameModel.GamePlayers_Games" FromRole="Game" ToRole="GamePlayer" />
           <NavigationProperty Name="CurrentPlayer" ToRole="Player" FromRole="Game" Relationship="GameModel.Games_Players" />
+          <Property Type="Int32" Name="GameModeID" Nullable="false" />
           <Property Type="Int32" Name="CurrentPlayerID" Nullable="true" />
+          <NavigationProperty Name="GameMode" Relationship="GameModel.Games_GameModes" FromRole="Game" ToRole="GameMode" />
           <NavigationProperty Name="GameData" Relationship="GameModel.GameData_Games" FromRole="Game" ToRole="GameData" />
           <Property Type="DateTime" Name="CreatedOn" Nullable="false" />
           <Property Type="DateTime" Name="LastUpdated" Nullable="false" />
@@ -242,7 +276,29 @@
         <EnumType Name="GameDataType">
           <Member Name="MapData" />
           <Member Name="TechTree" />
+          <Member Name="ChatLog" />
         </EnumType>
+        <EntityType Name="GameMode">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Type="Int32" Name="ID" Nullable="false" annotation:StoreGeneratedPattern="None" />
+          <Property Type="String" Name="Name" Nullable="false" MaxLength="50" />
+          <Property Type="Int32" Name="MinPlayers" Nullable="false" />
+          <Property Type="Int32" Name="MaxPlayers" Nullable="false" />
+        </EntityType>
+        <Association Name="Games_GameModes">
+          <End Type="GameModel.Game" Role="Game" Multiplicity="*" />
+          <End Type="GameModel.GameMode" Role="GameMode" Multiplicity="1" />
+          <ReferentialConstraint>
+            <Principal Role="GameMode">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Game">
+              <PropertyRef Name="GameModeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -254,6 +310,7 @@
         <MappingFragment StoreEntitySet="Games">
           <ScalarProperty Name="ID" ColumnName="ID" />
           <ScalarProperty Name="StatusID" ColumnName="StatusID" />
+          <ScalarProperty Name="GameModeID" ColumnName="GameModeID" />
           <ScalarProperty Name="CurrentPlayerID" ColumnName="CurrentPlayerID" />
           <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
           <ScalarProperty Name="LastUpdated" ColumnName="LastUpdated" />
@@ -288,6 +345,16 @@
           <ScalarProperty Name="GameID" ColumnName="GameID" />
           <ScalarProperty Name="TypeID" ColumnName="TypeID" />
           <ScalarProperty Name="Data" ColumnName="Data" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="GameModes">
+      <EntityTypeMapping TypeName="IsTypeOf(GameModel.GameMode)">
+        <MappingFragment StoreEntitySet="GameModes">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="MinPlayers" ColumnName="MinPlayers" />
+          <ScalarProperty Name="MaxPlayers" ColumnName="MaxPlayers" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

@@ -2,7 +2,7 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, and Azure
 -- --------------------------------------------------
--- Date Created: 02/15/2014 13:11:46
+-- Date Created: 02/17/2014 23:51:57
 -- Generated from EDMX file: C:\Users\Winston\Documents\Visual Studio 2012\Projects\TechTree\TechTree\Models\GameModel.edmx
 -- --------------------------------------------------
 
@@ -31,6 +31,7 @@ GO
 CREATE TABLE [dbo].[Games] (
     [ID] int IDENTITY(1,1) NOT NULL,
     [StatusID] int  NOT NULL,
+    [GameModeID] int  NOT NULL,
     [CurrentPlayerID] int  NULL,
     [CreatedOn] datetime  NOT NULL,
     [LastUpdated] datetime  NOT NULL
@@ -65,6 +66,15 @@ CREATE TABLE [dbo].[GameData] (
 );
 GO
 
+-- Creating table 'GameModes'
+CREATE TABLE [dbo].[GameModes] (
+    [ID] int  NOT NULL,
+    [Name] nvarchar(50)  NOT NULL,
+    [MinPlayers] int  NOT NULL,
+    [MaxPlayers] int  NOT NULL
+);
+GO
+
 -- --------------------------------------------------
 -- Creating all PRIMARY KEY constraints
 -- --------------------------------------------------
@@ -90,6 +100,12 @@ GO
 -- Creating primary key on [ID] in table 'GameData'
 ALTER TABLE [dbo].[GameData]
 ADD CONSTRAINT [PK_GameData]
+    PRIMARY KEY CLUSTERED ([ID] ASC);
+GO
+
+-- Creating primary key on [ID] in table 'GameModes'
+ALTER TABLE [dbo].[GameModes]
+ADD CONSTRAINT [PK_GameModes]
     PRIMARY KEY CLUSTERED ([ID] ASC);
 GO
 
@@ -151,6 +167,20 @@ ADD CONSTRAINT [FK_GameData_Games]
 CREATE INDEX [IX_FK_GameData_Games]
 ON [dbo].[GameData]
     ([GameID]);
+GO
+
+-- Creating foreign key on [GameModeID] in table 'Games'
+ALTER TABLE [dbo].[Games]
+ADD CONSTRAINT [FK_Games_GameModes]
+    FOREIGN KEY ([GameModeID])
+    REFERENCES [dbo].[GameModes]
+        ([ID])
+    ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+-- Creating non-clustered index for FOREIGN KEY 'FK_Games_GameModes'
+CREATE INDEX [IX_FK_Games_GameModes]
+ON [dbo].[Games]
+    ([GameModeID]);
 GO
 
 -- --------------------------------------------------

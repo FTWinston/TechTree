@@ -10,11 +10,13 @@
 namespace TechTree.Models
 {
     using System;
+    using System.Collections.Generic;
     
-    public enum GameDataType : int
+    public partial class GameMode
     {
-        MapData = 0,
-        TechTree = 1,
-        ChatLog = 2
+        public int ID { get; set; }
+        public string Name { get; set; }
+        public int MinPlayers { get; set; }
+        public int MaxPlayers { get; set; }
     }
 }

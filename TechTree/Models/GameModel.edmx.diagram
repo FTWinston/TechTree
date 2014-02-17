@@ -11,8 +11,10 @@
         <AssociationConnector Association="GameModel.GamePlayers_Games" />
         <AssociationConnector Association="GameModel.Games_Players" />
         <AssociationConnector Association="GameModel.GamePlayers_Players" />
-        <EntityTypeShape EntityType="GameModel.GameData" Width="1.5" PointX="4.125" PointY="2.375" />
+        <EntityTypeShape EntityType="GameModel.GameData" Width="1.5" PointX="4.125" PointY="1.625" />
         <AssociationConnector Association="GameModel.GameData_Games" />
+        <EntityTypeShape EntityType="GameModel.GameMode" Width="1.5" PointX="4.125" PointY="4" />
+        <AssociationConnector Association="GameModel.Games_GameModes" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

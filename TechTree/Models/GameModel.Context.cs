@@ -29,5 +29,6 @@ namespace TechTree.Models
         public DbSet<Player> Players { get; set; }
         public DbSet<GamePlayer> GamePlayers { get; set; }
         public DbSet<GameData> GameData { get; set; }
+        public DbSet<GameMode> GameModes { get; set; }
     }
 }

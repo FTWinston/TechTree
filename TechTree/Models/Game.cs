@@ -22,12 +22,14 @@ namespace TechTree.Models
     
         public int ID { get; set; }
         public GameStatus StatusID { get; set; }
+        public int GameModeID { get; set; }
         public Nullable<int> CurrentPlayerID { get; set; }
         public System.DateTime CreatedOn { get; set; }
         public System.DateTime LastUpdated { get; set; }
     
         public virtual ICollection<GamePlayer> GamePlayers { get; set; }
         public virtual Player CurrentPlayer { get; set; }
+        public virtual GameMode GameMode { get; set; }
         public virtual ICollection<GameData> GameData { get; set; }
     }
 }

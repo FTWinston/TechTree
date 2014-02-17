@@ -201,6 +201,9 @@
     <Compile Include="Models\GameDataType.cs">
       <DependentUpon>GameModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\GameMode.cs">
+      <DependentUpon>GameModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\GameModel.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
