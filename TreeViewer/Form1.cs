@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using GameLogic;
 
 namespace TreeViewer
 {
@@ -16,7 +17,7 @@ namespace TreeViewer
             InitializeComponent();
         }
 
-        TechTree.TechTree tree;
+        TechTree tree;
         private void btnGenerate_Click(object sender, EventArgs e)
         {
             Random r = new Random();
@@ -27,21 +28,13 @@ namespace TreeViewer
                 txtSeed.Text = seed.ToString();
             }
 
-            tree = new TechTree.TechTree(seed);
-            tree.SortLayout();
+            tree = TechTree.Generate(seed);
             pictureBox1.Image = TreeBitmapWriter.WriteImage(tree, pictureBox1.Width, pictureBox1.Height);
-            btnSort.Enabled = true;
         }
 
         private void chkManualSeed_CheckedChanged(object sender, EventArgs e)
         {
             txtSeed.ReadOnly = !chkManualSeed.Checked;
-        }
-
-        private void btnSort_Click(object sender, EventArgs e)
-        {
-            tree.CondenseLayout();
-            pictureBox1.Image = TreeBitmapWriter.WriteImage(tree, pictureBox1.Width, pictureBox1.Height);
         }
     }
 }

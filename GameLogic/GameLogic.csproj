@@ -8,7 +8,7 @@
     <ProjectGuid>{F55AF3EA-9F09-42D1-BAF2-D87635E41368}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TechTree.GameLogic</RootNamespace>
+    <RootNamespace>GameLogic</RootNamespace>
     <AssemblyName>GameLogic</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -62,6 +62,7 @@
     <Compile Include="Attribute.cs" />
     <Compile Include="BuyableInfo.cs" />
     <Compile Include="TechTree.cs" />
+    <Compile Include="TreeGenerator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
