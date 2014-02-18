@@ -49,7 +49,15 @@
     </ol>
 </article>
 <aside>
-    <input type="button" value="Find a game" onclick="window.location = '@Url.Action("FindGame")'" />
+    @using (Html.BeginForm("FindGame", "Home", FormMethod.Post)) {
+        foreach ( var mode in Model.GameModes ) {
+            <input type="checkbox" id="@("mode"+mode.ID)" name="modes" value="@mode.ID" checked="checked" />
+            <label class="checkbox" for="@("mode"+mode.ID)">@mode.Name</label>
+        }
+        
+        <input type="submit" value="Find a game" />
+    }
+
     <input type="button" value="Host game" onclick="window.location = '@Url.Action("HostGame")'" />
     
     <h3>My Games</h3>
