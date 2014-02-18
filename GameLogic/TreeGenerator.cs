@@ -10,10 +10,12 @@ namespace GameLogic
     {
         const int absMinTreeBreadth = 1, absMaxTreeBreadth = 100, minTreeBreadth = 20, maxTreeBreadth = 38;
         const int absMinBuildings = 3, absMaxBuildings = 50, minBuildings = 8, maxBuildings = 20;
+        const int minDefenseBuildings = 1, maxDefenseBuildings = 3;
 
-        public BuildingInfo RootNode { get; private set; }
+        public List<BuildingInfo> RootNodes { get; private set; }
         public List<BuildingInfo> AllNodes { get; private set; }
 
+        private BuildingInfo FakeRootNode; // this is now we have a single root for our algorithms, even if we "actually" have multiple roots
         private Random r;
         private TechTree Tree;
 
@@ -29,15 +31,56 @@ namespace GameLogic
             if (!numBuildings.HasValue || numBuildings < absMinBuildings || numBuildings > absMaxBuildings)
                 numBuildings = r.Next(minBuildings - 1, maxBuildings) + 1;
 
-            // While SC refinerys don't require a command center, I don't think replicating that matters too much at this point.
-            // So a single "command center" style building will be fine
-            RootNode = new BuildingInfo(tree);
             tree.MaxTreeRow = tree.MaxTreeColumn = 0;
+            int numDefenseBuildings = r.Next(minDefenseBuildings, maxDefenseBuildings + 1);
+            List<string> usedNames = new List<string>();
 
-            for (int i = 2; i <= numBuildings; i++)
+            // start with a command center
+            RootNodes = new List<BuildingInfo>();
+            var commandCenter = new BuildingInfo(tree) { Name = "Command Center", Type = BuildingInfo.BuildingType.Factory };
+            RootNodes.Add(commandCenter);
+
+            // add a resource building - either at top level or under the command center
+            var newNode = new BuildingInfo(tree) { Type = BuildingInfo.BuildingType.Resource };
+            newNode.AllocateUniqueName(r, usedNames);
+            if (r.Next(3) == 0)
+            {
+                newNode.Prerequisites.Add(commandCenter);
+                tree.MaxTreeRow = 1;
+            }
+            else
+            {
+                RootNodes.Add(newNode);
+                tree.MaxTreeColumn = 1;
+            }
+
+            FakeRootNode = new BuildingInfo(Tree);
+            FakeRootNode.Unlocks.AddRange(RootNodes);
+            FakeRootNode.TreeRow = -1;
+
+            double factoryChance = 0.43;
+            for (int i = 2; i <= numBuildings - numDefenseBuildings; i++)
             {
                 BuildingInfo parent = SelectNode(treeBreadth.Value);
-                BuildingInfo newNode = new BuildingInfo(tree);
+                
+                newNode = new BuildingInfo(tree);
+                newNode.Type = r.NextDouble() < factoryChance ? BuildingInfo.BuildingType.Factory : BuildingInfo.BuildingType.Tech;
+                newNode.AllocateUniqueName(r, usedNames);
+
+                parent.Unlocks.Add(newNode);
+                newNode.Prerequisites.Add(parent);
+            }
+
+            List<BuildingInfo> defenseParents = new List<BuildingInfo>();
+            for (int i = 0; i < numDefenseBuildings; i++)
+                defenseParents.Add(SelectNode(treeBreadth.Value));
+
+            foreach ( var parent in defenseParents )
+            {
+                newNode = new BuildingInfo(tree);
+                newNode.Type = BuildingInfo.BuildingType.Defense;
+                newNode.AllocateUniqueName(r, usedNames);
+
                 parent.Unlocks.Add(newNode);
                 newNode.Prerequisites.Add(parent);
             }
@@ -55,13 +98,13 @@ namespace GameLogic
 
         private BuildingInfo SelectNode(int treeBreadth)
         {
-            BuildingInfo current = RootNode;
+            BuildingInfo current = FakeRootNode;
             while (true)
-                if (current.Unlocks.Count > 0 && r.Next(absMaxTreeBreadth) >= treeBreadth)
+                if (current == FakeRootNode || current.Unlocks.Count > 0 && r.Next(absMaxTreeBreadth) >= treeBreadth)
                     current = current.Unlocks[r.Next(current.Unlocks.Count)];
                 else
                     break;
-            
+
             return current;
         }
 
@@ -70,7 +113,7 @@ namespace GameLogic
             var nodesByRow = new SortedList<int, int>();
             AllNodes = new List<BuildingInfo>();
             var toProcess = new List<BuildingInfo>();
-            toProcess.Add(RootNode);
+            toProcess.AddRange(RootNodes);
 
             while (toProcess.Count > 0)
             {
@@ -106,7 +149,7 @@ namespace GameLogic
 
         public void SortLayout()
         {
-            SortByDescendents(RootNode);
+            SortByDescendents(FakeRootNode);
             AllNodes.Sort((n1, n2) => Sort(n1, n2));
             CondenseLayout();
         }
@@ -135,7 +178,7 @@ namespace GameLogic
         public void CondenseLayout()
         {
             bool anyMovement = false;
-            while (CondenseLayout(RootNode, true))
+            while (CondenseLayout(FakeRootNode, true))
                 anyMovement = true;
 
             if (anyMovement)
@@ -148,7 +191,7 @@ namespace GameLogic
             }
 
             anyMovement = false;
-            while (CondenseLayout(RootNode, false))
+            while (CondenseLayout(FakeRootNode, false))
                 anyMovement = true;
 
             if (anyMovement)

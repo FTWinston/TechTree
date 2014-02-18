@@ -104,7 +104,7 @@ namespace GameLogic
                 case BuildingType.Factory:
                     names = new string[] {"Factory", "Barracks", "Constructor", "Gateway", "Starport", "Stargate", "Garrison", "Citadel", "Hangar", "Manufactory", "Fabricator" }; break;
                 case BuildingType.Tech:
-                    names = new string[] {"Engineering Bay", "Armory", "Research Lab", "Psi Lab", "Academy", "Workshop", "Machine Shop", "Arsenal", "Archives", "Foundry", "Forge" }; break;
+                    names = new string[] {"Engineering Bay", "Armory", "Research Lab", "Psi Lab", "Academy", "Workshop", "Machine Shop", "Arsenal", "Archives", "Foundry", "Forge", "Tech Lab", "Fusion Core", "Physics Lab", "Particle Accelerator" }; break;
                 case BuildingType.Resource:
                     names = new string[] {"Refinery", "Extractor", "Assimilator", "Mine" }; break;
                 case BuildingType.Defense:
