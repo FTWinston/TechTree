@@ -7,13 +7,13 @@ namespace GameLogic
 {
     public abstract class Attribute
     {
-        public string Name { get; set; }
-        public float Value { get; set; }
-        public float SelectionChance { get; set; }
+        public string Name { get; internal set; }
+        public float Value { get; internal set; }
+        public float SelectionChance { get; internal set; }
 
         // training units, passive upgrades, and spells can all have Building or Research prerequisites.
         // actually, typically, only training units & building buildings can have building prerequisites, whereas everything can have research prerequisites.
-        public List<BuyableInfo> Prerequisites { get; set; }
+        public List<BuyableInfo> Prerequisites { get; internal set; }
         
         protected Attribute()
         {
@@ -25,50 +25,50 @@ namespace GameLogic
     public class Passive : Attribute
     {
         // modifies stats, possibly adds new capabilities. Can be hidden (e.g. "more hitpoints") or not ("regeneration").
-        public bool Hidden { get; set; }
+        public bool Hidden { get; internal set; }
     }
 
     public abstract class Ability : Attribute
     {
-        public int MineralCost { get; set; }
-        public int GasCost { get; set; }
-        public int ManaCost { get; set; }
+        public int MineralCost { get; internal set; }
+        public int GasCost { get; internal set; }
+        public int ManaCost { get; internal set; }
     }
 
     public class TrainUnit : Ability
     {
-        public float BuildTime { get; set; }
-        public UnitInfo UnitTrained { get; set; }
+        public float BuildTime { get; internal set; }
+        public UnitInfo UnitTrained { get; internal set; }
     }
 
     public class ConstructBuilding : Ability
     {
-        public float BuildTime { get; set; }
-        public BuildingInfo BuildingProduced { get; set; }
+        public float BuildTime { get; internal set; }
+        public BuildingInfo BuildingProduced { get; internal set; }
     }
 
     public class Spell : Ability
     {
-        public float ChargeTime { get; set; }
-        public float CooldownTime { get; set; }
-        public int MaxCastNum { get; set; }
+        public float ChargeTime { get; internal set; }
+        public float CooldownTime { get; internal set; }
+        public int MaxCastNum { get; internal set; }
 
         // todo: implement this
     }
 
     public class Research : Ability
     {
-        public int NumRanks { get; set; }
-        
-        public float BuildTime { get; set; }
-        public float BuildTimePerRank { get; set; }
+        public int NumRanks { get; internal set; }
 
-        public int MineralCostPerRank { get; set; }
-        public int GasCostPerRank { get; set; }
-        public int ManaCostPerRank { get; set; }
+        public float BuildTime { get; internal set; }
+        public float BuildTimePerRank { get; internal set; }
+
+        public int MineralCostPerRank { get; internal set; }
+        public int GasCostPerRank { get; internal set; }
+        public int ManaCostPerRank { get; internal set; }
 
         //TODO: fix this. err. does this really need a separate class? Only for the purpose of being a prerequisite.
-        public ResearchInfo ResearchProduced { get; set; }
+        public ResearchInfo ResearchProduced { get; internal set; }
     }
 }
 

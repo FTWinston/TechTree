@@ -14,14 +14,14 @@ namespace GameLogic
         public BuildingInfo RootNode { get; private set; }
         public List<BuildingInfo> AllNodes { get; private set; }
 
-        internal Random r;
+        private Random r;
         private TechTree Tree;
 
-        public TreeGenerator(TechTree tree, int seed) : this(tree, seed, null, null) { }
-        public TreeGenerator(TechTree tree, int seed, int? treeBreadth, int? numBuildings)
+        public TreeGenerator(TechTree tree, Random r) : this(tree, r, null, null) { }
+        public TreeGenerator(TechTree tree, Random r, int? treeBreadth, int? numBuildings)
         {
+            this.r = r;
             Tree = tree;
-            r = new Random(seed);
 
             if (!treeBreadth.HasValue || treeBreadth < absMinTreeBreadth || treeBreadth > absMaxTreeBreadth)
                 treeBreadth = r.Next(minTreeBreadth - 1, maxTreeBreadth) + 1;

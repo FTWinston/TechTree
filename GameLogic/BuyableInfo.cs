@@ -67,6 +67,15 @@ namespace GameLogic
 
         public List<UnitInfo> Builds = new List<UnitInfo>();
         public List<ResearchInfo> Research = new List<ResearchInfo>();
+
+        public enum BuildingType
+        {
+            Factory,
+            Tech,
+            Utility,
+        }
+
+        public BuildingType Type { get; internal set; }
     }
 
     public class UnitInfo : EntityInfo

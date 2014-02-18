@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Drawing;
 using GameLogic;
+using System.Drawing.Drawing2D;
 
 namespace TreeViewer
 {
@@ -20,19 +21,45 @@ namespace TreeViewer
 
             using (Graphics g = Graphics.FromImage(image))
             {
-                foreach (var node in tree.AllBuildings)
+                foreach (var building in tree.AllBuildings)
                 {
-                    float xpos = node.TreeColumn * insetIncrement, xCenter = xpos + nodeWidth / 2f;
-                    float ypos = node.TreeRow * depthIncrement, yCenter = ypos + nodeHeight / 2f;
+                    float xpos = building.TreeColumn * insetIncrement, xCenter = xpos + nodeWidth / 2f;
+                    float ypos = building.TreeRow * depthIncrement, yCenter = ypos + nodeHeight / 2f;
 
-                    foreach (var child in node.Unlocks)
+                    foreach (var child in building.Unlocks)
                     {
                         g.DrawLine(linkPen, xCenter, yCenter,
                             child.TreeColumn * insetIncrement + nodeWidth / 2f,
                             child.TreeRow * depthIncrement + nodeHeight / 2f);
                     }
 
-                    g.FillEllipse(new SolidBrush(node.TreeColor), xpos, ypos, nodeWidth, nodeHeight);
+                    switch (building.Type)
+                    {
+                        case BuildingInfo.BuildingType.Factory: // rectangle
+                            g.FillRectangle(new SolidBrush(building.TreeColor), xpos, ypos, nodeWidth, nodeHeight);
+                            break;
+
+                        case BuildingInfo.BuildingType.Tech: // octagon
+                            var cornerFraction = 0.2f;
+                            var path = new GraphicsPath();
+                            path.AddLines(new PointF[] {
+                                new PointF(xpos + nodeWidth * cornerFraction, ypos),
+                                new PointF(xpos + nodeWidth * (1 - cornerFraction), ypos),
+                                new PointF(xpos + nodeWidth, ypos + nodeHeight * cornerFraction),
+                                new PointF(xpos + nodeWidth, ypos + nodeHeight * (1 - cornerFraction)),
+                                new PointF(xpos + nodeWidth * (1 - cornerFraction), ypos + nodeHeight),
+                                new PointF(xpos + nodeWidth * cornerFraction, ypos + nodeHeight),
+                                new PointF(xpos, ypos + nodeHeight * (1 - cornerFraction)),
+                                new PointF(xpos, ypos + nodeHeight * cornerFraction),
+                            });
+
+                            g.FillPath(new SolidBrush(building.TreeColor), path);
+                            break;
+
+                        case BuildingInfo.BuildingType.Utility: // ellipse
+                            g.FillEllipse(new SolidBrush(building.TreeColor), xpos, ypos, nodeWidth, nodeHeight);
+                            break;
+                    }
                 }
             }
             return image;
