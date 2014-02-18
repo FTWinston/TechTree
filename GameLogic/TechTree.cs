@@ -26,10 +26,12 @@ namespace GameLogic
 
             tree.AllBuildings = treeGen.AllNodes;
 
+            List<string> usedNames = new List<string>();
+
             double factoryChance = 0.35, techChance = factoryChance + 0.4, utilityChance = techChance + 0.25;
             foreach (var bi in tree.AllBuildings)
             {
-                bi.TreeColor = System.Drawing.Color.FromArgb(r.Next(256), r.Next(256), r.Next(256));
+                bi.TreeColor = System.Drawing.Color.FromArgb(r.Next(96, 256), r.Next(96, 256), r.Next(96, 256));
                 if (bi.Prerequisites.Count == 0)
                     tree.DefaultBuildings.Add(bi);
 
@@ -39,11 +41,15 @@ namespace GameLogic
                 else if (d < techChance)
                     bi.Type = BuildingInfo.BuildingType.Tech;
                 else
-                    bi.Type = BuildingInfo.BuildingType.Utility;
+                    bi.Type = BuildingInfo.BuildingType.Defense;
+
+                bi.AllocateUniqueName(r, usedNames);
             }
             
             // one of the default buildings must be the "command center" equivalent
-            tree.DefaultBuildings[r.Next(tree.DefaultBuildings.Count)].Type = BuildingInfo.BuildingType.Factory;
+            var rootFactory = tree.DefaultBuildings[r.Next(tree.DefaultBuildings.Count)];
+            rootFactory.Type = BuildingInfo.BuildingType.Factory;
+            rootFactory.Name = "Command Center";
 
 
             // that's the building tree sorted. Now we need to determine what units & research they produce

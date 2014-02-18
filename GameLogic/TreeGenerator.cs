@@ -8,7 +8,7 @@ namespace GameLogic
 {
     internal class TreeGenerator
     {
-        const int absMinTreeBreadth = 1, absMaxTreeBreadth = 100, minTreeBreadth = 1, maxTreeBreadth = 60;
+        const int absMinTreeBreadth = 1, absMaxTreeBreadth = 100, minTreeBreadth = 20, maxTreeBreadth = 38;
         const int absMinBuildings = 3, absMaxBuildings = 50, minBuildings = 8, maxBuildings = 20;
 
         public BuildingInfo RootNode { get; private set; }
