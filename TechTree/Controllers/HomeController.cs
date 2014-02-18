@@ -127,6 +127,7 @@ namespace TechTree.Controllers
             {
                 var player = GetPlayer(db);
                 var game = db.Games.Where(g => g.StatusID == GameStatus.PublicSetup && modes.Contains(g.GameModeID)).FirstOrDefault();
+                bool ready = false;
 
                 if (game == null)
                 {
@@ -137,6 +138,7 @@ namespace TechTree.Controllers
                     Random r = new Random();
 
                     game = new Game();
+                    game.StatusID = GameStatus.PublicSetup;
                     game.CreatedOn = game.LastUpdated = DateTime.Now;
                     game.GameMode = gameModes[r.Next(gameModes.Count)];
                     db.Games.Add(game);
@@ -155,11 +157,17 @@ namespace TechTree.Controllers
                 {
                     var emptySlot = game.GamePlayers.Where(p => p.Player == null).OrderByDescending(p => p.Number).FirstOrDefault();
                     emptySlot.Player = player;
+
+                    if (game.GamePlayers.Where(p => p.Player == null).Count() == 0)
+                    {
+                        game.StatusID = GameStatus.InProgress;
+                        ready = true;
+                    }
                 }
                 db.SaveChanges();
 
                 // if game ready to start, go straight to game. Otherwise, go to index.
-                if (game.GamePlayers.Where(p => p.Player == null).Count() == 0)
+                if (ready)
                     return RedirectToAction("Index", "Game", new { id = game.ID });
                 else
                     return RedirectToAction("Index");
