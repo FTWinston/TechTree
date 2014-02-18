@@ -21,10 +21,11 @@ namespace TechTree.Controllers
             {
                 player = GetPlayer(db);
                 myGames = db.Games
-                    .Where(g => g.StatusID != GameStatus.Finished && g.GamePlayers.Where(gp => gp.PlayerID == player.ID).Count() > 0)
+                    .Where(g => g.StatusID != GameStatus.Finished && g.StatusID != GameStatus.PublicSetup && g.GamePlayers.Where(gp => gp.PlayerID == player.ID).Count() > 0)
                     .OrderBy(g => g.ID)
                     .ToList();
 
+                model.SearchingForGame = db.Games.Where(g => g.StatusID == GameStatus.PublicSetup && g.GamePlayers.Where(gp => gp.PlayerID == player.ID).Count() > 0).Count() > 0;
                 model.GameModes = db.GameModes.ToList();
             }
 

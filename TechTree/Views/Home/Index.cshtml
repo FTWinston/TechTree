@@ -55,7 +55,10 @@
             <label class="checkbox" for="@("mode"+mode.ID)">@mode.Name</label>
         }
         
-        <input type="submit" value="Find a game" />
+        <input type="submit" value="Find a game" disabled="@Model.SearchingForGame" />
+        if (Model.SearchingForGame) {
+            <span class="hint">Searching for a game...</span>
+        }
     }
 
     <input type="button" value="Host game" onclick="window.location = '@Url.Action("HostGame")'" />
