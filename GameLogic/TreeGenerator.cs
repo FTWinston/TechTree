@@ -46,6 +46,7 @@ namespace GameLogic
             if (r.Next(3) == 0)
             {
                 newNode.Prerequisites.Add(commandCenter);
+                commandCenter.Unlocks.Add(newNode);
                 tree.MaxTreeRow = 1;
             }
             else
@@ -61,7 +62,7 @@ namespace GameLogic
             double factoryChance = 0.43;
             for (int i = 2; i <= numBuildings - numDefenseBuildings; i++)
             {
-                BuildingInfo parent = SelectNode(treeBreadth.Value);
+                BuildingInfo parent = SelectNode(treeBreadth.Value, commandCenter);
                 
                 newNode = new BuildingInfo(tree);
                 newNode.Type = r.NextDouble() < factoryChance ? BuildingInfo.BuildingType.Factory : BuildingInfo.BuildingType.Tech;
@@ -73,7 +74,7 @@ namespace GameLogic
 
             List<BuildingInfo> defenseParents = new List<BuildingInfo>();
             for (int i = 0; i < numDefenseBuildings; i++)
-                defenseParents.Add(SelectNode(treeBreadth.Value));
+                defenseParents.Add(SelectNode(treeBreadth.Value, commandCenter));
 
             foreach ( var parent in defenseParents )
             {
@@ -96,9 +97,9 @@ namespace GameLogic
             return n1.TreeColumn.CompareTo(n2.TreeColumn);
         }
 
-        private BuildingInfo SelectNode(int treeBreadth)
+        private BuildingInfo SelectNode(int treeBreadth, BuildingInfo root = null)
         {
-            BuildingInfo current = FakeRootNode;
+            BuildingInfo current = root ?? FakeRootNode;
             while (true)
                 if (current == FakeRootNode || current.Unlocks.Count > 0 && r.Next(absMaxTreeBreadth) >= treeBreadth)
                     current = current.Unlocks[r.Next(current.Unlocks.Count)];

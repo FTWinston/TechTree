@@ -28,7 +28,7 @@ namespace GameLogic
             tree.DefaultBuildings = treeGen.RootNodes;
 
             foreach (var bi in tree.AllBuildings)
-                bi.TreeColor = System.Drawing.Color.FromArgb(r.Next(96, 256), r.Next(96, 256), r.Next(96, 256));
+                bi.TreeColor = System.Drawing.Color.FromArgb(r.Next(128, 256), r.Next(128, 256), r.Next(128, 256));
             
             // that's the building tree sorted. Now we need to determine what units & research they produce
 
