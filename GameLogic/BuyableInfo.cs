@@ -125,6 +125,19 @@ namespace GameLogic
         {
             throw new NotImplementedException();
         }
+
+        [Flags]
+        public enum UnitType
+        {
+            None = 0,
+            Infantry = 1,
+            Armor = 2,
+            Robotic = 4,
+            Bio = 8,
+            Air = 16,
+        }
+
+        public UnitType Type { get; internal set; }
     }
 
     public class ResearchInfo : BuyableInfo

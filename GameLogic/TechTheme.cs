@@ -7,11 +7,13 @@ namespace GameLogic
 {
     internal class TechTheme
     {
-        public UnitName[] UnitNames;
-        public string[] BuildingNames_Factory;
-        public string[] BuildingNames_Tech;
-        public string[] BuildingNames_Defense;
-        public string[] ResearchNames;
+        public UnitInfo.UnitType UnitType { get; private set; }
+        public UnitName[] UnitNames { get; private set; }
+        public string[] BuildingNames_Factory { get; private set; }
+        public string[] BuildingNames_Tech { get; private set; }
+        public string[] BuildingNames_Defense { get; private set; }
+        public string[] ResearchNames { get; private set; }
+        public Attribute[] UnitAttributes { get; private set; }
 
         public void AllocateName(UnitInfo unit, Random r, List<string> usedNames)
         {
@@ -64,33 +66,39 @@ namespace GameLogic
             return true;
         }
 
-        public static TechTheme Infantry = new TechTheme()
+        public static TechTheme ModernInfantry = new TechTheme()
         {
+            UnitType = UnitInfo.UnitType.Infantry,
             UnitNames = new UnitName[] { "Grunt" /* max cost applies */, "Marine", "Infantry", "Soldier", "Trooper", "GI", "Commando" /* min cost applies */, "Mercenary" /* must have some active ability */, "Sniper" /* range > 2 */, "Medic" /* healing */, "Grenadier" /* explosive */, "Paratrooper" /* (only if paradrop) */, "Scout" /* speed > 3*/ },
             BuildingNames_Factory = new string[] { "Barracks", "Boot Camp", "Garrison", "Outpost" },
             BuildingNames_Tech = new string[] { "Academy", "Armory", "Rifle Range", "Weapons Depot", "Magazine", "Munitions Dump" },
             BuildingNames_Defense = new string[] { "Gun Turret", "Gun Emplacement", "Flak Cannon", "AA Gun", "Auto-Gun", "Bunker" },
             ResearchNames = new string[] { },
+            UnitAttributes = new Attribute[] { },
         };
 
         public static TechTheme Tanks = new TechTheme()
         {
+            UnitType = UnitInfo.UnitType.Armor,
             UnitNames = new UnitName[] { "Battle Tank", "Heavy Tank" /* health > X */, "Light Tank" /* health < Y */, "Artillery" /* range > 2 & explosive */ },
             BuildingNames_Factory = new string[] { "Factory", "War Factory", "Manufactory", "Fabricator", "Machine Shop" },
             BuildingNames_Tech = new string[] { "Machine Shop" },
             BuildingNames_Defense = new string[] { },
             ResearchNames = new string[] { },
+            UnitAttributes = new Attribute[] { },
         };
 
         // a factory from one theme can build a unit from another, e.g. Barracks trains Ghost, Gateway trains Templar ... however they have to be related somehow
         // ... you wouldn't want Ghosts to come from factories, or Templar from Starports. Perhaps that's just "unit type" (e.g. infantry, armor, robotic, air, bio) ?
         public static TechTheme Psionics = new TechTheme()
         {
+            UnitType = UnitInfo.UnitType.Infantry,
             UnitNames = new UnitName[] { },
             BuildingNames_Factory = new string[] { },
             BuildingNames_Tech = new string[] { },
             BuildingNames_Defense = new string[] { },
             ResearchNames = new string[] { },
+            UnitAttributes = new Attribute[] { },
         };
         
         public struct UnitName
