@@ -61,6 +61,7 @@
   <ItemGroup>
     <Compile Include="Attribute.cs" />
     <Compile Include="BuyableInfo.cs" />
+    <Compile Include="HSLColor.cs" />
     <Compile Include="PlayerInfo.cs" />
     <Compile Include="TechTheme.cs" />
     <Compile Include="TechTree.cs" />

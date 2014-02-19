@@ -19,7 +19,6 @@ namespace GameLogic
         private Random r;
         private TechTree Tree;
         private List<string> usedNames = new List<string>();
-        private SortedList<BuyableInfo, TechTheme> themes = new SortedList<BuyableInfo, TechTheme>();
 
         public TreeGenerator(TechTree tree, Random r) : this(tree, r, null) { }
         public TreeGenerator(TechTree tree, Random r, int? treeBreadth)
@@ -31,19 +30,22 @@ namespace GameLogic
                 treeBreadth = r.Next(minTreeBreadth - 1, maxTreeBreadth) + 1;
 
             int numBuildingGroups = r.Next(minBuildingGroups, maxBuildingGroups + 1);
+            var buildingGroups = new List<BuildingGroup>();
 
             tree.MaxTreeRow = tree.MaxTreeColumn = 0;
 
             FakeRootNode = new BuildingInfo(Tree);
             FakeRootNode.TreeRow = -1;
 
-            var commandCenter = AddSubTree(FakeRootNode, true);
+            var cmdGroup = AddSubTree(FakeRootNode, true);
+            buildingGroups.Add(cmdGroup);
+            var commandCenter = cmdGroup.Buildings[0];
             RootNodes = FakeRootNode.Unlocks;
 
             for (int i = 1; i < numBuildingGroups; i++)
             {
                 BuildingInfo parent = SelectNode(treeBreadth.Value, commandCenter);
-                AddSubTree(parent, false);
+                buildingGroups.Add(AddSubTree(parent, false));
             }
 
             int numDefenseBuildings = r.Next(minDefenseBuildings, maxDefenseBuildings + 1);
@@ -56,25 +58,43 @@ namespace GameLogic
                 var newNode = new BuildingInfo(tree);
                 newNode.Type = BuildingInfo.BuildingType.Defense;
 
-                newNode.TreeColor = parent.TreeColor;
-                themes[parent].AllocateName(newNode, r, usedNames);
+                var group = buildingGroups.Where(g => g.Buildings.Contains(parent)).First();
+                group.Buildings.Add(newNode);
+                group.Theme.AllocateName(newNode, r, usedNames);
 
                 parent.Unlocks.Add(newNode);
                 newNode.Prerequisites.Add(parent);
             }
 
+            var colors = HSLColor.GetDistributedSet(buildingGroups.Count, r, 140, 200);
+
+            for ( int i=0; i<buildingGroups.Count; i++ )
+            {
+                var group = buildingGroups[i];
+                Color c = colors[i];
+                foreach (var building in group.Buildings)
+                    building.TreeColor = c;
+            }
+
             PositionNodes();
         }
 
-        private BuildingInfo AddSubTree(BuildingInfo parent, bool commandCenterSubtree)
+        private class BuildingGroup
         {
-            TechTheme theme = commandCenterSubtree ? TechTheme.Command : TechTheme.SelectRandom(r);
-            Color c = RandomColor();
+            public TechTheme Theme;
+            public List<BuildingInfo> Buildings;
+        }
+
+        private BuildingGroup AddSubTree(BuildingInfo parent, bool commandCenterSubtree)
+        {
+            var group = new BuildingGroup();
+            group.Theme = commandCenterSubtree ? TechTheme.Command : TechTheme.SelectRandom(r);
+            group.Buildings = new List<BuildingInfo>();
 
             if (commandCenterSubtree)
             {
                 // a command center and a resource building that is either at top level or under the command center
-                var commandCenter = AddBuilding(parent, BuildingInfo.BuildingType.Factory, theme, c);
+                var commandCenter = AddBuilding(parent, BuildingInfo.BuildingType.Factory, group);
                 
                 if (r.Next(3) == 0)
                 {
@@ -86,58 +106,54 @@ namespace GameLogic
                     parent.Tree.MaxTreeColumn = 1;
                 }
 
-                var resource = AddBuilding(parent, BuildingInfo.BuildingType.Resource, theme, c);
-                return commandCenter;
+                var resource = AddBuilding(parent, BuildingInfo.BuildingType.Resource, group);
             }
             else
             {
-                var factory = AddBuilding(parent, BuildingInfo.BuildingType.Factory, theme, c);
+                var factory = AddBuilding(parent, BuildingInfo.BuildingType.Factory, group);
                 BuildingInfo prev;
 
                 switch (r.Next(6))
                 {
                     case 0:
                     case 1:
-                        AddBuilding(factory, BuildingInfo.BuildingType.Tech, theme, c);
-                        AddBuilding(factory, BuildingInfo.BuildingType.Tech, theme, c);
+                        AddBuilding(factory, BuildingInfo.BuildingType.Tech, group);
+                        AddBuilding(factory, BuildingInfo.BuildingType.Tech, group);
                         break;
 
                     case 2:
                     case 3:
-                        AddBuilding(factory, BuildingInfo.BuildingType.Tech, theme, c);
-                        AddBuilding(parent, BuildingInfo.BuildingType.Tech, theme, c);
+                        AddBuilding(factory, BuildingInfo.BuildingType.Tech, group);
+                        AddBuilding(parent, BuildingInfo.BuildingType.Tech, group);
                         break;
 
                     case 4:
-                        prev = AddBuilding(factory, BuildingInfo.BuildingType.Tech, theme, c);
-                        AddBuilding(prev, BuildingInfo.BuildingType.Tech, theme, c);
+                        prev = AddBuilding(factory, BuildingInfo.BuildingType.Tech, group);
+                        AddBuilding(prev, BuildingInfo.BuildingType.Tech, group);
                         break;
 
                     case 5:
-                        prev = AddBuilding(factory, BuildingInfo.BuildingType.Tech, theme, c);
-                        AddBuilding(prev, BuildingInfo.BuildingType.Tech, theme, c);
-                        AddBuilding(prev, BuildingInfo.BuildingType.Tech, theme, c);
+                        prev = AddBuilding(factory, BuildingInfo.BuildingType.Tech, group);
+                        AddBuilding(prev, BuildingInfo.BuildingType.Tech, group);
+                        AddBuilding(prev, BuildingInfo.BuildingType.Tech, group);
                         break;
                 }
-                return null;
             }
+            return group;
         }
         
-        private BuildingInfo AddBuilding(BuildingInfo parent, BuildingInfo.BuildingType type, TechTheme theme, Color c)
+        private BuildingInfo AddBuilding(BuildingInfo parent, BuildingInfo.BuildingType type, BuildingGroup group)
         {
-            var building = new BuildingInfo(parent.Tree) { Type = type, TreeColor = c };
-            theme.AllocateName(building, r, usedNames);
+            var building = new BuildingInfo(parent.Tree);
+            building.Type = type;
+            group.Theme.AllocateName(building, r, usedNames);
             parent.Unlocks.Add(building);
             if (parent != FakeRootNode)
                 building.Prerequisites.Add(parent);
 
-            themes.Add(building, theme);
-            return building;
-        }
+            group.Buildings.Add(building);
 
-        private Color RandomColor()
-        {
-            return Color.FromArgb(r.Next(128, 256), r.Next(128, 256), r.Next(128, 256));
+            return building;
         }
 
         private static int Sort(BuildingInfo n1, BuildingInfo n2)

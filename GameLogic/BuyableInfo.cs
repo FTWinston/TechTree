@@ -34,7 +34,7 @@ namespace GameLogic
         public int SupplyCost { get; internal set; }
     }
 
-    public class BuildingInfo : EntityInfo, IComparable<BuildingInfo>
+    public class BuildingInfo : EntityInfo
     {
         public BuildingInfo(TechTree tree) : base(tree) { }
 
@@ -50,16 +50,7 @@ namespace GameLogic
             internal set { col = value; Tree.MaxTreeRow = Math.Max(Tree.MaxTreeRow, col); }
         }
         public Color TreeColor { get; internal set; }
-
-        public int CompareTo(BuildingInfo other)
-        {
-            var result = TreeRow.CompareTo(other.TreeRow);
-            if (result != 0)
-                return result;
-
-            return TreeColumn.CompareTo(other.TreeColumn);
-        }
-
+        
         internal int CountDescendents()
         {
             int num = Unlocks.Count;
