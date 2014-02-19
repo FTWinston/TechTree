@@ -49,7 +49,8 @@
     </ol>
 </article>
 <aside>
-    @using (Html.BeginForm("FindGame", "Home", FormMethod.Post)) {
+    @using (Html.BeginForm("FindGame", "Setup", FormMethod.Post))
+    {
         foreach ( var mode in Model.GameModes ) {
             <input type="checkbox" id="@("mode"+mode.ID)" name="modes" value="@mode.ID" checked="checked" />
             <label class="checkbox" for="@("mode"+mode.ID)">@mode.Name</label>
@@ -61,7 +62,7 @@
         }
     }
 
-    <input type="button" value="Host game" onclick="window.location = '@Url.Action("HostGame")'" />
+    <input type="button" value="Host game" onclick="window.location = '@Url.Action("HostGame", "Setup")'" />
     
     <h3>My Games</h3>
     <ul>
