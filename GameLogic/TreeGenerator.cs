@@ -37,12 +37,12 @@ namespace GameLogic
 
             // start with a command center
             RootNodes = new List<BuildingInfo>();
-            var commandCenter = new BuildingInfo(tree) { Name = "Command Center", Type = BuildingInfo.BuildingType.Factory };
+            var commandCenter = new BuildingInfo(tree) { Name = "Command Center", Type = BuildingInfo.BuildingType.Factory, TreeColor = RandomColor(r) };
             RootNodes.Add(commandCenter);
 
             // add a resource building - either at top level or under the command center
-            var newNode = new BuildingInfo(tree) { Type = BuildingInfo.BuildingType.Resource };
-            newNode.AllocateUniqueName(r, usedNames);
+            var newNode = new BuildingInfo(tree) { Name = "Refinery", Type = BuildingInfo.BuildingType.Resource, TreeColor = RandomColor(r) };
+
             if (r.Next(3) == 0)
             {
                 newNode.Prerequisites.Add(commandCenter);
@@ -59,6 +59,8 @@ namespace GameLogic
             FakeRootNode.Unlocks.AddRange(RootNodes);
             FakeRootNode.TreeRow = -1;
 
+            var themes = new SortedList<BuyableInfo, TechTheme>();
+
             double factoryChance = 0.43;
             for (int i = 2; i <= numBuildings - numDefenseBuildings; i++)
             {
@@ -66,7 +68,11 @@ namespace GameLogic
                 
                 newNode = new BuildingInfo(tree);
                 newNode.Type = r.NextDouble() < factoryChance ? BuildingInfo.BuildingType.Factory : BuildingInfo.BuildingType.Tech;
-                newNode.AllocateUniqueName(r, usedNames);
+
+                bool useParent;
+                TechTheme theme = GetTheme(r, themes, newNode, parent, 0.65, out useParent);
+                newNode.TreeColor = useParent ? parent.TreeColor : RandomColor(r);
+                theme.AllocateName(newNode, r, usedNames);
 
                 parent.Unlocks.Add(newNode);
                 newNode.Prerequisites.Add(parent);
@@ -80,13 +86,50 @@ namespace GameLogic
             {
                 newNode = new BuildingInfo(tree);
                 newNode.Type = BuildingInfo.BuildingType.Defense;
-                newNode.AllocateUniqueName(r, usedNames);
+
+                bool useParent;
+                TechTheme theme = GetTheme(r, themes, newNode, parent, 0.85, out useParent);
+                newNode.TreeColor = useParent ? parent.TreeColor : RandomColor(r);
+                theme.AllocateName(newNode, r, usedNames);
 
                 parent.Unlocks.Add(newNode);
                 newNode.Prerequisites.Add(parent);
             }
 
             PositionNodes();
+        }
+
+        private Color RandomColor(Random r)
+        {
+            return Color.FromArgb(r.Next(128, 256), r.Next(128, 256), r.Next(128, 256));
+        }
+
+        private TechTheme GetTheme(Random r, SortedList<BuyableInfo, TechTheme> themes, BuildingInfo node, BuildingInfo parent, double parentChance, out bool useParent)
+        {
+            TechTheme theme;
+            if (themes.TryGetValue(parent, out theme) && r.NextDouble() <= parentChance)
+            {
+                useParent = true;
+                themes.Add(node, theme);
+                return theme;
+            }
+
+            var parentTheme = theme;
+            switch (r.Next(3))
+            {
+                case 0:
+                    theme = TechTheme.ModernInfantry; break;
+                case 1:
+                    theme = TechTheme.Tanks; break;
+                case 2:
+                    theme = TechTheme.Aircraft; break;
+                default:
+                    throw new Exception();
+            }
+
+            useParent = theme == parentTheme;
+            themes.Add(node, theme);
+            return theme;
         }
 
         private static int Sort(BuildingInfo n1, BuildingInfo n2)

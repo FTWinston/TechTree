@@ -18,19 +18,6 @@ namespace GameLogic
 
         public float BuildTime { get; internal set; }
 
-        internal void AllocateUniqueName(Random r, List<string> usedNames)
-        {
-            int nameIndex;
-            do
-            {
-                AllocateName(r);
-                nameIndex = usedNames.BinarySearch(Name);
-            } while (nameIndex >= 0);
-            usedNames.Insert(~nameIndex, Name);
-        }
-        
-        protected abstract void AllocateName(Random r);
-
         public int CompareTo(BuyableInfo other)
         {
             return Name.CompareTo(other.Name);
@@ -95,36 +82,11 @@ namespace GameLogic
         }
 
         public BuildingType Type { get; internal set; }
-
-        protected override void AllocateName(Random r)
-        {
-            string[] names;
-            switch (Type)
-            {
-                case BuildingType.Factory:
-                    names = new string[] {"Factory", "Barracks", "Constructor", "Gateway", "Starport", "Stargate", "Garrison", "Citadel", "Hangar", "Manufactory", "Fabricator" }; break;
-                case BuildingType.Tech:
-                    names = new string[] {"Engineering Bay", "Armory", "Research Lab", "Psi Lab", "Academy", "Workshop", "Machine Shop", "Arsenal", "Archives", "Foundry", "Forge", "Tech Lab", "Fusion Core", "Physics Lab", "Particle Accelerator" }; break;
-                case BuildingType.Resource:
-                    names = new string[] {"Refinery", "Extractor", "Assimilator", "Mine" }; break;
-                case BuildingType.Defense:
-                    names = new string[] {"Missile Turret", "Scanner", "Bunker", "Flak Cannon", "Artillery", "AA Gun", "Tesla Coil", "Laser Turret", "Gun Turret" }; break;
-                default:
-                    Name = "Unknown type"; return;
-            }
-
-            Name = names[r.Next(names.Length)];
-        }
     }
 
     public class UnitInfo : EntityInfo
     {
         public UnitInfo(TechTree tree) : base(tree) { }
-
-        protected override void AllocateName(Random r)
-        {
-            throw new NotImplementedException();
-        }
 
         [Flags]
         public enum UnitType
@@ -143,10 +105,5 @@ namespace GameLogic
     public class ResearchInfo : BuyableInfo
     {
         public ResearchInfo(TechTree tree) : base(tree) { }
-
-        protected override void AllocateName(Random r)
-        {
-            throw new NotImplementedException();
-        }
     }
 }
