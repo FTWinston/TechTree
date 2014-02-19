@@ -19,11 +19,18 @@ namespace GameLogic
             where T : BuyableInfo
         {
             Name<T> name;
-            int nameIndex;
+            int nameIndex, tries = 0;
             do
             {
                 name = names[r.Next(names.Length)];
                 nameIndex = usedNames.BinarySearch(name.Value);
+                tries++;
+
+                if (tries > 100)
+                {
+                    info.Name = "Unnamed";
+                    return;
+                }
             } while ((name.Validation == null || name.Validation(info)) && nameIndex >= 0);
 
             usedNames.Insert(~nameIndex, name.Value);
