@@ -18,6 +18,8 @@ namespace GameLogic
         private BuildingInfo FakeRootNode; // this is now we have a single root for our algorithms, even if we "actually" have multiple roots
         private Random r;
         private TechTree Tree;
+        private List<string> usedNames = new List<string>();
+        private SortedList<BuyableInfo, TechTheme> themes = new SortedList<BuyableInfo, TechTheme>();
 
         public TreeGenerator(TechTree tree, Random r) : this(tree, r, null) { }
         public TreeGenerator(TechTree tree, Random r, int? treeBreadth)
@@ -31,19 +33,17 @@ namespace GameLogic
             int numBuildingGroups = r.Next(minBuildingGroups, maxBuildingGroups + 1);
 
             tree.MaxTreeRow = tree.MaxTreeColumn = 0;
-            List<string> usedNames = new List<string>();
-            var themes = new SortedList<BuyableInfo, TechTheme>();
 
             FakeRootNode = new BuildingInfo(Tree);
             FakeRootNode.TreeRow = -1;
 
-            var commandCenter = AddSubTree(FakeRootNode, r, usedNames, themes, true);
+            var commandCenter = AddSubTree(FakeRootNode, true);
             RootNodes = FakeRootNode.Unlocks;
 
             for (int i = 1; i < numBuildingGroups; i++)
             {
                 BuildingInfo parent = SelectNode(treeBreadth.Value, commandCenter);
-                AddSubTree(parent, r, usedNames, themes, false);
+                AddSubTree(parent, false);
             }
 
             int numDefenseBuildings = r.Next(minDefenseBuildings, maxDefenseBuildings + 1);
@@ -62,81 +62,80 @@ namespace GameLogic
                 parent.Unlocks.Add(newNode);
                 newNode.Prerequisites.Add(parent);
             }
-            
+
             PositionNodes();
         }
 
-        private BuildingInfo AddSubTree(BuildingInfo parent, Random r, List<string> usedNames, SortedList<BuyableInfo, TechTheme> buildingThemes, bool commandCenterSubtree)
+        private BuildingInfo AddSubTree(BuildingInfo parent, bool commandCenterSubtree)
         {
             TechTheme theme = commandCenterSubtree ? TechTheme.Command : TechTheme.SelectRandom(r);
-            Color c = RandomColor(r);
+            Color c = RandomColor();
 
             if (commandCenterSubtree)
             {
-                var commandCenter = new BuildingInfo(parent.Tree) { Type = BuildingInfo.BuildingType.Factory, TreeColor = c };
-                theme.AllocateName(commandCenter, r, usedNames);
-                parent.Unlocks.Add(commandCenter);
-
-                // add a resource building - either at top level or under the command center
-                var resource = new BuildingInfo(parent.Tree) { Type = BuildingInfo.BuildingType.Resource, TreeColor = c };
-                theme.AllocateName(resource, r, usedNames);
-
+                // a command center and a resource building that is either at top level or under the command center
+                var commandCenter = AddBuilding(parent, BuildingInfo.BuildingType.Factory, theme, c);
+                
                 if (r.Next(3) == 0)
                 {
-                    resource.Prerequisites.Add(commandCenter);
-                    commandCenter.Unlocks.Add(resource);
+                    parent = commandCenter;
                     parent.Tree.MaxTreeRow = 1;
                 }
                 else
                 {
-                    parent.Unlocks.Add(resource);
                     parent.Tree.MaxTreeColumn = 1;
                 }
 
-                buildingThemes.Add(commandCenter, theme);
-                buildingThemes.Add(resource, theme);
-
+                var resource = AddBuilding(parent, BuildingInfo.BuildingType.Resource, theme, c);
                 return commandCenter;
             }
             else
             {
-                var factory = new BuildingInfo(parent.Tree) { Type = BuildingInfo.BuildingType.Factory, TreeColor = c };
-                theme.AllocateName(factory, r, usedNames);
+                var factory = AddBuilding(parent, BuildingInfo.BuildingType.Factory, theme, c);
+                BuildingInfo prev;
 
-                parent.Unlocks.Add(factory);
-                factory.Prerequisites.Add(parent);
-
-
-                var tech = new BuildingInfo(parent.Tree) { Type = BuildingInfo.BuildingType.Tech, TreeColor = c };
-                theme.AllocateName(tech, r, usedNames);
-
-                factory.Unlocks.Add(tech);
-                tech.Prerequisites.Add(factory);
-
-
-                buildingThemes.Add(factory, theme);
-                buildingThemes.Add(tech, theme);
-
-                tech = new BuildingInfo(parent.Tree) { Type = BuildingInfo.BuildingType.Tech, TreeColor = c };
-                theme.AllocateName(tech, r, usedNames);
-
-                if (r.Next(2) == 0)
+                switch (r.Next(6))
                 {
-                    factory.Unlocks.Add(tech);
-                    tech.Prerequisites.Add(factory);
-                }
-                else
-                {
-                    parent.Unlocks.Add(tech);
-                    tech.Prerequisites.Add(parent);
-                }
+                    case 0:
+                    case 1:
+                        AddBuilding(factory, BuildingInfo.BuildingType.Tech, theme, c);
+                        AddBuilding(factory, BuildingInfo.BuildingType.Tech, theme, c);
+                        break;
 
-                buildingThemes.Add(tech, theme);
+                    case 2:
+                    case 3:
+                        AddBuilding(factory, BuildingInfo.BuildingType.Tech, theme, c);
+                        AddBuilding(parent, BuildingInfo.BuildingType.Tech, theme, c);
+                        break;
+
+                    case 4:
+                        prev = AddBuilding(factory, BuildingInfo.BuildingType.Tech, theme, c);
+                        AddBuilding(prev, BuildingInfo.BuildingType.Tech, theme, c);
+                        break;
+
+                    case 5:
+                        prev = AddBuilding(factory, BuildingInfo.BuildingType.Tech, theme, c);
+                        AddBuilding(prev, BuildingInfo.BuildingType.Tech, theme, c);
+                        AddBuilding(prev, BuildingInfo.BuildingType.Tech, theme, c);
+                        break;
+                }
                 return null;
             }
         }
+        
+        private BuildingInfo AddBuilding(BuildingInfo parent, BuildingInfo.BuildingType type, TechTheme theme, Color c)
+        {
+            var building = new BuildingInfo(parent.Tree) { Type = type, TreeColor = c };
+            theme.AllocateName(building, r, usedNames);
+            parent.Unlocks.Add(building);
+            if (parent != FakeRootNode)
+                building.Prerequisites.Add(parent);
 
-        private Color RandomColor(Random r)
+            themes.Add(building, theme);
+            return building;
+        }
+
+        private Color RandomColor()
         {
             return Color.FromArgb(r.Next(128, 256), r.Next(128, 256), r.Next(128, 256));
         }
