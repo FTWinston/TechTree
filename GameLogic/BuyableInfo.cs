@@ -9,7 +9,7 @@ namespace GameLogic
     public abstract class BuyableInfo : IComparable<BuyableInfo>
     {
         protected BuyableInfo(TechTree tree) { Tree = tree; }
-        protected TechTree Tree { get; private set; }
+        internal TechTree Tree { get; private set; }
 
         public string Name { get; internal set; }
         

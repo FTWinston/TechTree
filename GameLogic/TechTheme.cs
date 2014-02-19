@@ -43,6 +43,7 @@ namespace GameLogic
                 case BuildingInfo.BuildingType.Factory:
                     names = BuildingNames_Factory; break;
                 case BuildingInfo.BuildingType.Tech:
+                case BuildingInfo.BuildingType.Resource:
                     names = BuildingNames_Tech; break;
                 case BuildingInfo.BuildingType.Defense:
                     names = BuildingNames_Defense; break;
@@ -58,13 +59,24 @@ namespace GameLogic
             Allocate(research, ResearchNames, r, usedNames);
         }
 
+        public static TechTheme Command = new TechTheme()
+        {
+            UnitType = UnitInfo.UnitType.None,
+            UnitNames = new Name<UnitInfo>[] { "Worker" },
+            BuildingNames_Factory = new Name<BuildingInfo>[] { "Command Center", "Outpost", "Fortress", "Stronghold", "Headquarters" },
+            BuildingNames_Tech = new Name<BuildingInfo>[] { "Mine", "Refinery", "Extractor" },
+            BuildingNames_Defense = new Name<BuildingInfo>[] { "Sentry Gun", "Gun Turret", "Auto Turret" },
+            ResearchNames = new Name<ResearchInfo>[] { },
+            UnitAttributes = new Attribute[] { },
+        };
+
         public static TechTheme ModernInfantry = new TechTheme()
         {
             UnitType = UnitInfo.UnitType.Infantry,
             UnitNames = new Name<UnitInfo>[] { "Grunt" /* max cost applies */, "Marine", "Infantry", "Soldier", "Trooper", "GI", "Commando" /* min cost applies */, "Mercenary" /* must have some active ability */, "Sniper" /* range > 2 */, "Medic" /* healing */, "Grenadier" /* explosive */, "Paratrooper" /* (only if paradrop) */, "Scout" /* speed > 3*/ },
             BuildingNames_Factory = new Name<BuildingInfo>[] { "Barracks", "Boot Camp", "Garrison", "Outpost", "Military Base", "Academy", "Troop Training" },
             BuildingNames_Tech = new Name<BuildingInfo>[] { "Academy", "Armory", "Rifle Range", "Weapons Depot", "Magazine", "Munitions Dump" },
-            BuildingNames_Defense = new Name<BuildingInfo>[] { "Gun Turret", "Gun Emplacement", "Flak Cannon", "AA Gun", "Auto-Gun", "Bunker" },
+            BuildingNames_Defense = new Name<BuildingInfo>[] { "Sentry Gun", "Gun Turret", "Gun Emplacement", "Flak Cannon", "AA Gun", "Auto-Gun", "Bunker" },
             ResearchNames = new Name<ResearchInfo>[] { },
             UnitAttributes = new Attribute[] { },
         };
@@ -102,7 +114,22 @@ namespace GameLogic
             ResearchNames = new Name<ResearchInfo>[] { },
             UnitAttributes = new Attribute[] { },
         };
-        
+
+        public static TechTheme SelectRandom(Random r)
+        {
+            switch (r.Next(3))
+            {
+                case 0:
+                    return ModernInfantry;
+                case 1:
+                    return Tanks;
+                case 2:
+                    return Aircraft;
+                default:
+                    throw new NotImplementedException();
+            }
+        }
+
         public class Name<T>
             where T : BuyableInfo
         {
