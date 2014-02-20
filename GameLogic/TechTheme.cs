@@ -80,7 +80,7 @@ namespace GameLogic
         public static TechTheme ModernInfantry = new TechTheme()
         {
             UnitType = UnitInfo.UnitType.Infantry,
-            UnitNames = new Name<UnitInfo>[] { "Grunt" /* max cost applies */, "Marine", "Infantry", "Soldier", "Trooper", "GI", "Commando" /* min cost applies */, "Mercenary" /* must have some active ability */, "Sniper" /* range > 2 */, "Medic" /* healing */, "Grenadier" /* explosive */, "Paratrooper" /* (only if paradrop) */, "Scout" /* speed > 3*/ },
+            UnitNames = new Name<UnitInfo>[] { "Grunt" /* max cost applies */, "Marine", "Infantry", "Soldier", "Trooper", "GI", "Commando" /* min cost applies */, "Sniper" /* range > 2 */, "Medic" /* healing */, "Grenadier" /* explosive */, "Paratrooper" /* (only if paradrop) */, "Scout" /* speed > 3*/ },
             BuildingNames_Factory = new Name<BuildingInfo>[] { "Barracks", "Boot Camp", "Garrison", "Outpost", "Military Base", "Academy", "Troop Training" },
             BuildingNames_Tech = new Name<BuildingInfo>[] { "Academy", "Armory", "Rifle Range", "Weapons Depot", "Magazine", "Munitions Dump" },
             BuildingNames_Defense = new Name<BuildingInfo>[] { "Sentry Gun", "Gun Turret", "Gun Emplacement", "Flak Cannon", "AA Gun", "Auto-Gun", "Bunker" },
@@ -111,6 +111,30 @@ namespace GameLogic
         };
 
         // a factory from one theme can build a unit from another, e.g. Barracks trains Ghost, Gateway trains Templar ... however they have share a unit type
+        public static TechTheme Mercenaries = new TechTheme()
+        {
+            UnitType = UnitInfo.UnitType.Infantry,
+            UnitNames = new Name<UnitInfo>[] { "Mercenary", "Brawler", "Reaper", "Charlatan", "Pioneer", "Brawler", "Militant", "Opportunist", "Guerrilla" },
+            BuildingNames_Factory = new Name<BuildingInfo>[] { "Merc Compound", "Black Ops", "Dragons' Den" },
+            BuildingNames_Tech = new Name<BuildingInfo>[] { "Auction House", "Bar" },
+            BuildingNames_Defense = new Name<BuildingInfo>[] { "Auto Turret", "Auto Cannon" },
+            ResearchNames = new Name<ResearchInfo>[] { },
+            UnitAttributes = new Attribute[] { },
+        };
+
+        // a factory from one theme can build a unit from another, e.g. Barracks trains Ghost, Gateway trains Templar ... however they have share a unit type
+        public static TechTheme Spies = new TechTheme()
+        {
+            UnitType = UnitInfo.UnitType.Infantry,
+            UnitNames = new Name<UnitInfo>[] { "Infiltrator", "Spy", "Ghost", "Operative", "Agent", "Observer", "Spook", "Watcher", "Instigator", "Provocateur" },
+            BuildingNames_Factory = new Name<BuildingInfo>[] { "Intelligence Agency", "Spy HQ", "Black Ops" },
+            BuildingNames_Tech = new Name<BuildingInfo>[] { "Ghost Academy", "Intelligence Agency", "Spy HQ", "Black Ops" },
+            BuildingNames_Defense = new Name<BuildingInfo>[] { "Auto Turret", "Auto Cannon" },
+            ResearchNames = new Name<ResearchInfo>[] { },
+            UnitAttributes = new Attribute[] { },
+        };
+
+        // a factory from one theme can build a unit from another, e.g. Barracks trains Ghost, Gateway trains Templar ... however they have share a unit type
         public static TechTheme Psionics = new TechTheme()
         {
             UnitType = UnitInfo.UnitType.Infantry,
@@ -124,7 +148,7 @@ namespace GameLogic
 
         public static TechTheme SelectRandom(Random r)
         {
-            switch (r.Next(3))
+            switch (r.Next(5))
             {
                 case 0:
                     return ModernInfantry;
@@ -132,6 +156,10 @@ namespace GameLogic
                     return Tanks;
                 case 2:
                     return Aircraft;
+                case 3:
+                    return Mercenaries;
+                case 4:
+                    return Spies;
                 default:
                     throw new NotImplementedException();
             }
