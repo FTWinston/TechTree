@@ -61,6 +61,9 @@ namespace GameLogic
 
         public List<BuildingInfo> Prerequisites = new List<BuildingInfo>(), Unlocks = new List<BuildingInfo>();
 
+        public List<BuildingInfo> UpgradesTo = new List<BuildingInfo>();
+        public BuildingInfo UpgradesFrom { get; internal set; }
+
         public List<UnitInfo> Builds = new List<UnitInfo>();
         public List<ResearchInfo> Research = new List<ResearchInfo>();
 

@@ -82,63 +82,264 @@ namespace GameLogic
         private class BuildingGroup
         {
             public TechTheme Theme;
+            public BuildingInfo RootFactory;
             public List<BuildingInfo> Buildings;
         }
 
-        private BuildingGroup AddSubTree(BuildingInfo parent, bool commandCenterSubtree)
+        private double[] commandTreeWeightings = new double[] {
+            3, // 1
+            1, // 2
+            0, 0, 0, 0, 0, 0, 0,
+            3, // 10
+            1, // 11
+            0,
+            1, // 13
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            3, // 24
+            0,
+            1, // 26
+            0, 
+            1, // 28
+            0, 0,
+            3, // 31
+            1, // 32
+            1, // 33
+            1, // 34
+        };
+
+        private double[] standardTreeWeightings = new double[] {
+            1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, // 12
+            1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, .1, // 24
+            .1, .1, .1, .1, .1, .1, 1, 1, 1, 1, // 34
+        };
+
+        private BuildingGroup AddSubTree(BuildingInfo parent, bool commandSubtree)
         {
             var group = new BuildingGroup();
-            group.Theme = commandCenterSubtree ? TechTheme.Command : TechTheme.SelectRandom(r);
+            group.Theme = commandSubtree ? TechTheme.Command : TechTheme.SelectRandom(r);
             group.Buildings = new List<BuildingInfo>();
 
-            if (commandCenterSubtree)
+            double[] weightings = commandSubtree ? commandTreeWeightings : standardTreeWeightings;
+            double sum = 0;
+            for (int i = 0; i < weightings.Length; i++)
+                sum += weightings[i];
+
+            double rand = r.NextDouble() * sum;
+            sum = 0;
+            int subtreeLayout = 1;
+            for (int i = 0; i < weightings.Length; i++)
             {
-                // a command center and a resource building that is either at top level or under the command center
-                var commandCenter = AddBuilding(parent, BuildingInfo.BuildingType.Factory, group);
-                
-                if (r.Next(3) == 0)
+                sum += weightings[i];
+                if ( rand <= sum )
                 {
-                    parent = commandCenter;
-                    parent.Tree.MaxTreeRow = 1;
-                }
-                else
-                {
-                    parent.Tree.MaxTreeColumn = 1;
-                }
-
-                var resource = AddBuilding(parent, BuildingInfo.BuildingType.Resource, group);
-            }
-            else
-            {
-                var factory = AddBuilding(parent, BuildingInfo.BuildingType.Factory, group);
-                BuildingInfo prev;
-
-                switch (r.Next(6))
-                {
-                    case 0:
-                    case 1:
-                        AddBuilding(factory, BuildingInfo.BuildingType.Tech, group);
-                        AddBuilding(factory, BuildingInfo.BuildingType.Tech, group);
-                        break;
-
-                    case 2:
-                    case 3:
-                        AddBuilding(factory, BuildingInfo.BuildingType.Tech, group);
-                        AddBuilding(parent, BuildingInfo.BuildingType.Tech, group);
-                        break;
-
-                    case 4:
-                        prev = AddBuilding(factory, BuildingInfo.BuildingType.Tech, group);
-                        AddBuilding(prev, BuildingInfo.BuildingType.Tech, group);
-                        break;
-
-                    case 5:
-                        prev = AddBuilding(factory, BuildingInfo.BuildingType.Tech, group);
-                        AddBuilding(prev, BuildingInfo.BuildingType.Tech, group);
-                        AddBuilding(prev, BuildingInfo.BuildingType.Tech, group);
-                        break;
+                    subtreeLayout = i + 1;
+                    break;
                 }
             }
+
+            var factory = BuildingInfo.BuildingType.Factory;
+            var tech = commandSubtree ? BuildingInfo.BuildingType.Resource : BuildingInfo.BuildingType.Tech;
+
+            BuildingInfo b1, b2, b3, b4;
+            switch (subtreeLayout)
+            {
+                case 1:
+                    b1 = AddBuilding(parent, factory, group);
+                    b2 = AddBuilding(parent, tech, group);    
+                    break;
+                case 2:
+                    b1 = AddBuilding(parent, factory, group);
+                    b2 = AddBuilding(b1, tech, group);
+                    break;
+                case 3:
+                    b1 = AddBuilding(parent, factory, group);
+                    b2 = AddBuilding(b1, tech, group);
+                    b3 = AddBuilding(b1, tech, group);
+                    break;
+                case 4:
+                    b1 = AddBuilding(parent, factory, group);
+                    b2 = AddBuilding(parent, tech, group);
+                    b3 = AddBuilding(b1, tech, group);
+                    break;
+                case 5:
+                    b1 = AddBuilding(parent, factory, group);
+                    b2 = AddBuilding(b1, tech, group);
+                    b3 = AddBuilding(b2, tech, group);
+                    break;
+                case 6:
+                    b1 = AddBuilding(parent, factory, group);
+                    b2 = AddBuilding(parent, tech, group);
+                    b3 = AddBuilding(b1, tech, group);
+                    b4 = AddBuilding(b3, tech, group);
+                    break;
+                case 7:
+                    b1 = AddBuilding(parent, factory, group);
+                    b2 = AddBuilding(parent, tech, group);
+                    b3 = AddBuilding(b1, tech, group);
+                    b4 = AddBuilding(b1, tech, group);
+                    break;
+                case 8:
+                    b1 = AddBuilding(parent, factory, group);
+                    b2 = AddBuilding(parent, tech, group);
+                    b3 = AddBuilding(b1, tech, group);
+                    b4 = AddBuilding(b2, tech, group);
+                    break;
+                case 9:
+                    b1 = AddBuilding(parent, factory, group);
+                    b2 = AddBuilding(b1, tech, group);
+                    b3 = AddBuilding(b2, tech, group);
+                    b4 = AddBuilding(b3, tech, group);
+                    break;
+                case 10:
+                    b1 = AddBuilding(parent, factory, group);
+                    b2 = AddBuilding(parent, tech, group);
+                    b3 = AddBuilding(b1, factory, group);
+                    break;
+                case 11:
+                    b1 = AddBuilding(parent, factory, group);
+                    b2 = AddBuilding(b1, factory, group);
+                    b3 = AddBuilding(b1, tech, group);
+                    break;
+                case 12:
+                    b1 = AddBuilding(parent, factory, group);
+                    b2 = AddBuilding(b1, factory, group);
+                    b3 = AddBuilding(b2, tech, group);
+                    break;
+                case 13:
+                    b1 = AddBuilding(parent, factory, group);
+                    b2 = AddBuilding(b1, tech, group);
+                    b3 = AddBuilding(b2, factory, group);
+                    break;
+                case 14:
+                    b1 = AddBuilding(parent, factory, group);
+                    b2 = AddBuilding(parent, tech, group);
+                    b3 = AddBuilding(b1, factory, group);
+                    b3 = AddBuilding(b2, tech, group);
+                    break;
+                case 15:
+                    b1 = AddBuilding(parent, factory, group);
+                    b2 = AddBuilding(parent, tech, group);
+                    b3 = AddBuilding(b1, factory, group);
+                    b3 = AddBuilding(b1, tech, group);
+                    break;
+                case 16:
+                    b1 = AddBuilding(parent, factory, group);
+                    b2 = AddBuilding(b1, tech, group);
+                    b3 = AddBuilding(b1, factory, group);
+                    b4 = AddBuilding(b1, tech, group);
+                    break;
+                case 17:
+                    b1 = AddBuilding(parent, factory, group);
+                    b2 = AddBuilding(parent, tech, group);
+                    b3 = AddBuilding(b1, factory, group);
+                    b4 = AddBuilding(b3, tech, group);
+                    break;
+                case 18:
+                    b1 = AddBuilding(parent, factory, group);
+                    b2 = AddBuilding(b1, factory, group);
+                    b3 = AddBuilding(b2, tech, group);
+                    b4 = AddBuilding(b2, tech, group);
+                    break;
+                case 19:
+                    b1 = AddBuilding(parent, factory, group);
+                    b2 = AddBuilding(b1, tech, group);
+                    b3 = AddBuilding(b2, factory, group);
+                    b4 = AddBuilding(b2, tech, group);
+                    break;
+                case 20:
+                    b1 = AddBuilding(parent, factory, group);
+                    b2 = AddBuilding(b1, tech, group);
+                    b3 = AddBuilding(b2, factory, group);
+                    b4 = AddBuilding(b3, tech, group);
+                    break;
+                case 21:
+                    b1 = AddBuilding(parent, factory, group);
+                    b2 = AddBuilding(b1, tech, group);
+                    b3 = AddBuilding(b2, tech, group);
+                    b4 = AddBuilding(b3, factory, group);
+                    break;
+                case 22:
+                    b1 = AddBuilding(parent, factory, group);
+                    b2 = AddBuilding(b1, factory, group);
+                    b3 = AddBuilding(b2, tech, group);
+                    b4 = AddBuilding(b2, tech, group);
+                    break;
+                case 23:
+                    b1 = AddBuilding(parent, factory, group);
+                    b2 = AddBuilding(b1, factory, group);
+                    b3 = AddBuilding(b2, tech, group);
+                    b4 = AddBuilding(b3, tech, group);
+                    break;
+                case 24:
+                    b1 = AddBuilding(parent, factory, group);
+                    b2 = AddBuilding(parent, tech, group);
+                    b3 = AddBuilding(b1, factory, group);
+                    b4 = AddBuilding(b3, factory, group);
+                    break;
+                case 25:
+                    b1 = AddBuilding(parent, factory, group);
+                    b2 = AddBuilding(parent, tech, group);
+                    b3 = AddBuilding(b2, factory, group);
+                    b4 = AddBuilding(b3, factory, group);
+                    break;
+                case 26:
+                    b1 = AddBuilding(parent, factory, group);
+                    b2 = AddBuilding(b1, factory, group);
+                    b3 = AddBuilding(b1, tech, group);
+                    b4 = AddBuilding(b2, factory, group);
+                    break;
+                case 27:
+                    b1 = AddBuilding(parent, factory, group);
+                    b2 = AddBuilding(b1, factory, group);
+                    b3 = AddBuilding(b2, factory, group);
+                    b4 = AddBuilding(b2, tech, group);
+                    break;
+                case 28:
+                    b1 = AddBuilding(parent, factory, group);
+                    b2 = AddBuilding(b1, tech, group);
+                    b3 = AddBuilding(b2, factory, group);
+                    b4 = AddBuilding(b3, factory, group);
+                    break;
+                case 29:
+                    b1 = AddBuilding(parent, factory, group);
+                    b2 = AddBuilding(b1, factory, group);
+                    b3 = AddBuilding(b2, tech, group);
+                    b4 = AddBuilding(b3, factory, group);
+                    break;
+                case 30:
+                    b1 = AddBuilding(parent, factory, group);
+                    b2 = AddBuilding(b1, factory, group);
+                    b3 = AddBuilding(b2, factory, group);
+                    b4 = AddBuilding(b3, tech, group);
+                    break;
+                case 31:
+                    b1 = AddBuilding(parent, factory, group);
+                    b2 = AddBuilding(parent, tech, group);
+                    b3 = AddBuilding(b1, factory, group);
+                    b4 = AddBuilding(b1, factory, group);
+                    break;
+                case 32:
+                    b1 = AddBuilding(parent, factory, group);
+                    b2 = AddBuilding(b1, factory, group);
+                    b3 = AddBuilding(b1, factory, group);
+                    b4 = AddBuilding(b1, tech, group);
+                    break;
+                case 33:
+                    b1 = AddBuilding(parent, factory, group);
+                    b2 = AddBuilding(b1, tech, group);
+                    b3 = AddBuilding(b2, factory, group);
+                    b4 = AddBuilding(b2, factory, group);
+                    break;
+                case 34:
+                    b1 = AddBuilding(parent, factory, group);
+                    b2 = AddBuilding(b1, tech, group);
+                    b3 = AddBuilding(b1, factory, group);
+                    b4 = AddBuilding(b2, factory, group);
+                    break;
+                default:
+                    throw new Exception();
+            }
+
             return group;
         }
         
@@ -147,10 +348,31 @@ namespace GameLogic
             var building = new BuildingInfo(parent.Tree);
             building.Type = type;
             group.Theme.AllocateName(building, r, usedNames);
-            parent.Unlocks.Add(building);
-            if (parent != FakeRootNode)
-                building.Prerequisites.Add(parent);
 
+            bool parentIsUpgrade = false;
+            if (type == BuildingInfo.BuildingType.Factory)
+                if (group.RootFactory == null)
+                    group.RootFactory = building;
+                else
+                {
+                    if (parent.Type == BuildingInfo.BuildingType.Factory)
+                    {
+                        parentIsUpgrade = true;
+                        building.UpgradesFrom = parent;
+                    }
+                    else
+                        building.UpgradesFrom = group.RootFactory;
+
+                    building.UpgradesFrom.UpgradesTo.Add(building);
+                }
+
+            //if (!parentIsUpgrade)
+            {
+                parent.Unlocks.Add(building);
+                if (parent != FakeRootNode)
+                    building.Prerequisites.Add(parent);
+            }
+   
             group.Buildings.Add(building);
 
             return building;

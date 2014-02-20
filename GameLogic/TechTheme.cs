@@ -114,9 +114,9 @@ namespace GameLogic
         public static TechTheme Mercenaries = new TechTheme()
         {
             UnitType = UnitInfo.UnitType.Infantry,
-            UnitNames = new Name<UnitInfo>[] { "Mercenary", "Brawler", "Reaper", "Charlatan", "Pioneer", "Brawler", "Militant", "Opportunist", "Guerrilla" },
+            UnitNames = new Name<UnitInfo>[] { "Mercenary", "Brawler", "Reaper", "Charlatan", "Pioneer", "Militant", "Opportunist", "Guerrilla" },
             BuildingNames_Factory = new Name<BuildingInfo>[] { "Merc Compound", "Black Ops", "Dragons' Den" },
-            BuildingNames_Tech = new Name<BuildingInfo>[] { "Auction House", "Bar" },
+            BuildingNames_Tech = new Name<BuildingInfo>[] { "Auction House", "Bar", "Black Market" },
             BuildingNames_Defense = new Name<BuildingInfo>[] { "Auto Turret", "Auto Cannon" },
             ResearchNames = new Name<ResearchInfo>[] { },
             UnitAttributes = new Attribute[] { },
