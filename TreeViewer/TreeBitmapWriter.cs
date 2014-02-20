@@ -12,8 +12,8 @@ namespace TreeViewer
     {
         public static Bitmap WriteImage(TechTree tree, int width, int height)
         {
-            float nodeWidth = Math.Min(200, width * 0.5f / (tree.MaxTreeColumn + 0.5f)), nodeHeight = Math.Min(nodeWidth / 1.41421356f, height * 0.5f / (tree.MaxTreeRow + 0.5f));
-            float depthIncrement = nodeHeight * 2f, insetIncrement = nodeWidth * 2f;
+            float nodeWidth = Math.Min(200, width * 0.66666667f / (tree.MaxTreeColumn + 0.675f)), nodeHeight = Math.Min(nodeWidth / 1.41421356f, height * 0.5f / (tree.MaxTreeRow + 0.5f));
+            float depthIncrement = nodeHeight * 2f, insetIncrement = nodeWidth * 1.5f;
 
             Pen linkPen = new Pen(Color.Black, height / 300f);
             Bitmap image = new Bitmap(width, height);
