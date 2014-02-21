@@ -10,12 +10,16 @@ namespace TreeViewer
 {
     static class TreeBitmapWriter
     {
+        private static float nodeWidth, nodeHeight, depthIncrement, insetIncrement;
         public static Bitmap WriteImage(TechTree tree, int width, int height)
         {
-            float nodeWidth = Math.Min(200, width * 0.66666667f / (tree.MaxTreeColumn + 0.675f)), nodeHeight = Math.Min(nodeWidth / 1.41421356f, height * 0.5f / (tree.MaxTreeRow + 0.5f));
-            float depthIncrement = nodeHeight * 2f, insetIncrement = nodeWidth * 1.5f;
+            nodeWidth = Math.Min(200, width * 0.66666667f / (tree.MaxTreeColumn + 0.675f)); nodeHeight = Math.Min(nodeWidth / 1.41421356f, height * 0.5f / (tree.MaxTreeRow + 0.5f));
+            depthIncrement = nodeHeight * 2f; insetIncrement = nodeWidth * 1.5f;
 
-            Pen linkPen = new Pen(Color.Black, height / 300f);
+            Pen unlockPen = new Pen(Color.Black, height / 300f);
+            Pen upgradePen1 = new Pen(Color.DarkGray, height / 80f);
+            Pen upgradePen2 = new Pen(Color.Transparent, height / 300f);
+
             Bitmap image = new Bitmap(width, height);
             Font buildingFont = new Font(FontFamily.GenericSansSerif, nodeHeight / 5);
             StringFormat centered = new StringFormat() { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center };
@@ -26,14 +30,22 @@ namespace TreeViewer
                 var outline = new Pen(Color.Black, 2.5f);
                 foreach (var building in tree.AllBuildings)
                 {
-                    var bounds = new RectangleF(building.TreeColumn * insetIncrement, building.TreeRow * depthIncrement, nodeWidth, nodeHeight);
-                    float xCenter = bounds.X + nodeWidth / 2f, yCenter = bounds.Y + nodeHeight / 2f;
+                    float centerX, centerY;
+                    var bounds = GetBounds(building, out centerX, out centerY);
 
                     foreach (var child in building.Unlocks)
                     {
-                        g.DrawLine(linkPen, xCenter, yCenter,
-                            child.TreeColumn * insetIncrement + nodeWidth / 2f,
-                            child.TreeRow * depthIncrement + nodeHeight / 2f);
+                        float childX, childY;
+                        GetBounds(child, out childX, out childY);
+                        g.DrawLine(unlockPen, centerX, centerY, childX, childY);
+                    }
+
+                    foreach (var child in building.UpgradesTo)
+                    {
+                        float childX, childY;
+                        GetBounds(child, out childX, out childY);
+                        g.DrawLine(upgradePen1, centerX, centerY, childX, childY);
+                        g.DrawLine(upgradePen2, centerX, centerY, childX, childY);
                     }
 
                     switch (building.Type)
@@ -73,6 +85,13 @@ namespace TreeViewer
                 }
             }
             return image;
+        }
+
+        private static RectangleF GetBounds(BuildingInfo building, out float xCenter, out float yCenter)
+        {
+            var bounds = new RectangleF(building.TreeColumn * insetIncrement, building.TreeRow * depthIncrement, nodeWidth, nodeHeight);
+            xCenter = bounds.X + bounds.Width / 2f; yCenter = bounds.Y + bounds.Height / 2f;
+            return bounds;
         }
     }
 }
