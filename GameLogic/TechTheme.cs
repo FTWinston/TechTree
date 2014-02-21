@@ -15,34 +15,34 @@ namespace GameLogic
         public Name<ResearchInfo>[] ResearchNames { get; private set; }
         public Attribute[] UnitAttributes { get; private set; }
 
-        private void Allocate<T>(T info, Name<T>[] names, Random r, List<string> usedNames)
+        private void Allocate<T>(T info, Name<T>[] names, TreeGenerator t)
             where T : BuyableInfo
         {
             Name<T> name;
             int nameIndex, tries = 0;
             do
             {
-                name = names[r.Next(names.Length)];
-                nameIndex = usedNames.BinarySearch(name.Value);
+                name = names[t.r.Next(names.Length)];
+                nameIndex = t.UsedNames.BinarySearch(name.Value);
                 tries++;
 
                 if (tries > 100)
                 {
-                    info.Name = "Unnamed";
+                    info.Name = "Unnamed " + (++t.NumUnnamed);
                     return;
                 }
             } while ((name.Validation == null || name.Validation(info)) && nameIndex >= 0);
 
-            usedNames.Insert(~nameIndex, name.Value);
+            t.UsedNames.Insert(~nameIndex, name.Value);
             info.Name = name.Value;
         }
 
-        public void AllocateName(UnitInfo unit, Random r, List<string> usedNames)
+        public void AllocateName(UnitInfo unit, TreeGenerator t)
         {
-            Allocate(unit, UnitNames, r, usedNames);
+            Allocate(unit, UnitNames, t);
         }
 
-        public void AllocateName(BuildingInfo building, Random r, List<string> usedNames)
+        public void AllocateName(BuildingInfo building, TreeGenerator t)
         {
             Name<BuildingInfo>[] names;
             switch (building.Type)
@@ -58,12 +58,12 @@ namespace GameLogic
                     throw new NotImplementedException();
             }
 
-            Allocate(building, names, r, usedNames);
+            Allocate(building, names, t);
         }
 
-        public void AllocateName(ResearchInfo research, Random r, List<string> usedNames)
+        public void AllocateName(ResearchInfo research, TreeGenerator t)
         {
-            Allocate(research, ResearchNames, r, usedNames);
+            Allocate(research, ResearchNames, t);
         }
 
         public static TechTheme Command = new TechTheme()

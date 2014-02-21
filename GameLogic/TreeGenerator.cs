@@ -16,9 +16,12 @@ namespace GameLogic
         public List<BuildingInfo> AllNodes { get; private set; }
 
         private BuildingInfo FakeRootNode; // this is now we have a single root for our algorithms, even if we "actually" have multiple roots
-        private Random r;
+        public Random r;
         private TechTree Tree;
-        private List<string> usedNames = new List<string>();
+        public List<string> UsedNames = new List<string>();
+        private List<int> nodesByRow = new List<int>();
+        private int numRows;
+        public int NumUnnamed = 0;
 
         public TreeGenerator(TechTree tree, Random r) : this(tree, r, null) { }
         public TreeGenerator(TechTree tree, Random r, int? treeBreadth)
@@ -31,6 +34,8 @@ namespace GameLogic
 
             int numBuildingGroups = r.Next(minBuildingGroups, maxBuildingGroups + 1);
             var buildingGroups = new List<BuildingGroup>();
+
+            AllNodes = new List<BuildingInfo>();
 
             tree.MaxTreeRow = tree.MaxTreeColumn = 0;
 
@@ -60,10 +65,10 @@ namespace GameLogic
 
                 var group = buildingGroups.Where(g => g.Buildings.Contains(parent)).First();
                 group.Buildings.Add(newNode);
-                group.Theme.AllocateName(newNode, r, usedNames);
+                group.Theme.AllocateName(newNode, this);
 
                 parent.Unlocks.Add(newNode);
-                newNode.Prerequisites.Add(parent);
+                newNode.Prerequisite = parent;
             }
 
             var colors = HSLColor.GetDistributedSet(buildingGroups.Count, r, 140, 200);
@@ -76,7 +81,32 @@ namespace GameLogic
                     building.TreeColor = c;
             }
 
+            numRows = nodesByRow.Count;
+            AllNodes.Sort(Sort);
             PositionNodes();
+
+            // shift everything left/right so that the min column is 0
+            int minCol = int.MaxValue, maxCol = int.MinValue, maxRow = int.MinValue;
+            foreach (var building in AllNodes)
+            {
+                minCol = Math.Min(minCol, building.TreeColumn);
+                maxCol = Math.Max(maxCol, building.TreeColumn);
+                maxRow = Math.Max(maxRow, building.TreeRow);
+            }
+
+            if (minCol != 0)
+                foreach (var building in AllNodes)
+                    building.TreeColumn -= minCol;
+
+            Tree.MaxTreeColumn = maxCol - minCol; Tree.MaxTreeRow = maxRow;
+        }
+
+        private static int Sort(BuildingInfo n1, BuildingInfo n2)
+        {
+            int row = n1.TreeRow.CompareTo(n2.TreeRow);
+            if (row != 0)
+                return row;
+            return n1.TreeColumn.CompareTo(n2.TreeColumn);
         }
 
         private class BuildingGroup
@@ -108,8 +138,8 @@ namespace GameLogic
         };
 
         private double[] standardTreeWeightings = new double[] {
-            1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, // 12
-            1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, .1, // 24
+            1, 1, 5, 4, 1, 3, 4, 3, 1, 1, 2, 1, // 12
+            2, 2, 3, 2, 1, 1, 2.5, 1, 1, 1, 1, .1, // 24
             .1, .1, .1, .1, .1, .1, 1, 1, 1, 1, // 34
         };
 
@@ -347,7 +377,9 @@ namespace GameLogic
         {
             var building = new BuildingInfo(parent.Tree);
             building.Type = type;
-            group.Theme.AllocateName(building, r, usedNames);
+            group.Theme.AllocateName(building, this);
+
+            building.TreeRow = parent.TreeRow + 1;
 
             bool parentIsUpgrade = false;
             if (type == BuildingInfo.BuildingType.Factory)
@@ -361,37 +393,53 @@ namespace GameLogic
                         building.UpgradesFrom = parent;
                     }
                     else
+                    {
                         building.UpgradesFrom = group.RootFactory;
+                        building.TreeRow = Math.Max(building.UpgradesFrom.TreeRow, parent.TreeRow) + 1;
+                    }
 
                     building.UpgradesFrom.UpgradesTo.Add(building);
                 }
 
-            //if (!parentIsUpgrade)
+            if (!parentIsUpgrade)
             {
                 parent.Unlocks.Add(building);
                 if (parent != FakeRootNode)
-                    building.Prerequisites.Add(parent);
+                    building.Prerequisite = parent;
             }
    
             group.Buildings.Add(building);
+            AllNodes.Add(building);
+
+            if (nodesByRow.Count <= building.TreeRow)
+            {
+                while (nodesByRow.Count < building.TreeRow)
+                    nodesByRow.Add(0);
+                nodesByRow.Add(1);
+                building.TreeColumn = 0;
+            }
+            else
+                building.TreeColumn = nodesByRow[building.TreeRow]++;
 
             return building;
-        }
-
-        private static int Sort(BuildingInfo n1, BuildingInfo n2)
-        {
-            int row = n1.TreeRow.CompareTo(n2.TreeRow);
-            if (row != 0)
-                return row;
-            return n1.TreeColumn.CompareTo(n2.TreeColumn);
         }
 
         private BuildingInfo SelectNode(int treeBreadth, BuildingInfo root = null)
         {
             BuildingInfo current = root ?? FakeRootNode;
             while (true)
-                if (current == FakeRootNode || current.Unlocks.Count > 0 && r.Next(absMaxTreeBreadth) >= treeBreadth)
-                    current = current.Unlocks[r.Next(current.Unlocks.Count)];
+                if ((current == FakeRootNode || current.Unlocks.Count > 0 || current.UpgradesTo.Count > 0) && r.Next(absMaxTreeBreadth) >= treeBreadth)
+                {
+                    List<BuildingInfo> list;
+                    if (current.UpgradesTo.Count > 0)
+                        if (current.Unlocks.Count > 0)
+                            list = r.Next(2) == 0 ? current.UpgradesTo : current.Unlocks;
+                        else
+                            list = current.UpgradesTo;
+                    else
+                        list = current.Unlocks;
+                    current = list[r.Next(list.Count)];
+                }
                 else
                     break;
 
@@ -400,186 +448,289 @@ namespace GameLogic
 
         private void PositionNodes()
         {
-            var nodesByRow = new SortedList<int, int>();
-            AllNodes = new List<BuildingInfo>();
-            var toProcess = new List<BuildingInfo>();
-            toProcess.AddRange(RootNodes);
-
-            while (toProcess.Count > 0)
-            {
-                BuildingInfo node = toProcess[0]; toProcess.RemoveAt(0);
-
-                int row = DetermineRow(node);
-                int numAtRow;
-                if (!nodesByRow.TryGetValue(row, out numAtRow))
-                    numAtRow = 0;
-
-                node.TreeRow = row;
-                node.TreeColumn = numAtRow;
-
-                nodesByRow[row] = ++numAtRow;
-                AllNodes.Add(node);
-
-                foreach (BuildingInfo child in node.Unlocks)
-                    if (!toProcess.Contains(child))
-                        toProcess.Add(child);
-            }
+            var energy = SimulatedAnnealing();
+            
+            // after the annealing's done, we might be able to push things closer to their parent. As long as doing this improves the overall energy score, keep it up.
+            while (ObviousShunting(ref energy))
+                ;
         }
 
-        private static int DetermineRow(BuildingInfo node)
+        private double SimulatedAnnealing()
         {
-            if (node.Prerequisites.Count == 0)
-                return 0;
-
-            int row = 0;
-            foreach (BuildingInfo parent in node.Prerequisites)
-                row = Math.Max(row, DetermineRow(parent));
-            return row + 1;
-        }
-
-        public void SortLayout()
-        {
-            SortByDescendents(FakeRootNode);
-            AllNodes.Sort((n1, n2) => Sort(n1, n2));
-            CondenseLayout();
-        }
-
-        private int SortByDescendents(BuildingInfo node)
-        {
-            node.Unlocks.Sort((n1, n2) => -n1.CountDescendents().CompareTo(n2.CountDescendents()));
-
-            int maxCol = node.TreeColumn;
-            if (node.Unlocks.Count == 0)
-                return maxCol;
-
-            BuildingInfo lastChild = null;
-            foreach (var child in node.Unlocks)
+            List<BuildingInfo> state = Copy(AllNodes); double energy = Energy(state);
+            List<BuildingInfo> bestState = state; double bestEnergy = energy;
+            const int kMax = 500000, kRestartWhenStuckFor = 10000;
+            int k = 0, kFound = 0, kLastMove = -1;
+            while (k < kMax)
             {
-                child.TreeColumn = maxCol;
-                maxCol = SortByDescendents(child) + 1;
-                lastChild = child;
-            }
+                double temp = Temperature(((double)k) / kMax);
+                var newState = Modify(state);
+                double newEnergy = Energy(state);
 
-            maxCol--;
-            node.TreeColumn = (node.TreeColumn + maxCol) / 2;
-            return maxCol;
-        }
-
-        public void CondenseLayout()
-        {
-            bool anyMovement = false;
-            while (CondenseLayout(FakeRootNode, true))
-                anyMovement = true;
-
-            if (anyMovement)
-            {
-                int maxCol = 0;
-                foreach (var node in AllNodes)
-                    maxCol = Math.Max(maxCol, node.TreeColumn);
-
-                Tree.MaxTreeColumn = maxCol;
-            }
-
-            anyMovement = false;
-            while (CondenseLayout(FakeRootNode, false))
-                anyMovement = true;
-
-            if (anyMovement)
-            {
-                int minCol = int.MaxValue;
-                foreach (var node in AllNodes)
-                    minCol = Math.Min(minCol, node.TreeColumn);
-
-                if (minCol > 0)
+                if (ShouldMove(energy, newEnergy, temp) > r.NextDouble())
                 {
-                    foreach (var node in AllNodes)
-                        node.TreeColumn -= minCol;
+                    energy = newEnergy;
+                    state = newState;
+                    kLastMove = k;
 
-                    Tree.MaxTreeColumn -= minCol;
+                    if (newEnergy < bestEnergy)
+                    {
+                        bestEnergy = newEnergy;
+                        bestState = newState;
+                        kFound = k;
+                    }
                 }
+                else if (k - kLastMove >= kRestartWhenStuckFor)
+                {// restart cos we got stuck
+                    Console.WriteLine("Stuck at energy {0} from step {1} to {2}, restarting...", energy, kLastMove, k);
+
+                    kLastMove = k;
+                    state = Copy(AllNodes);
+                    energy = Energy(state);
+                }
+                
+                k++;
             }
+            AllNodes = bestState;
+            Console.WriteLine("Best energy {0} found on step {1} of {2}", bestEnergy, kFound, kMax);
+            return bestEnergy;
         }
 
-        private bool CondenseLayout(BuildingInfo node, bool leftward)
+        double initialTemp = 30;
+        private double Temperature(double fraction)
         {
-            // if any of this node's descendents can have its entire sub-tree's column reduced by 1, then do that.
-            // that will make more efficient use of space.
+            return initialTemp - fraction * initialTemp;
+        }
 
-            bool retVal = false;
-            for (int i = leftward ? 0 : node.Unlocks.Count - 1; leftward ? i < node.Unlocks.Count : i >= 0; i += leftward ? 1 : -1)
+        private double ShouldMove(double energy, double newEnergy, double temp)
+        {
+            if ( newEnergy < energy )
+                return 1;
+            var exp = Math.Exp(-(newEnergy - energy)/temp);
+            return exp;
+        }
+
+        private List<BuildingInfo> Copy(List<BuildingInfo> state)
+        {
+            var lookup = new SortedList<string, BuildingInfo>();
+            var output = new List<BuildingInfo>();
+
+            foreach (var orig in state)
             {
-                var child = node.Unlocks[i];
-                if (CanShiftColumn(node, child, leftward) && (leftward ? child.TreeColumn > node.TreeColumn : child.TreeColumn < node.TreeColumn))
+                var copy = new BuildingInfo(orig.Tree);
+                copy.Name = orig.Name;
+                lookup.Add(copy.Name, copy);
+
+                copy.TreeRow = orig.TreeRow;
+                copy.TreeColumn = orig.TreeColumn;
+                copy.TreeColor = orig.TreeColor;
+                copy.Type = orig.Type;
+                
+                if ( orig.UpgradesFrom != null )
                 {
-                    ShiftColumn(child, leftward);
-                    retVal = true;
+                    var from = lookup[orig.UpgradesFrom.Name];
+                    copy.UpgradesFrom = from;
+                    from.UpgradesTo.Add(copy);
                 }
 
-                if (CondenseLayout(child, leftward))
-                    retVal = true;
-            }
-            return retVal;
-        }
-
-        private bool CanShiftColumn(BuildingInfo parent, BuildingInfo node, bool leftward)
-        {
-            if (leftward ? node.TreeColumn == 0 : node.TreeColumn == Tree.MaxTreeColumn)
-                return false;
-            int pos = AllNodes.IndexOf(node);
-            BuildingInfo adjacent = AllNodes[leftward ? (pos > 0 ? pos - 1 : 0) : (pos < AllNodes.Count - 1 ? pos + 1 : 0)];
-            if (adjacent.TreeRow == node.TreeRow && (leftward ? (adjacent.TreeColumn >= node.TreeColumn - 1) : (adjacent.TreeColumn <= node.TreeColumn + 1)))
-                return false;
-
-            if (node.Unlocks.Count > 0)
-            {
-                var endNodes = new SortedList<BuildingInfo, BuildingInfo>();
-                if (leftward)
-                    FindLeftmostAtEachLevel(node, endNodes);
-                else
+                if ( orig.Prerequisite != null )
                 {
-                    int[] bestColumn = new int[Tree.MaxTreeRow+1];
-                    FindRightmostAtEachLevel(node, endNodes, bestColumn);
+                    var from = lookup[orig.Prerequisite.Name];
+                    copy.Prerequisite = from;
+                    from.Unlocks.Add(copy);
                 }
 
-                // if the endmost child node at each level can shunt up, the rest are only shunting after it, anyway
-                foreach (var kvp in endNodes)
-                    if (!CanShiftColumn(kvp.Key, kvp.Value, leftward))
-                        return false;
+                output.Add(copy);
             }
             
-            return true;
+            return output;
         }
 
-        private void FindLeftmostAtEachLevel(BuildingInfo node, SortedList<BuildingInfo, BuildingInfo> endNodes)
-        {// This can be simplified greatly, because the bigger trees are always leftmost, so the leftmost nodes are ALWAYS the leftmost chain
-            do
-            {
-                var end = node.Unlocks[0];
-                endNodes.Add(node, end);
-
-                node = end;
-            } while (node.Unlocks.Count > 0);
-        }
-
-        private void FindRightmostAtEachLevel(BuildingInfo node, SortedList<BuildingInfo, BuildingInfo> endNodes, int[] bestColumn)
+        private List<BuildingInfo> Modify(List<BuildingInfo> state)
         {
-            var test = node.Unlocks[node.Unlocks.Count - 1];
-            if (test.TreeColumn >= bestColumn[test.TreeRow])
+            state = Copy(state);
+
+            switch (r.Next(5))
             {
-                endNodes[node] = test;
-                bestColumn[test.TreeRow] = test.TreeColumn;
+                case 0: // shift some/all nodes in a row left/right
+                    {
+                        int nodePos = r.Next(state.Count);
+                        int row = state[nodePos].TreeRow;
+
+                        bool canLeft = nodePos == 0 || state[nodePos - 1].TreeRow == row;
+                        bool canRight = nodePos == state.Count - 1 || state[nodePos + 1].TreeRow == row;
+                        int shift = canLeft ? (canRight ? (r.Next(2) == 0 ? -1 : 1) : -1) : 1;
+                        BuildingInfo node;
+
+                        do
+                        {
+                            node = state[nodePos];
+                            node.TreeColumn += shift;
+                            nodePos += shift;
+                        } while ( nodePos >= 0 && nodePos < state.Count && state[nodePos].TreeRow == row );
+
+                        break;
+                    }
+                default:
+                    {
+                        BuildingInfo first = null, second = null;
+                        int tries = 0;
+                        do
+                        {
+                            int pos = r.Next(state.Count - 1) + 1;
+                            first = state[pos];
+                            second = state[pos - 1];
+                            tries++;
+
+                            if (tries > 50)
+                                return state;
+                        } while (first.TreeRow != second.TreeRow);
+
+                        tries = first.TreeColumn;
+                        first.TreeColumn = second.TreeColumn;
+                        second.TreeColumn = tries;
+
+                        int firstPos = state.IndexOf(first);
+                        int secondPos = state.IndexOf(second);
+                        state[firstPos] = second;
+                        state[secondPos] = first;
+                        break;
+                    }
             }
 
-            foreach (var child in node.Unlocks)
-                if (child.Unlocks.Count > 0)
-                    FindRightmostAtEachLevel(child, endNodes, bestColumn);
+            return state;
         }
 
-        private void ShiftColumn(BuildingInfo node, bool leftward)
+        private double Energy(List<BuildingInfo> buildings)
         {
-            node.TreeColumn += leftward ? -1 : 1;
-            foreach (var child in node.Unlocks)
-                ShiftColumn(child, leftward);
+            double energy = 0;
+
+            foreach (var building in buildings)
+            {
+                // if not directly below prereq, higher energy. Same with upgrades (more so), but if it has both an unlock and an upgrade, much higher energy if they're in the same column.
+                int? dxPrereq = null;
+                if (building.Prerequisite != null)
+                {
+                    dxPrereq = building.Prerequisite.TreeColumn - building.TreeColumn;
+                    energy += dxPrereq.Value * dxPrereq.Value;
+                }
+
+                if ( building.UpgradesFrom != null )
+                {
+                    int dxUpgr = building.UpgradesFrom.TreeColumn - building.TreeColumn;
+                    energy += dxUpgr * dxUpgr + 1; // upgrades being squint should be SLIGHTLY worse than non-upgrades being squint.
+
+                    if (dxPrereq.HasValue && dxPrereq.Value == dxUpgr)
+                        energy += 50;
+                }
+
+                // now if any two links cross, that adds a lot of energy
+                foreach (var other in buildings)
+                {
+                    if (building.Prerequisite != null)
+                    {
+                        if (other.Prerequisite != null)
+                            if (LinksCross(building, building.Prerequisite, other, other.Prerequisite))
+                                energy += 40;
+
+                        if (other.UpgradesFrom != null)
+                            if (LinksCross(building, building.Prerequisite, other, other.UpgradesFrom))
+                                energy += 40;
+                    }
+
+                    if (building.UpgradesFrom != null)
+                    {
+                        if (other.Prerequisite != null)
+                            if (LinksCross(building, building.UpgradesFrom, other, other.Prerequisite))
+                                energy += 40;
+
+                        if (other.UpgradesFrom != null)
+                            if (LinksCross(building, building.UpgradesFrom, other, other.UpgradesFrom))
+                                energy += 40;
+                    }
+                }
+
+                // and what about links that cross over the nodes themselves, but not their links?
+            }
+
+            return energy;
+        }
+
+        private bool LinksCross(BuildingInfo a1, BuildingInfo a2, BuildingInfo b1, BuildingInfo b2)
+        {
+            return SemiIntersect(a1, a2, b1, b2) && SemiIntersect(b1, b2, a1, a2);
+        }
+
+        private bool SemiIntersect(BuildingInfo p, BuildingInfo q, BuildingInfo e, BuildingInfo f)
+        {
+            var cross1 = (f.TreeColumn - e.TreeColumn) * (p.TreeRow - f.TreeRow) - (f.TreeRow - e.TreeRow) * (p.TreeColumn - f.TreeColumn);
+            var cross2 = (f.TreeColumn - e.TreeColumn) * (p.TreeRow - f.TreeRow) - (f.TreeRow - e.TreeRow) * (p.TreeColumn - f.TreeColumn);
+            return cross1 * cross2 < 0;
+        }
+
+        private bool ObviousShunting(ref double currentEnergy)
+        {
+            bool hasChanged = false;
+            int? prereqOffset, upgradeOffset;
+            for (int i = 0; i < AllNodes.Count; i++)
+            {
+                var building = AllNodes[i];
+                if (building.Prerequisite != null)
+                    prereqOffset = building.Prerequisite.TreeColumn - building.TreeColumn;
+                else
+                    prereqOffset = null;
+
+                if (building.UpgradesFrom != null)
+                    upgradeOffset = building.UpgradesFrom.TreeColumn - building.TreeColumn;
+                else
+                    upgradeOffset = null;
+
+                if (prereqOffset == null)
+                {
+                    if (upgradeOffset == null)
+                        continue;
+
+                    hasChanged |= TryShunt(building, i, ref currentEnergy, upgradeOffset.Value);
+                }
+                else if (upgradeOffset == null)
+                    hasChanged |= TryShunt(building, i, ref currentEnergy, prereqOffset.Value);
+                else
+                    hasChanged |= TryShunt(building, i, ref currentEnergy, prereqOffset.Value + upgradeOffset.Value);
+            }
+            Console.WriteLine("Obvious shunting got energy to {0}", currentEnergy);
+            return hasChanged;
+        }
+
+        // try moving this node in the desired direction, step by step. If moving doesn't increase the overall energy, keep it.
+        private bool TryShunt(BuildingInfo building, int bPos, ref double currentEnergy, int offset)
+        {
+            bool hasChanged = false;
+            int step = offset < 0 ? -1 : 1;
+            while (offset != 0)
+            {
+                var next = step < 0 ?
+                    bPos == 0 ? null : AllNodes[bPos + step] :
+                    bPos == AllNodes.Count - 1 ? null : AllNodes[bPos + step];
+
+                if (next != null && next.TreeRow == building.TreeRow && next.TreeColumn == building.TreeColumn + step)
+                    return hasChanged; // blocked
+
+                building.TreeColumn += step;
+                var energy = Energy(AllNodes);
+                if (energy > currentEnergy)
+                {
+                    building.TreeColumn -= step; // makes it worse, undo
+                    return hasChanged;
+                }
+                else
+                {
+                    currentEnergy = energy;
+                    hasChanged = true;
+                }
+
+                offset -= step;
+            }
+            return hasChanged;
         }
     }
 }

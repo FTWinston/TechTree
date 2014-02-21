@@ -38,17 +38,8 @@ namespace GameLogic
     {
         public BuildingInfo(TechTree tree) : base(tree) { }
 
-        private int row, col;
-        public int TreeColumn
-        {
-            get { return row; }
-            internal set { row = value; Tree.MaxTreeColumn = Math.Max(Tree.MaxTreeColumn, row); }
-        }
-        public int TreeRow
-        {
-            get { return col; }
-            internal set { col = value; Tree.MaxTreeRow = Math.Max(Tree.MaxTreeRow, col); }
-        }
+        public int TreeColumn { get; internal set; }
+        public int TreeRow { get; internal set; }
         public Color TreeColor { get; internal set; }
         
         internal int CountDescendents()
@@ -59,7 +50,8 @@ namespace GameLogic
             return num;
         }
 
-        public List<BuildingInfo> Prerequisites = new List<BuildingInfo>(), Unlocks = new List<BuildingInfo>();
+        public List<BuildingInfo> Unlocks = new List<BuildingInfo>();
+        public BuildingInfo Prerequisite;
 
         public List<BuildingInfo> UpgradesTo = new List<BuildingInfo>();
         public BuildingInfo UpgradesFrom { get; internal set; }

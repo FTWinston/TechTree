@@ -22,7 +22,6 @@ namespace GameLogic
 
             TechTree tree = new TechTree();
             TreeGenerator treeGen = new TreeGenerator(tree, r);
-            treeGen.SortLayout();
 
             tree.AllBuildings = treeGen.AllNodes;
             tree.DefaultBuildings = treeGen.RootNodes;
