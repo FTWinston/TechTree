@@ -16,6 +16,11 @@ namespace GameLogic
         public int MaxTreeColumn { get; internal set; }
         public int MaxTreeRow { get; internal set; }
 
+#if DEBUG
+        public List<double> Annealing;
+        public int StepWhereBestFound;
+#endif
+
         public static TechTree Generate(int seed)
         {
             Random r = new Random(seed);

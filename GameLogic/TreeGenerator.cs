@@ -15,6 +15,7 @@ namespace GameLogic
         public List<BuildingInfo> RootNodes { get; private set; }
         public List<BuildingInfo> AllNodes { get; private set; }
 
+        private SortedList<BuildingInfo, BuildingGroup> groupsByBuilding = new SortedList<BuildingInfo, BuildingGroup>();
         private BuildingInfo FakeRootNode; // this is now we have a single root for our algorithms, even if we "actually" have multiple roots
         public Random r;
         private TechTree Tree;
@@ -409,6 +410,7 @@ namespace GameLogic
             }
    
             group.Buildings.Add(building);
+            groupsByBuilding.Add(building, group);
             AllNodes.Add(building);
 
             if (nodesByRow.Count <= building.TreeRow)
@@ -457,15 +459,21 @@ namespace GameLogic
 
         private double SimulatedAnnealing()
         {
+#if DEBUG
+            List<double> record = new List<double>();
+#endif
             List<BuildingInfo> state = Copy(AllNodes); double energy = Energy(state);
             List<BuildingInfo> bestState = state; double bestEnergy = energy;
-            const int kMax = 500000, kRestartWhenStuckFor = 10000;
+            const int kMax = 100000, kRestartWhenStuckFor = 1000;
             int k = 0, kFound = 0, kLastMove = -1;
             while (k < kMax)
             {
+#if DEBUG
+                record.Add(energy);
+#endif
                 double temp = Temperature(((double)k) / kMax);
                 var newState = Modify(state);
-                double newEnergy = Energy(state);
+                double newEnergy = Energy(newState);
 
                 if (ShouldMove(energy, newEnergy, temp) > r.NextDouble())
                 {
@@ -493,6 +501,12 @@ namespace GameLogic
             }
             AllNodes = bestState;
             Console.WriteLine("Best energy {0} found on step {1} of {2}", bestEnergy, kFound, kMax);
+            Console.WriteLine("(Final energy was {0})", energy);
+
+#if DEBUG
+            Tree.Annealing = record;
+            Tree.StepWhereBestFound = kFound;
+#endif
             return bestEnergy;
         }
 
@@ -552,7 +566,16 @@ namespace GameLogic
 
             switch (r.Next(5))
             {
-                case 0: // shift some/all nodes in a row left/right
+                case 0: // shift all of a row left/right
+                    {
+                        int row = r.Next(numRows);
+                        int shift = r.Next(2) == 0 ? -1 : 1;
+                        foreach (var building in state)
+                            if (building.TreeRow == row)
+                                building.TreeColumn += shift;
+                        break;
+                    }
+                case 1: // shift some/all nodes in a row left/right
                     {
                         int nodePos = r.Next(state.Count);
                         int row = state[nodePos].TreeRow;
@@ -597,7 +620,6 @@ namespace GameLogic
                         break;
                     }
             }
-
             return state;
         }
 
@@ -605,23 +627,27 @@ namespace GameLogic
         {
             double energy = 0;
 
-            foreach (var building in buildings)
+            for ( int i=0; i<buildings.Count; i++ )
             {
+                var building = buildings[i];
+
                 // if not directly below prereq, higher energy. Same with upgrades (more so), but if it has both an unlock and an upgrade, much higher energy if they're in the same column.
-                int? dxPrereq = null;
+                int? dxPrereq = null, dyPrereq = null;
                 if (building.Prerequisite != null)
                 {
                     dxPrereq = building.Prerequisite.TreeColumn - building.TreeColumn;
-                    energy += dxPrereq.Value * dxPrereq.Value;
+                    dyPrereq = building.Prerequisite.TreeRow - building.TreeRow;
+                    energy += Math.Abs(dxPrereq.Value);
                 }
 
                 if ( building.UpgradesFrom != null )
                 {
                     int dxUpgr = building.UpgradesFrom.TreeColumn - building.TreeColumn;
-                    energy += dxUpgr * dxUpgr + 1; // upgrades being squint should be SLIGHTLY worse than non-upgrades being squint.
+                    int dyUpgr = building.UpgradesFrom.TreeRow - building.TreeRow;
+                    energy += Math.Abs(dxUpgr) + 1; // upgrades being squint should be SLIGHTLY worse than non-upgrades being squint.
 
-                    if (dxPrereq.HasValue && dxPrereq.Value == dxUpgr)
-                        energy += 50;
+                    if (dxPrereq.HasValue && (float)(dyPrereq.Value) / dxPrereq.Value == (float)(dyUpgr) / dxUpgr)
+                        energy += 200;
                 }
 
                 // now if any two links cross, that adds a lot of energy
@@ -630,42 +656,97 @@ namespace GameLogic
                     if (building.Prerequisite != null)
                     {
                         if (other.Prerequisite != null)
-                            if (LinksCross(building, building.Prerequisite, other, other.Prerequisite))
-                                energy += 40;
+                            if (LinksIntersect(building, building.Prerequisite, other, other.Prerequisite))
+                                energy += 60;
 
                         if (other.UpgradesFrom != null)
-                            if (LinksCross(building, building.Prerequisite, other, other.UpgradesFrom))
-                                energy += 40;
+                            if (LinksIntersect(building, building.Prerequisite, other, other.UpgradesFrom))
+                                energy += 60;
                     }
 
                     if (building.UpgradesFrom != null)
                     {
                         if (other.Prerequisite != null)
-                            if (LinksCross(building, building.UpgradesFrom, other, other.Prerequisite))
-                                energy += 40;
+                            if (LinksIntersect(building, building.UpgradesFrom, other, other.Prerequisite))
+                                energy += 60;
 
                         if (other.UpgradesFrom != null)
-                            if (LinksCross(building, building.UpgradesFrom, other, other.UpgradesFrom))
-                                energy += 40;
+                            if (LinksIntersect(building, building.UpgradesFrom, other, other.UpgradesFrom))
+                                energy += 60;
                     }
                 }
 
+                // if more of this nodes children go to one side rather than the other, that's a bit bad
+                int sumOffset = 0;
+                foreach ( var child in building.Unlocks )
+                {
+                    var dif = child.TreeColumn - building.TreeColumn;
+                    if (dif < 0)
+                        sumOffset--;
+                    else
+                        sumOffset++;
+                }
+
+                foreach (var child in building.UpgradesTo)
+                {
+                    var dif = child.TreeColumn - building.TreeColumn;
+                    if (dif < 0)
+                        sumOffset--;
+                    else
+                        sumOffset++;
+                }
+
+                energy += Math.Abs(sumOffset) * 5;
+
                 // and what about links that cross over the nodes themselves, but not their links?
+
+                // if adjacent node is of a different group, that's slightly bad
+                if (i < buildings.Count - 1)
+                {
+                    var next = buildings[i + 1];
+                    if (groupsByBuilding[next] != groupsByBuilding[building])
+                        energy += 0.2;
+                }
             }
 
             return energy;
         }
 
-        private bool LinksCross(BuildingInfo a1, BuildingInfo a2, BuildingInfo b1, BuildingInfo b2)
+        private static bool LinksIntersect(BuildingInfo a1, BuildingInfo a2, BuildingInfo b1, BuildingInfo b2)
         {
-            return SemiIntersect(a1, a2, b1, b2) && SemiIntersect(b1, b2, a1, a2);
-        }
+            // if they just touch, we don't count that
+            if (a1.TreeColumn == b1.TreeColumn && a1.TreeRow == b1.TreeRow)
+                return false;
+            if (a2.TreeColumn == b1.TreeColumn && a2.TreeRow == b1.TreeRow)
+                return false;
+            if (a2.TreeColumn == b2.TreeColumn && a2.TreeRow == b2.TreeRow)
+                return false;
+            if (a1.TreeColumn == b2.TreeColumn && a1.TreeRow == b2.TreeRow)
+                return false;
 
-        private bool SemiIntersect(BuildingInfo p, BuildingInfo q, BuildingInfo e, BuildingInfo f)
-        {
-            var cross1 = (f.TreeColumn - e.TreeColumn) * (p.TreeRow - f.TreeRow) - (f.TreeRow - e.TreeRow) * (p.TreeColumn - f.TreeColumn);
-            var cross2 = (f.TreeColumn - e.TreeColumn) * (p.TreeRow - f.TreeRow) - (f.TreeRow - e.TreeRow) * (p.TreeColumn - f.TreeColumn);
-            return cross1 * cross2 < 0;
+            PointF CmP = new PointF(b1.TreeColumn - a1.TreeColumn, b1.TreeRow - a1.TreeRow);
+            PointF r = new PointF(a2.TreeColumn - a1.TreeColumn, a2.TreeRow - a1.TreeRow);
+            PointF s = new PointF(b2.TreeColumn - b1.TreeColumn, b2.TreeRow - b1.TreeRow);
+
+            float CmPxr = CmP.X * r.Y - CmP.Y * r.X;
+            float CmPxs = CmP.X * s.Y - CmP.Y * s.X;
+            float rxs = r.X * s.Y - r.Y * s.X;
+
+            if (CmPxr == 0f)
+            {
+                // Lines are collinear, and so intersect if they have any overlap
+                return ((b1.TreeColumn - a1.TreeColumn < 0) != (b1.TreeColumn - a2.TreeColumn < 0))
+                    || ((b1.TreeRow - a1.TreeRow < 0) != (b1.TreeRow - a2.TreeRow < 0));
+            }
+
+            if (rxs == 0f)
+                return false; // Lines are parallel.
+
+            float rxsr = 1f / rxs;
+            float t = CmPxs * rxsr;
+            float u = CmPxr * rxsr;
+
+            return (t >= 0f) && (t <= 1f) && (u >= 0f) && (u <= 1f);
         }
 
         private bool ObviousShunting(ref double currentEnergy)
