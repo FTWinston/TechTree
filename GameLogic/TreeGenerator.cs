@@ -461,70 +461,46 @@ namespace GameLogic
             return current;
         }
 
+        public static IEnumerable<List<T>> Permutate<T>(List<T> sequence, int count)
+        {
+            if (count == 1)
+                yield return sequence;
+            else
+            {
+                for (int i = 0; i < count; i++)
+                {
+                    foreach (var perm in Permutate(sequence, count - 1))
+                        yield return perm;
+
+                    T tmp = sequence[count - 1];
+                    sequence.RemoveAt(count - 1);
+                    sequence.Insert(0, tmp);
+                }
+            }
+        }
+
         private void PositionNodes()
         {
-#if DEBUG
-            List<double> record = new List<double>();
-#endif
-            List<BuildingGroup> state = Copy(buildingGroups); double energy = Energy(state);
-            List<BuildingGroup> bestState = state; double bestEnergy = energy;
-            const int kMax = 100000, kRestartWhenStuckFor = 1000;
-            int k = 0, kFound = 0, kLastMove = -1;
-            while (k < kMax)
+            List<BuildingGroup> bestState = Copy(buildingGroups); double bestEnergy = CondenseBestEnergy(bestState);
+            
+            // consider every possible ordering of the groups ... but not every possible mirroring. With 7 groups, that's 5040 combinations.
+            foreach (var permutation in Permutate(buildingGroups, buildingGroups.Count))
             {
-#if DEBUG
-                record.Add(energy);
-#endif
-                double temp = Temperature(((double)k) / kMax);
-                var newState = Modify(state);
-                double newEnergy = Energy(newState);
+                var newState = Copy(permutation);
+                double newEnergy = CondenseBestEnergy(newState);
 
-                if (ShouldMove(energy, newEnergy, temp) > r.NextDouble())
+                if (newEnergy < bestEnergy)
                 {
-                    energy = newEnergy;
-                    state = newState;
-                    kLastMove = k;
-
-                    if (newEnergy < bestEnergy)
-                    {
-                        bestEnergy = newEnergy;
-                        bestState = newState;
-                        kFound = k;
-                    }
+                    bestEnergy = newEnergy;
+                    bestState = newState;
                 }
-                else if (k - kLastMove >= kRestartWhenStuckFor)
-                {// restart cos we got stuck
-                    Console.WriteLine("Stuck at energy {0} from step {1} to {2}, restarting...", energy, kLastMove, k);
-
-                    kLastMove = k;
-                    state = Copy(buildingGroups);
-                    energy = Energy(state);
-                }
-                
-                k++;
             }
+
+            // now for the best N combinations, try each combination of mirrored/unmirrored groupings
+
+
             buildingGroups = bestState;
-            Console.WriteLine("Best energy {0} found on step {1} of {2}", bestEnergy, kFound, kMax);
-            Console.WriteLine("(Final energy was {0})", energy);
-
-#if DEBUG
-            Tree.Annealing = record;
-            Tree.StepWhereBestFound = kFound;
-#endif
-        }
-
-        double initialTemp = 30;
-        private double Temperature(double fraction)
-        {
-            return initialTemp - fraction * initialTemp;
-        }
-
-        private double ShouldMove(double energy, double newEnergy, double temp)
-        {
-            if ( newEnergy < energy )
-                return 1;
-            var exp = Math.Exp(-(newEnergy - energy)/temp);
-            return exp;
+            AllNodes.Sort(this);
         }
 
         private List<BuildingGroup> Copy(List<BuildingGroup> state)
@@ -547,40 +523,8 @@ namespace GameLogic
             return output;
         }
 
-        private List<BuildingGroup> Modify(List<BuildingGroup> state)
-        {
-            state = Copy(state);
-
-            switch (r.Next(3))
-            {
-                case 0: // mirror the nodes of one group
-                    {
-                        var group = state[r.Next(state.Count)];
-                        group.Mirror = !group.Mirror;
-                        break;
-                    }
-                default: // swap the positions of two groups
-                    {
-                        int firstPos = r.Next(state.Count);
-                        int secondPos;
-                        do
-                        {
-                            secondPos = r.Next(state.Count);
-                        } while (secondPos != firstPos);
-
-                        var tmp = state[firstPos];
-                        state[firstPos] = state[secondPos];
-                        state[secondPos] = tmp;
-                        break;
-                    }
-            }
-
-            return state;
-        }
-
         private double Energy(List<BuildingGroup> groups)
         {
-            Condense(groups);
             double energy = 0;
 
             for ( int i=0; i<AllNodes.Count; i++ )
@@ -659,32 +603,60 @@ namespace GameLogic
             return energy;
         }
 
-        private void Condense(List<BuildingGroup> groups)
+        private double CondenseBestEnergy(List<BuildingGroup> groups)
+        {
+            SpreadGroups(groups);
+
+            var bestState = Copy(groups);
+            var bestEnergy = Energy(bestState);
+
+            foreach (var state in Condense(groups))
+            {
+                var energy = Energy(state);
+                if (energy < bestEnergy)
+                {
+                    bestState = Copy(state);
+                    bestEnergy = energy;
+                }
+            }
+
+            groups.Clear();
+            groups.AddRange(bestState);
+            return bestEnergy;
+        }
+
+        private void SpreadGroups(List<BuildingGroup> groups)
         {
             int offset = groups.Count / 2;
-            for ( int i=0; i<groups.Count; i++ )
+            for (int i = 0; i < groups.Count; i++)
             {
                 var group = groups[i];
                 foreach (var building in group.Buildings)
                 {
                     building.TreeColumn = DefaultColumns[building];
-                    
+
                     if (group.Mirror)
                         building.TreeColumn = 2 - building.TreeColumn;
-                    building.TreeColumn += (i-offset) * groupSeparation;
+                    building.TreeColumn += (i - offset) * groupSeparation;
                 }
             }
+        }
 
-            // now push each group center-ward as far as it will go
+        private IEnumerable<List<BuildingGroup>> Condense(List<BuildingGroup> groups)
+        {
+            yield return groups;
 
-            // actually middleward would be nice. And not all at once, one step at a time...
-            // moving through each of the groups, until nothing can move middleward any more
+            foreach (var state in CondenseTowards(groups, g => g.ParentNode.TreeColumn))
+                yield return state;
 
-            // what's needed at this point is a way to get the building at a given x/y
-            // will BinarySearch the old AllNodes list
+            foreach (var state in CondenseTowards(groups, g => 0))
+                yield return state;
+        }
 
+        private IEnumerable<List<BuildingGroup>> CondenseTowards(List<BuildingGroup> groups, Func<BuildingGroup, int> towards)
+        {
+            // condenses this list as far as it will go. returns each step along the way
             var test = new BuildingInfo(Tree);
-
             bool movedAny;
             do
             {
@@ -692,10 +664,10 @@ namespace GameLogic
                 foreach (var group in groups)
                 {
                     bool canMove = true;
-                    int step;
-                    if (group.RootFactory.TreeColumn > group.ParentNode.TreeColumn)
+                    int step, dest = towards(group);
+                    if (group.RootFactory.TreeColumn > dest)
                         step = -1;
-                    else if (group.RootFactory.TreeColumn < group.ParentNode.TreeColumn)
+                    else if (group.RootFactory.TreeColumn < dest)
                         step = 1;
                     else
                         continue;
@@ -716,11 +688,11 @@ namespace GameLogic
 
                     foreach (var building in group.Buildings)
                         building.TreeColumn += step;
+
                     movedAny = true;
+                    yield return groups;
                 }
             } while (movedAny);
-
-            AllNodes.Sort(this);
         }
 
         private static bool LinksIntersect(BuildingInfo a1, BuildingInfo a2, BuildingInfo b1, BuildingInfo b2)
