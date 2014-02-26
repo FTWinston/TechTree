@@ -82,20 +82,6 @@ namespace TreeViewer
 
                     g.DrawString(building.Name, buildingFont, Brushes.Black, bounds, centered);
                 }
-#if DEBUG
-                Pen graphPen = new Pen(Color.Blue);
-                float maxEnergy = (float)tree.Annealing.Max();
-                float graphHeight = image.Height * 0.2f;
-                double step = 1.0 * image.Width / tree.Annealing.Count;
-                for (int i = 0; i < tree.Annealing.Count; i++)
-                {
-                    float x = (float)(i * step);
-                    float y = (float)(tree.Annealing[i] / maxEnergy * graphHeight);
-
-                    g.DrawLine(graphPen, new PointF(x, image.Height), new PointF(x, image.Height - y));
-                }
-                g.DrawLine(new Pen(Color.Red), new PointF((float)(tree.StepWhereBestFound * step), image.Height), new PointF((float)(tree.StepWhereBestFound * step), image.Height - 2));
-#endif
             }
 
             return image;

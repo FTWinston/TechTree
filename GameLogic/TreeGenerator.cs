@@ -500,6 +500,7 @@ namespace GameLogic
 
 
             buildingGroups = bestState;
+            CondenseBestEnergy(buildingGroups);
             AllNodes.Sort(this);
         }
 
@@ -636,7 +637,7 @@ namespace GameLogic
                     building.TreeColumn = DefaultColumns[building];
 
                     if (group.Mirror)
-                        building.TreeColumn = 2 - building.TreeColumn;
+                        building.TreeColumn = -building.TreeColumn;
                     building.TreeColumn += (i - offset) * groupSeparation;
                 }
             }
@@ -661,6 +662,8 @@ namespace GameLogic
             do
             {
                 movedAny = false;
+                AllNodes.Sort(this);
+
                 foreach (var group in groups)
                 {
                     bool canMove = true;
