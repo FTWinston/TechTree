@@ -531,7 +531,7 @@ namespace GameLogic
             for ( int i=0; i<AllNodes.Count; i++ )
             {
                 var building = AllNodes[i];
-                energy += Math.Abs(building.TreeColumn);
+                energy += Math.Abs(building.TreeColumn) * 0.1; // distance from the center only counts for a small amount
 
                 // if not directly below prereq, higher energy. Same with upgrades (more so), but if it has both an unlock and an upgrade, much higher energy if they're in the same column.
                 int? dxPrereq = null, dyPrereq = null;
@@ -539,22 +539,33 @@ namespace GameLogic
                 {
                     dxPrereq = building.Prerequisite.TreeColumn - building.TreeColumn;
                     dyPrereq = building.Prerequisite.TreeRow - building.TreeRow;
-                    energy += dxPrereq.Value * dxPrereq.Value * 5;
+                    energy += dxPrereq.Value * dxPrereq.Value;
                 }
 
                 if ( building.UpgradesFrom != null )
                 {
                     int dxUpgr = building.UpgradesFrom.TreeColumn - building.TreeColumn;
                     int dyUpgr = building.UpgradesFrom.TreeRow - building.TreeRow;
-                    energy += dxUpgr * dxUpgr * 5 + 1; // upgrades being squint should be SLIGHTLY worse than non-upgrades being squint.
+                    energy += dxUpgr * dxUpgr + 1; // upgrades being squint should be SLIGHTLY worse than non-upgrades being squint.
 
+                    // if this node's upgrade and prerequisite line have the same gradient, that's very bad
                     if (dxPrereq.HasValue && (float)(dyPrereq.Value) / dxPrereq.Value == (float)(dyUpgr) / dxUpgr)
-                        energy += 200;
+                        energy += 100;
                 }
 
                 // if any two links cross, that adds a lot of energy
+                // similarly, if this node is on an "unrelated" link, that also adds a lot of energy
                 foreach (var other in AllNodes)
                 {
+                    if (other == building)
+                        continue;
+
+                    if (other.Prerequisite != null && other.Prerequisite != building && OnLink(building, other, other.Prerequisite))
+                        energy += 25;
+
+                    if (other.UpgradesFrom != null && other.UpgradesFrom != building && OnLink(building, other, other.UpgradesFrom))
+                        energy += 25;
+
                     if (building.Prerequisite != null)
                     {
                         if (other.Prerequisite != null)
@@ -649,9 +660,9 @@ namespace GameLogic
 
             foreach (var state in CondenseTowards(groups, g => g.ParentNode.TreeColumn))
                 yield return state;
-
+            /*
             foreach (var state in CondenseTowards(groups, g => 0))
-                yield return state;
+                yield return state;*/
         }
 
         private IEnumerable<List<BuildingGroup>> CondenseTowards(List<BuildingGroup> groups, Func<BuildingGroup, int> towards)
@@ -698,9 +709,21 @@ namespace GameLogic
             } while (movedAny);
         }
 
+        private static bool OnLink(BuildingInfo a, BuildingInfo b1, BuildingInfo b2)
+        {
+            // the only links that span more than a single row are always on the same column
+            if (b1.TreeColumn != b2.TreeColumn || a.TreeColumn != b1.TreeColumn)
+                return false;
+
+            if (b1.TreeRow > b2.TreeRow)
+                return b1.TreeRow >= a.TreeRow && a.TreeRow >= b2.TreeRow;
+            else
+                return b1.TreeRow <= a.TreeRow && a.TreeRow <= b2.TreeRow;
+        }
+
         private static bool LinksIntersect(BuildingInfo a1, BuildingInfo a2, BuildingInfo b1, BuildingInfo b2)
         {
-            // if they just touch, we don't count that
+            // if they share an endpoint, we don't count that. But if one end touches, we do.
             if (a1.TreeColumn == b1.TreeColumn && a1.TreeRow == b1.TreeRow)
                 return false;
             if (a2.TreeColumn == b1.TreeColumn && a2.TreeRow == b1.TreeRow)
@@ -720,9 +743,9 @@ namespace GameLogic
 
             if (CmPxr == 0f)
             {
-                // Lines are collinear, and so intersect if they have any overlap
-                return ((b1.TreeColumn - a1.TreeColumn < 0) != (b1.TreeColumn - a2.TreeColumn < 0))
-                    || ((b1.TreeRow - a1.TreeRow < 0) != (b1.TreeRow - a2.TreeRow < 0));
+                // Lines are collinear, and so intersect if they have any overlap. but OnLink will detect this, so we don't need to bother.
+                return false/*((b1.TreeColumn - a1.TreeColumn < 0) != (b1.TreeColumn - a2.TreeColumn < 0))
+                    || ((b1.TreeRow - a1.TreeRow < 0) != (b1.TreeRow - a2.TreeRow < 0))*/;
             }
 
             if (rxs == 0f)
