@@ -46,42 +46,39 @@ namespace GameLogic
             FakeRootNode = new BuildingInfo(Tree);
             FakeRootNode.TreeRow = -1;
 
-            var group = AddGroup(FakeRootNode, true);
+            var group = AddGroup(FakeRootNode, true, false);
             buildingGroups.Add(group);
             var commandCenter = group.Buildings[0];
             RootNodes = FakeRootNode.Unlocks;
 
-            group = AddGroup(commandCenter, false);
+            // certain subtrees should be selected to add a defense building into. Each subtree layout has a specific point in it for defense buildings.
+            int numDefenseBuildings = r.Next(minDefenseBuildings, maxDefenseBuildings + 1);
+            bool[] defenseBuildings = new bool[numBuildingGroups];
+
+            if (numDefenseBuildings >= numBuildingGroups - 1)
+                for (int i = 2; i < defenseBuildings.Length; i++)
+                    defenseBuildings[i] = true;
+            else
+                for (int i = 0; i < numDefenseBuildings; i++)
+                {
+                    int index;
+                    do
+                    {
+                        index = r.Next(numBuildingGroups - 2) + 2;
+                    } while (defenseBuildings[index] == true);
+                    defenseBuildings[index] = true;
+                }
+
+            group = AddGroup(commandCenter, false, true); // first subtree should always come from root command center, and have a defensive building
             buildingGroups.Add(group);
 
             for (int i = 2; i < numBuildingGroups; i++)
             {
                 BuildingInfo parent = SelectNode(treeBreadth.Value, commandCenter);
-                group = AddGroup(parent, false);
+                group = AddGroup(parent, false, defenseBuildings[i]);
                 buildingGroups.Add(group);
             }
 
-            // each subtree should be "selected" to add a defense building into. Each subtree should have a specific point in it for defense buildings
-
-            /*
-            int numDefenseBuildings = r.Next(minDefenseBuildings, maxDefenseBuildings + 1);
-            List<BuildingInfo> defenseParents = new List<BuildingInfo>();
-            for (int i = 0; i < numDefenseBuildings; i++)
-                defenseParents.Add(SelectNode(treeBreadth.Value, commandCenter));
-
-            foreach ( var parent in defenseParents )
-            {
-                var newNode = new BuildingInfo(tree);
-                newNode.Type = BuildingInfo.BuildingType.Defense;
-
-                group = buildingGroups.Where(g => g.Buildings.Contains(parent)).First();
-                group.Buildings.Add(newNode);
-                group.Theme.AllocateName(newNode, this);
-
-                parent.Unlocks.Add(newNode);
-                newNode.Prerequisite = parent;
-            }
-            */
             var colors = HSLColor.GetDistributedSet(buildingGroups.Count, r, 140, 200);
 
             for ( int i=0; i<buildingGroups.Count; i++ )
@@ -161,7 +158,7 @@ namespace GameLogic
         };
 
         private int nextGroupNumber = 0;
-        private BuildingGroup AddGroup(BuildingInfo parent, bool commandSubtree)
+        private BuildingGroup AddGroup(BuildingInfo parent, bool commandSubtree, bool addDefenseBuilding)
         {
             var group = new BuildingGroup();
             group.ParentNode = parent;
@@ -196,195 +193,263 @@ namespace GameLogic
                 case 1:
                     b1 = AddBuilding(parent, factory, group, 0);
                     b2 = AddBuilding(parent, tech, group, 1);
+                    if (addDefenseBuilding)
+                        AddBuilding(b2, BuildingInfo.BuildingType.Defense, group, 1);
                     break;
                 case 2:
                     b1 = AddBuilding(parent, factory, group, 0);
                     b2 = AddBuilding(b1, tech, group, 0);
+                    if (addDefenseBuilding)
+                        AddBuilding(b2, BuildingInfo.BuildingType.Defense, group, 0);
                     break;
                 case 3:
                     b1 = AddBuilding(parent, factory, group, 0);
                     b2 = AddBuilding(b1, tech, group, 0);
                     b3 = AddBuilding(b1, tech, group, 1);
+                    if (addDefenseBuilding)
+                        AddBuilding(b2, BuildingInfo.BuildingType.Defense, group, 0);
                     break;
                 case 4:
                     b1 = AddBuilding(parent, factory, group, 0);
                     b2 = AddBuilding(parent, tech, group, 1);
                     b3 = AddBuilding(b1, tech, group, 0);
+                    if (addDefenseBuilding)
+                        AddBuilding(b2, BuildingInfo.BuildingType.Defense, group, 1);
                     break;
                 case 5:
                     b1 = AddBuilding(parent, factory, group, 0);
                     b2 = AddBuilding(b1, tech, group, 0);
                     b3 = AddBuilding(b2, tech, group, 0);
+                    if (addDefenseBuilding)
+                        AddBuilding(b2, BuildingInfo.BuildingType.Defense, group, 1);
                     break;
                 case 6:
                     b1 = AddBuilding(parent, factory, group, 0);
                     b2 = AddBuilding(parent, tech, group, 1);
                     b3 = AddBuilding(b1, tech, group, 0);
                     b4 = AddBuilding(b3, tech, group, 0);
+                    if (addDefenseBuilding)
+                        AddBuilding(b2, BuildingInfo.BuildingType.Defense, group, 1);
                     break;
                 case 7:
                     b1 = AddBuilding(parent, factory, group, 0);
                     b2 = AddBuilding(parent, tech, group, 1);
-                    b3 = AddBuilding(b1, tech, group, 0);
-                    b4 = AddBuilding(b1, tech, group, 1);
+                    b3 = AddBuilding(b1, tech, group, -1);
+                    b4 = AddBuilding(b1, tech, group, 0);
+                    if (addDefenseBuilding)
+                        AddBuilding(b2, BuildingInfo.BuildingType.Defense, group, 1);
                     break;
                 case 8:
-                    b1 = AddBuilding(parent, factory, group, 0);
-                    b2 = AddBuilding(parent, tech, group, 1);
-                    b3 = AddBuilding(b1, tech, group, 0);
-                    b4 = AddBuilding(b2, tech, group, 1);
+                    b1 = AddBuilding(parent, factory, group, -1);
+                    b2 = AddBuilding(parent, tech, group, 0);
+                    b3 = AddBuilding(b1, tech, group, -1);
+                    b4 = AddBuilding(b2, tech, group, 0);
+                    if (addDefenseBuilding)
+                        AddBuilding(b2, BuildingInfo.BuildingType.Defense, group, 1);
                     break;
                 case 9:
                     b1 = AddBuilding(parent, factory, group, 0);
                     b2 = AddBuilding(b1, tech, group, 0);
                     b3 = AddBuilding(b2, tech, group, 0);
                     b4 = AddBuilding(b3, tech, group, 0);
+                    if (addDefenseBuilding)
+                        AddBuilding(b2, BuildingInfo.BuildingType.Defense, group, 1);
                     break;
                 case 10:
                     b1 = AddBuilding(parent, factory, group, 0);
                     b2 = AddBuilding(parent, tech, group, 1);
                     b3 = AddBuilding(b1, factory, group, 0);
+                    if (addDefenseBuilding)
+                        AddBuilding(b2, BuildingInfo.BuildingType.Defense, group, 1);
                     break;
                 case 11:
                     b1 = AddBuilding(parent, factory, group, 0);
                     b2 = AddBuilding(b1, factory, group, 0);
                     b3 = AddBuilding(b1, tech, group, 1);
+                    if (addDefenseBuilding)
+                        AddBuilding(b3, BuildingInfo.BuildingType.Defense, group, 1);
                     break;
                 case 12:
                     b1 = AddBuilding(parent, factory, group, 0);
                     b2 = AddBuilding(b1, factory, group, 0);
                     b3 = AddBuilding(b2, tech, group, 0);
+                    if (addDefenseBuilding)
+                        AddBuilding(b2, BuildingInfo.BuildingType.Defense, group, 1);
                     break;
                 case 13:
                     b1 = AddBuilding(parent, factory, group, 0);
                     b2 = AddBuilding(b1, tech, group, 1);
                     b3 = AddBuilding(b2, factory, group, 0);
+                    if (addDefenseBuilding)
+                        AddBuilding(b2, BuildingInfo.BuildingType.Defense, group, 1);
                     break;
                 case 14:
-                    b1 = AddBuilding(parent, factory, group, 0);
-                    b2 = AddBuilding(parent, tech, group, 1);
-                    b3 = AddBuilding(b1, factory, group, 0);
-                    b3 = AddBuilding(b2, tech, group, 1);
+                    b1 = AddBuilding(parent, factory, group, -1);
+                    b2 = AddBuilding(parent, tech, group, 0);
+                    b3 = AddBuilding(b1, factory, group, -1);
+                    b3 = AddBuilding(b2, tech, group, 0);
+                    if (addDefenseBuilding)
+                        AddBuilding(b2, BuildingInfo.BuildingType.Defense, group, 1);
                     break;
                 case 15:
-                    b1 = AddBuilding(parent, factory, group, 0);
-                    b2 = AddBuilding(parent, tech, group, 1);
-                    b3 = AddBuilding(b1, factory, group, 0);
-                    b3 = AddBuilding(b1, tech, group, 1);
+                    b1 = AddBuilding(parent, factory, group, -1);
+                    b2 = AddBuilding(parent, tech, group, 0);
+                    b3 = AddBuilding(b1, factory, group, -1);
+                    b3 = AddBuilding(b1, tech, group, 0);
+                    if (addDefenseBuilding)
+                        AddBuilding(b2, BuildingInfo.BuildingType.Defense, group, 1);
                     break;
                 case 16:
                     b1 = AddBuilding(parent, factory, group, 0);
                     b2 = AddBuilding(b1, tech, group, -1);
                     b3 = AddBuilding(b1, factory, group, 0);
                     b4 = AddBuilding(b1, tech, group, 1);
+                    if (addDefenseBuilding)
+                        AddBuilding(b2, BuildingInfo.BuildingType.Defense, group, -1);
                     break;
                 case 17:
                     b1 = AddBuilding(parent, factory, group, 0);
                     b2 = AddBuilding(parent, tech, group, 1);
                     b3 = AddBuilding(b1, factory, group, 0);
                     b4 = AddBuilding(b3, tech, group, 0);
+                    if (addDefenseBuilding)
+                        AddBuilding(b2, BuildingInfo.BuildingType.Defense, group, 1);
                     break;
                 case 18:
                     b1 = AddBuilding(parent, factory, group, 0);
                     b2 = AddBuilding(b1, factory, group, 0);
                     b3 = AddBuilding(b2, tech, group, 0);
                     b4 = AddBuilding(b2, tech, group, 1);
+                    if (addDefenseBuilding)
+                        AddBuilding(b3, BuildingInfo.BuildingType.Defense, group, 0);
                     break;
                 case 19:
-                    b1 = AddBuilding(parent, factory, group, 0);
-                    b2 = AddBuilding(b1, tech, group, 1);
-                    b3 = AddBuilding(b2, factory, group, 0);
-                    b4 = AddBuilding(b2, tech, group, 1);
+                    b1 = AddBuilding(parent, factory, group, -1);
+                    b2 = AddBuilding(b1, tech, group, 0);
+                    b3 = AddBuilding(b2, factory, group, -1);
+                    b4 = AddBuilding(b2, tech, group, 0);
+                    if (addDefenseBuilding)
+                        AddBuilding(b2, BuildingInfo.BuildingType.Defense, group, 1);
                     break;
                 case 20:
                     b1 = AddBuilding(parent, factory, group, 0);
                     b2 = AddBuilding(b1, tech, group, 1);
                     b3 = AddBuilding(b2, factory, group, 0);
                     b4 = AddBuilding(b3, tech, group, 0);
+                    if (addDefenseBuilding)
+                        AddBuilding(b2, BuildingInfo.BuildingType.Defense, group, 1);
                     break;
                 case 21:
-                    b1 = AddBuilding(parent, factory, group, 0);
-                    b2 = AddBuilding(b1, tech, group, 1);
-                    b3 = AddBuilding(b2, tech, group, 1);
-                    b4 = AddBuilding(b3, factory, group, 0);
+                    b1 = AddBuilding(parent, factory, group, -1);
+                    b2 = AddBuilding(b1, tech, group, 0);
+                    b3 = AddBuilding(b2, tech, group, 0);
+                    b4 = AddBuilding(b3, factory, group, -1);
+                    if (addDefenseBuilding)
+                        AddBuilding(b2, BuildingInfo.BuildingType.Defense, group, 1);
                     break;
                 case 22:
                     b1 = AddBuilding(parent, factory, group, 0);
                     b2 = AddBuilding(b1, factory, group, 0);
                     b3 = AddBuilding(b2, tech, group, 0);
                     b4 = AddBuilding(b2, tech, group, 1);
+                    if (addDefenseBuilding)
+                        AddBuilding(b3, BuildingInfo.BuildingType.Defense, group, 0);
                     break;
                 case 23:
                     b1 = AddBuilding(parent, factory, group, 0);
                     b2 = AddBuilding(b1, factory, group, 0);
                     b3 = AddBuilding(b2, tech, group, 0);
                     b4 = AddBuilding(b3, tech, group, 0);
+                    if (addDefenseBuilding)
+                        AddBuilding(b3, BuildingInfo.BuildingType.Defense, group, 1);
                     break;
                 case 24:
                     b1 = AddBuilding(parent, factory, group, 0);
                     b2 = AddBuilding(parent, tech, group, 1);
                     b3 = AddBuilding(b1, factory, group, 0);
                     b4 = AddBuilding(b3, factory, group, 0);
+                    if (addDefenseBuilding)
+                        AddBuilding(b2, BuildingInfo.BuildingType.Defense, group, 1);
                     break;
                 case 25:
                     b1 = AddBuilding(parent, factory, group, 0);
                     b2 = AddBuilding(parent, tech, group, 1);
                     b3 = AddBuilding(b2, factory, group, 0);
                     b4 = AddBuilding(b3, factory, group, 0);
+                    if (addDefenseBuilding)
+                        AddBuilding(b2, BuildingInfo.BuildingType.Defense, group, 1);
                     break;
                 case 26:
                     b1 = AddBuilding(parent, factory, group, 0);
                     b2 = AddBuilding(b1, factory, group, 0);
                     b3 = AddBuilding(b1, tech, group, 1);
                     b4 = AddBuilding(b2, factory, group, 0);
+                    if (addDefenseBuilding)
+                        AddBuilding(b3, BuildingInfo.BuildingType.Defense, group, 1);
                     break;
                 case 27:
                     b1 = AddBuilding(parent, factory, group, 0);
                     b2 = AddBuilding(b1, factory, group, 0);
                     b3 = AddBuilding(b2, factory, group, 0);
                     b4 = AddBuilding(b2, tech, group, 1);
+                    if (addDefenseBuilding)
+                        AddBuilding(b4, BuildingInfo.BuildingType.Defense, group, 1);
                     break;
                 case 28:
                     b1 = AddBuilding(parent, factory, group, 0);
                     b2 = AddBuilding(b1, tech, group, 1);
                     b3 = AddBuilding(b2, factory, group, 0);
                     b4 = AddBuilding(b3, factory, group, 0);
+                    if (addDefenseBuilding)
+                        AddBuilding(b2, BuildingInfo.BuildingType.Defense, group, 1);
                     break;
                 case 29:
                     b1 = AddBuilding(parent, factory, group, 0);
                     b2 = AddBuilding(b1, factory, group, 0);
                     b3 = AddBuilding(b2, tech, group, 1);
                     b4 = AddBuilding(b3, factory, group, 0);
+                    if (addDefenseBuilding)
+                        AddBuilding(b3, BuildingInfo.BuildingType.Defense, group, 1);
                     break;
                 case 30:
                     b1 = AddBuilding(parent, factory, group, 0);
                     b2 = AddBuilding(b1, factory, group, 0);
                     b3 = AddBuilding(b2, factory, group, 0);
                     b4 = AddBuilding(b3, tech, group, 0);
+                    if (addDefenseBuilding)
+                        AddBuilding(b4, BuildingInfo.BuildingType.Defense, group, 0);
                     break;
                 case 31:
-                    b1 = AddBuilding(parent, factory, group, 0);
-                    b2 = AddBuilding(parent, tech, group, 1);
-                    b3 = AddBuilding(b1, factory, group, 0);
-                    b4 = AddBuilding(b1, factory, group, 1);
+                    b1 = AddBuilding(parent, factory, group, -1);
+                    b2 = AddBuilding(parent, tech, group, 0);
+                    b3 = AddBuilding(b1, factory, group, -1);
+                    b4 = AddBuilding(b1, factory, group, 0);
+                    if (addDefenseBuilding)
+                        AddBuilding(b2, BuildingInfo.BuildingType.Defense, group, 1);
                     break;
                 case 32:
                     b1 = AddBuilding(parent, factory, group, 0);
                     b2 = AddBuilding(b1, factory, group, -1);
                     b3 = AddBuilding(b1, factory, group, 0);
                     b4 = AddBuilding(b1, tech, group, 1);
+                    if (addDefenseBuilding)
+                        AddBuilding(b4, BuildingInfo.BuildingType.Defense, group, 1);
                     break;
                 case 33:
                     b1 = AddBuilding(parent, factory, group, 0);
                     b2 = AddBuilding(b1, tech, group, 0);
                     b3 = AddBuilding(b2, factory, group, -1);
                     b4 = AddBuilding(b2, factory, group, 1);
+                    if (addDefenseBuilding)
+                        AddBuilding(b2, BuildingInfo.BuildingType.Defense, group, 0);
                     break;
                 case 34:
                     b1 = AddBuilding(parent, factory, group, 0);
                     b2 = AddBuilding(b1, tech, group, 1);
                     b3 = AddBuilding(b1, factory, group, 0);
                     b4 = AddBuilding(b2, factory, group, 0);
+                    if (addDefenseBuilding)
+                        AddBuilding(b2, BuildingInfo.BuildingType.Defense, group, 1);
                     break;
                 default:
                     throw new Exception();
