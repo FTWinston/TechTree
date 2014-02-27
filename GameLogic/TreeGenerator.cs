@@ -549,10 +549,12 @@ namespace GameLogic
         {
             double energy = 0;
 
+            int minCol = int.MaxValue, maxCol = int.MinValue;
             for ( int i=0; i<AllNodes.Count; i++ )
             {
                 var building = AllNodes[i];
-                energy += Math.Abs(building.TreeColumn) * 0.1; // distance from the center only counts for a small amount
+                minCol = Math.Min(building.TreeColumn, minCol);
+                maxCol = Math.Max(building.TreeColumn, maxCol);
 
                 // if not directly below prereq, higher energy. Same with upgrades (more so), but if it has both an unlock and an upgrade, much higher energy if they're in the same column.
                 int? dxPrereq = null, dyPrereq = null;
@@ -632,7 +634,9 @@ namespace GameLogic
 
                 energy += Math.Abs(sumOffset) * 5;
             }
-            
+
+            energy += (maxCol - minCol) * 10;
+
             return energy;
         }
 
