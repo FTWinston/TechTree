@@ -232,8 +232,8 @@ namespace GameLogic
                         AddBuilding(b2, BuildingInfo.BuildingType.Defense, group, 1);
                     break;
                 case 7:
-                    b1 = AddBuilding(parent, factory, group, 0);
-                    b2 = AddBuilding(parent, tech, group, 1);
+                    b1 = AddBuilding(parent, factory, group, -1);
+                    b2 = AddBuilding(parent, tech, group, 0);
                     b3 = AddBuilding(b1, tech, group, -1);
                     b4 = AddBuilding(b1, tech, group, 0);
                     if (addDefenseBuilding)
@@ -508,6 +508,7 @@ namespace GameLogic
             return building;
         }
 
+        #region building positioning
         private BuildingInfo SelectNode(int treeBreadth, BuildingInfo root = null)
         {
             BuildingInfo current = root ?? FakeRootNode;
@@ -656,6 +657,7 @@ namespace GameLogic
         private double Energy(List<BuildingGroup> groups)
         {
             double energy = 0;
+            var test = new BuildingInfo(Tree);
 
             int minCol = int.MaxValue, maxCol = int.MinValue;
             for ( int i=0; i<AllNodes.Count; i++ )
@@ -740,7 +742,32 @@ namespace GameLogic
                         sumOffset++;
                 }
 
-                energy += Math.Abs(sumOffset) * 5;
+                energy += Math.Abs(sumOffset);
+
+                if (building.Prerequisite != null)
+                {
+                    // we don't consider upgrades here, cos they ALWAYS satisfy absDx <= 1
+                    int dx = building.TreeColumn - building.Prerequisite.TreeColumn, absDx = Math.Abs(dx);
+                    if (absDx > 2)
+                    {
+                        int step = dx > 0 ? 1 : -1;
+
+                        // if there's another node adjacent (towards the parent), my link will cut into it
+                        test.TreeRow = building.TreeRow;
+                        test.TreeColumn = building.TreeColumn - step;
+                        int pos = AllNodes.BinarySearch(test, this);
+                        if (pos >= 0)
+                            energy += absDx * 8;
+
+                        // if there's a node adjacent to the parent, in this direction, this will cut into it
+                        test.TreeRow = building.Prerequisite.TreeRow;
+                        test.TreeColumn = building.Prerequisite.TreeColumn + step;
+
+                        pos = AllNodes.BinarySearch(test, this);
+                        if (pos >= 0)
+                            energy += absDx * (absDx > 3 ? 10 : 4); // if it's 3, they only just touch
+                    }
+                }
             }
 
             energy += (maxCol - minCol) * 10;
@@ -807,9 +834,9 @@ namespace GameLogic
 
             foreach (var state in CondenseTowards(groups, g => g.ParentNode.TreeColumn))
                 yield return state;
-            /*
+            
             foreach (var state in CondenseTowards(groups, g => 0))
-                yield return state;*/
+                yield return state;
         }
 
         private IEnumerable<List<BuildingGroup>> CondenseTowards(List<BuildingGroup> groups, Func<BuildingGroup, int> towards)
@@ -906,5 +933,6 @@ namespace GameLogic
 
             return (t >= 0f) && (t <= 1f) && (u >= 0f) && (u <= 1f);
         }
+        #endregion
     }
 }
