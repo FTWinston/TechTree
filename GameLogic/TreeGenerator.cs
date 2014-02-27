@@ -483,7 +483,7 @@ namespace GameLogic
             }
         }
 
-        public static IEnumerable<bool[]> PermutateFlags<T>(bool[] options)
+        public static IEnumerable<bool[]> PermutateFlags(bool[] options)
         {
             int[] flags = new int[options.Length];
             int combinations = 1;
@@ -502,25 +502,65 @@ namespace GameLogic
             }
         }
 
+        const int numBestStates = 5;
         private void PositionNodes()
         {
-            List<BuildingGroup> bestState = Copy(buildingGroups); double bestEnergy = CondenseBestEnergy(bestState);
+            // the list of best states are stored in order from worst to best
+            List<BuildingGroup>[] bestStates = new List<BuildingGroup>[numBestStates];
+            double[] bestEnergies = new double[numBestStates];
+            bestStates[0] = Copy(buildingGroups);
+            bestEnergies[0] = CondenseBestEnergy(bestStates[0]);
+            for (int i = 1; i < numBestStates; i++)
+            {
+                bestStates[i] = bestStates[0];
+                bestEnergies[i] = bestEnergies[0];
+            }
             
-            // consider every possible ordering of the groups ... but not every possible mirroring. With 7 groups, that's 5040 combinations.
+            // consider every possible ordering of the groups ... but not every possible mirroring. With 7 groups, that's 5040 combinations. Only 720 for 6, 120 for 5, and 24 for 4.
             foreach (var permutation in PermutateOrder(buildingGroups, buildingGroups.Count))
             {
-                var newState = Copy(permutation);
-                double newEnergy = CondenseBestEnergy(newState);
+                double newEnergy = CondenseBestEnergy(permutation);
 
-                if (newEnergy < bestEnergy)
+                int bestPos = -1;
+                for ( int i=0; i<numBestStates; i++ )
+                    if (newEnergy < bestEnergies[i])
+                        bestPos = i;
+                    else
+                        break;
+
+                if ( bestPos == -1 )
+                    continue;
+
+                for ( int i=0; i<bestPos; i++ )
                 {
-                    bestEnergy = newEnergy;
-                    bestState = newState;
+                    bestStates[i] = bestStates[i+1];
+                    bestEnergies[i] = bestEnergies[i+1];
                 }
+
+                bestStates[bestPos] = Copy(permutation);
+                bestEnergies[bestPos] = newEnergy;
             }
 
             // now for the best N combinations, try each combination of mirrored/unmirrored groupings
 
+            List<BuildingGroup> bestState = bestStates[numBestStates - 1];
+            double bestEnergy = bestEnergies[numBestStates - 1];
+
+            bool[] mirrorFlags = new bool[bestState.Count];
+            foreach (var permutation in PermutateFlags(mirrorFlags))
+                for ( int i=numBestStates-1; i>=0; i-- )
+                {
+                    var state = bestStates[i];
+                    for (int j = 0; j < state.Count; j++)
+                        state[j].Mirror = mirrorFlags[j];
+
+                    double newEnergy = CondenseBestEnergy(state);
+                    if (newEnergy < bestEnergy)
+                    {
+                        bestEnergy = newEnergy;
+                        bestState = Copy(state);
+                    }
+                }
 
             buildingGroups = bestState;
             PlaceBuildings(buildingGroups);
@@ -689,7 +729,10 @@ namespace GameLogic
             {
                 var group = groups[i];
                 foreach (var building in group.Buildings)
-                    building.TreeColumn = DefaultColumns[building] + group.TreeColumn;
+                    if (group.Mirror)
+                        building.TreeColumn = group.TreeColumn - DefaultColumns[building];
+                    else
+                        building.TreeColumn = group.TreeColumn + DefaultColumns[building];
             }
         }
 
