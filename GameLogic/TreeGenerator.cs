@@ -51,7 +51,10 @@ namespace GameLogic
             var commandCenter = group.Buildings[0];
             RootNodes = FakeRootNode.Unlocks;
 
-            for (int i = 1; i < numBuildingGroups; i++)
+            group = AddGroup(commandCenter, false);
+            buildingGroups.Add(group);
+
+            for (int i = 2; i < numBuildingGroups; i++)
             {
                 BuildingInfo parent = SelectNode(treeBreadth.Value, commandCenter);
                 group = AddGroup(parent, false);
