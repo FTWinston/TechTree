@@ -130,7 +130,7 @@ namespace GameLogic
             public int TreeColumn;
         }
 
-        private double[] commandTreeWeightings = new double[] {
+        private int[] commandTreeWeightings = new int[] {
             3, // 1
             1, // 2
             0, 0, 0, 0, 0, 0, 0,
@@ -151,10 +151,10 @@ namespace GameLogic
             1, // 34
         };
 
-        private double[] standardTreeWeightings = new double[] {
-            1, 1, 5, 4, 1, 3, 4, 3, 1, 1, 2, 1, // 12
-            2, 2, 3, 2, 1, 1, 2.5, 1, 1, 1, 1, .1, // 24
-            .1, .1, .1, .1, .1, .1, 1, 1, 1, 1, // 34
+        private int[] standardTreeWeightings = new int[] {
+            10, 10, 50, 40, 10, 30, 40, 30, 10, 10, 20, 10, // 12
+            20, 20, 30, 20, 10, 10, 25, 10, 10, 10, 10, 1, // 24
+            1, 1, 1, 1, 1, 1, 10, 10, 10, 10, // 34
         };
 
         private int nextGroupNumber = 0;
@@ -166,12 +166,12 @@ namespace GameLogic
             group.Theme = commandSubtree ? TechTheme.Command : TechTheme.SelectRandom(r);
             group.Buildings = new List<BuildingInfo>();
 
-            double[] weightings = commandSubtree ? commandTreeWeightings : standardTreeWeightings;
-            double sum = 0;
+            int[] weightings = commandSubtree ? commandTreeWeightings : standardTreeWeightings;
+            int sum = 0;
             for (int i = 0; i < weightings.Length; i++)
                 sum += weightings[i];
 
-            double rand = r.NextDouble() * sum;
+            int rand = r.Next(sum);
             sum = 0;
             int subtreeLayout = 1;
             for (int i = 0; i < weightings.Length; i++)
@@ -573,7 +573,7 @@ namespace GameLogic
         {
             // the list of best states are stored in order from worst to best
             List<BuildingGroup>[] bestStates = new List<BuildingGroup>[numBestStates];
-            double[] bestEnergies = new double[numBestStates];
+            int[] bestEnergies = new int[numBestStates];
             bestStates[0] = Copy(buildingGroups);
             bestEnergies[0] = CondenseBestEnergy(bestStates[0]);
             for (int i = 1; i < numBestStates; i++)
@@ -585,7 +585,7 @@ namespace GameLogic
             // consider every possible ordering of the groups ... but not every possible mirroring. With 7 groups, that's 5040 combinations. Only 720 for 6, 120 for 5, and 24 for 4.
             foreach (var permutation in PermutateOrder(buildingGroups, buildingGroups.Count))
             {
-                double newEnergy = CondenseBestEnergy(permutation);
+                int newEnergy = CondenseBestEnergy(permutation);
 
                 int bestPos = -1;
                 for ( int i=0; i<numBestStates; i++ )
@@ -610,7 +610,7 @@ namespace GameLogic
             // now for the best N combinations, try each combination of mirrored/unmirrored groupings
 
             List<BuildingGroup> bestState = bestStates[numBestStates - 1];
-            double bestEnergy = bestEnergies[numBestStates - 1];
+            int bestEnergy = bestEnergies[numBestStates - 1];
 
             bool[] mirrorFlags = new bool[bestState.Count];
             foreach (var permutation in PermutateFlags(mirrorFlags))
@@ -620,7 +620,7 @@ namespace GameLogic
                     for (int j = 0; j < state.Count; j++)
                         state[j].Mirror = mirrorFlags[j];
 
-                    double newEnergy = CondenseBestEnergy(state);
+                    int newEnergy = CondenseBestEnergy(state);
                     if (newEnergy < bestEnergy)
                     {
                         bestEnergy = newEnergy;
@@ -654,9 +654,9 @@ namespace GameLogic
             return output;
         }
 
-        private double Energy(List<BuildingGroup> groups)
+        private int Energy(List<BuildingGroup> groups)
         {
-            double energy = 0;
+            int energy = 0;
             var test = new BuildingInfo(Tree);
 
             int minCol = int.MaxValue, maxCol = int.MinValue;
@@ -673,17 +673,6 @@ namespace GameLogic
                     dxPrereq = building.Prerequisite.TreeColumn - building.TreeColumn;
                     dyPrereq = building.Prerequisite.TreeRow - building.TreeRow;
                     energy += dxPrereq.Value * dxPrereq.Value;
-                }
-
-                if ( building.UpgradesFrom != null )
-                {
-                    int dxUpgr = building.UpgradesFrom.TreeColumn - building.TreeColumn;
-                    int dyUpgr = building.UpgradesFrom.TreeRow - building.TreeRow;
-                    energy += dxUpgr * dxUpgr + 1; // upgrades being squint should be SLIGHTLY worse than non-upgrades being squint.
-
-                    // if this node's upgrade and prerequisite line have the same gradient, that's very bad
-                    if (dxPrereq.HasValue && (float)(dyPrereq.Value) / dxPrereq.Value == (float)(dyUpgr) / dxUpgr)
-                        energy += 100;
                 }
 
                 // if any two links cross, that adds a lot of energy
@@ -775,7 +764,7 @@ namespace GameLogic
             return energy;
         }
 
-        private double CondenseBestEnergy(List<BuildingGroup> groups)
+        private int CondenseBestEnergy(List<BuildingGroup> groups)
         {
             SpreadGroups(groups);
 
@@ -909,22 +898,22 @@ namespace GameLogic
             if (a1.TreeColumn == b2.TreeColumn && a1.TreeRow == b2.TreeRow)
                 return false;
 
-            PointF CmP = new PointF(b1.TreeColumn - a1.TreeColumn, b1.TreeRow - a1.TreeRow);
-            PointF r = new PointF(a2.TreeColumn - a1.TreeColumn, a2.TreeRow - a1.TreeRow);
-            PointF s = new PointF(b2.TreeColumn - b1.TreeColumn, b2.TreeRow - b1.TreeRow);
+            Point CmP = new Point(b1.TreeColumn - a1.TreeColumn, b1.TreeRow - a1.TreeRow);
+            Point r = new Point(a2.TreeColumn - a1.TreeColumn, a2.TreeRow - a1.TreeRow);
+            Point s = new Point(b2.TreeColumn - b1.TreeColumn, b2.TreeRow - b1.TreeRow);
 
-            float CmPxr = CmP.X * r.Y - CmP.Y * r.X;
-            float CmPxs = CmP.X * s.Y - CmP.Y * s.X;
-            float rxs = r.X * s.Y - r.Y * s.X;
+            int CmPxr = CmP.X * r.Y - CmP.Y * r.X;
+            int CmPxs = CmP.X * s.Y - CmP.Y * s.X;
+            int rxs = r.X * s.Y - r.Y * s.X;
 
-            if (CmPxr == 0f)
+            if (CmPxr == 0)
             {
                 // Lines are collinear, and so intersect if they have any overlap. but OnLink will detect this, so we don't need to bother.
                 return false/*((b1.TreeColumn - a1.TreeColumn < 0) != (b1.TreeColumn - a2.TreeColumn < 0))
                     || ((b1.TreeRow - a1.TreeRow < 0) != (b1.TreeRow - a2.TreeRow < 0))*/;
             }
 
-            if (rxs == 0f)
+            if (rxs == 0)
                 return false; // Lines are parallel.
 
             float rxsr = 1f / rxs;
