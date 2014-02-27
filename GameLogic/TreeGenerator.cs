@@ -127,6 +127,7 @@ namespace GameLogic
             public BuildingInfo RootFactory;
             public List<BuildingInfo> Buildings = new List<BuildingInfo>();
             public bool Mirror;
+            public int TreeColumn;
         }
 
         private double[] commandTreeWeightings = new double[] {
@@ -461,7 +462,7 @@ namespace GameLogic
             return current;
         }
 
-        public static IEnumerable<List<T>> Permutate<T>(List<T> sequence, int count)
+        public static IEnumerable<List<T>> PermutateOrder<T>(List<T> sequence, int count)
         {
             if (count == 1)
                 yield return sequence;
@@ -469,7 +470,7 @@ namespace GameLogic
             {
                 for (int i = 0; i < count; i++)
                 {
-                    foreach (var perm in Permutate(sequence, count - 1))
+                    foreach (var perm in PermutateOrder(sequence, count - 1))
                         yield return perm;
 
                     T tmp = sequence[count - 1];
@@ -479,12 +480,31 @@ namespace GameLogic
             }
         }
 
+        public static IEnumerable<bool[]> PermutateFlags<T>(bool[] options)
+        {
+            int[] flags = new int[options.Length];
+            int combinations = 1;
+            for (int i = 0; i < options.Length; i++)
+            {
+                flags[i] = combinations;
+                combinations *= 2;
+            }
+
+            for (int comb = 0; comb < combinations; comb++)
+            {
+                for (int i = 0; i < options.Length; i++)
+                    options[i] = (comb & flags[i]) != 0;
+
+                yield return options;
+            }
+        }
+
         private void PositionNodes()
         {
             List<BuildingGroup> bestState = Copy(buildingGroups); double bestEnergy = CondenseBestEnergy(bestState);
             
             // consider every possible ordering of the groups ... but not every possible mirroring. With 7 groups, that's 5040 combinations.
-            foreach (var permutation in Permutate(buildingGroups, buildingGroups.Count))
+            foreach (var permutation in PermutateOrder(buildingGroups, buildingGroups.Count))
             {
                 var newState = Copy(permutation);
                 double newEnergy = CondenseBestEnergy(newState);
@@ -500,7 +520,7 @@ namespace GameLogic
 
 
             buildingGroups = bestState;
-            CondenseBestEnergy(buildingGroups);
+            PlaceBuildings(buildingGroups);
             AllNodes.Sort(this);
         }
 
@@ -517,6 +537,7 @@ namespace GameLogic
                 copy.RootFactory = orig.RootFactory;
                 copy.Theme = orig.Theme;
                 copy.Mirror = orig.Mirror;
+                copy.TreeColumn = orig.TreeColumn;
 
                 output.Add(copy);
             }
@@ -643,14 +664,25 @@ namespace GameLogic
             for (int i = 0; i < groups.Count; i++)
             {
                 var group = groups[i];
+                group.TreeColumn = (i-offset) * groupSeparation;
                 foreach (var building in group.Buildings)
                 {
                     building.TreeColumn = DefaultColumns[building];
 
                     if (group.Mirror)
                         building.TreeColumn = -building.TreeColumn;
-                    building.TreeColumn += (i - offset) * groupSeparation;
+                    building.TreeColumn += group.TreeColumn;
                 }
+            }
+        }
+
+        private void PlaceBuildings(List<BuildingGroup> groups)
+        {
+            for (int i = 0; i < groups.Count; i++)
+            {
+                var group = groups[i];
+                foreach (var building in group.Buildings)
+                    building.TreeColumn = DefaultColumns[building] + group.TreeColumn;
             }
         }
 
@@ -702,6 +734,8 @@ namespace GameLogic
 
                     foreach (var building in group.Buildings)
                         building.TreeColumn += step;
+
+                    group.TreeColumn += step;
 
                     movedAny = true;
                     yield return groups;
