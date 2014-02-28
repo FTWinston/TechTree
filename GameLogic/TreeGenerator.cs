@@ -9,7 +9,7 @@ namespace GameLogic
     internal class TreeGenerator : IComparer<BuildingInfo>
     {
         const int absMinTreeBreadth = 1, absMaxTreeBreadth = 100, minTreeBreadth = 20, maxTreeBreadth = 38;
-        const int minBuildingGroups = 4, maxBuildingGroups = 7;
+        const int minBuildingGroups = 4, maxBuildingGroups = 6;
         const int minDefenseBuildings = 1, maxDefenseBuildings = 3;
 
         public List<BuildingInfo> RootNodes { get; private set; }
@@ -672,7 +672,7 @@ namespace GameLogic
                 if (building.Prerequisite != null)
                 {
                     int dxPrereq = building.Prerequisite.TreeColumn - building.TreeColumn;
-                    energy += dxPrereq * dxPrereq;
+                    energy += dxPrereq * dxPrereq * 5;
                 }
 
                 // if any two links cross, that adds a lot of energy
