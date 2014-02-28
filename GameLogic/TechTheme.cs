@@ -146,23 +146,15 @@ namespace GameLogic
             UnitAttributes = new Attribute[] { },
         };
 
-        public static TechTheme SelectRandom(Random r)
+        public static List<TechTheme> GetList()
         {
-            switch (r.Next(5))
-            {
-                case 0:
-                    return ModernInfantry;
-                case 1:
-                    return Tanks;
-                case 2:
-                    return Aircraft;
-                case 3:
-                    return Mercenaries;
-                case 4:
-                    return Spies;
-                default:
-                    throw new NotImplementedException();
-            }
+            var list = new List<TechTheme>();
+            list.Add(ModernInfantry);
+            list.Add(Tanks);
+            list.Add(Aircraft);
+            list.Add(Mercenaries);
+            list.Add(Spies);
+            return list;
         }
 
         public class Name<T>

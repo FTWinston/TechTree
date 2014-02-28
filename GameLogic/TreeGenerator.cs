@@ -46,7 +46,7 @@ namespace GameLogic
             FakeRootNode = new BuildingInfo(Tree);
             FakeRootNode.TreeRow = -1;
 
-            var group = AddGroup(FakeRootNode, true, false);
+            var group = AddGroup(FakeRootNode, null, false);
             buildingGroups.Add(group);
             var commandCenter = group.Buildings[0];
             RootNodes = FakeRootNode.Unlocks;
@@ -69,13 +69,15 @@ namespace GameLogic
                     defenseBuildings[index] = true;
                 }
 
-            group = AddGroup(commandCenter, false, true); // first subtree should always come from root command center, and have a defensive building
+            var themes = TechTheme.GetList();
+
+            group = AddGroup(commandCenter, themes, true); // first subtree should always come from root command center, and have a defensive building
             buildingGroups.Add(group);
 
             for (int i = 2; i < numBuildingGroups; i++)
             {
                 BuildingInfo parent = SelectNode(treeBreadth.Value, commandCenter);
-                group = AddGroup(parent, false, defenseBuildings[i]);
+                group = AddGroup(parent, themes, defenseBuildings[i]);
                 buildingGroups.Add(group);
             }
 
@@ -160,12 +162,22 @@ namespace GameLogic
         };
 
         private int nextGroupNumber = 0;
-        private BuildingGroup AddGroup(BuildingInfo parent, bool commandSubtree, bool addDefenseBuilding)
+        private BuildingGroup AddGroup(BuildingInfo parent, List<TechTheme> themes, bool addDefenseBuilding)
         {
             var group = new BuildingGroup();
             group.ParentNode = parent;
             group.Number = nextGroupNumber++;
-            group.Theme = commandSubtree ? TechTheme.Command : TechTheme.SelectRandom(r);
+            
+            bool commandSubtree = themes == null;
+
+            if (commandSubtree)
+                group.Theme = TechTheme.Command;
+            else
+            {
+                int pos = r.Next(themes.Count);
+                group.Theme = themes[pos];
+                themes.RemoveAt(pos);
+            }
             group.Buildings = new List<BuildingInfo>();
 
             int[] weightings = commandSubtree ? commandTreeWeightings : standardTreeWeightings;
