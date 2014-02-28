@@ -128,6 +128,8 @@ namespace GameLogic
             public List<BuildingInfo> Buildings = new List<BuildingInfo>();
             public bool Mirror;
             public int TreeColumn;
+
+            public int CondenseTowards;
         }
 
         private int[] commandTreeWeightings = new int[] {
@@ -823,8 +825,11 @@ namespace GameLogic
 
             foreach (var state in CondenseTowards(groups, g => g.ParentNode.TreeColumn))
                 yield return state;
-            
-            foreach (var state in CondenseTowards(groups, g => 0))
+
+            foreach (var group in groups)
+                group.CondenseTowards = group.TreeColumn >= 0 ? -2 : 2;
+
+            foreach (var state in CondenseTowards(groups, g => g.CondenseTowards))
                 yield return state;
         }
 
