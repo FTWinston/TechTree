@@ -669,12 +669,10 @@ namespace GameLogic
                 maxCol = Math.Max(building.TreeColumn, maxCol);
 
                 // if not directly below prereq, higher energy. Same with upgrades (more so), but if it has both an unlock and an upgrade, much higher energy if they're in the same column.
-                int? dxPrereq = null, dyPrereq = null;
                 if (building.Prerequisite != null)
                 {
-                    dxPrereq = building.Prerequisite.TreeColumn - building.TreeColumn;
-                    dyPrereq = building.Prerequisite.TreeRow - building.TreeRow;
-                    energy += dxPrereq.Value * dxPrereq.Value;
+                    int dxPrereq = building.Prerequisite.TreeColumn - building.TreeColumn;
+                    energy += dxPrereq * dxPrereq;
                 }
 
                 // if any two links cross, that adds a lot of energy
