@@ -5,6 +5,8 @@ VisualStudioVersion = 12.0.30723.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TechTree", "TechTree\TechTree.csproj", "{F21BF8D0-97E4-432C-BDA8-C6625066BEC1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameModels", "GameModels\GameModels.csproj", "{D33A8893-0B36-4E17-B558-EEA9DEFC02F4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{F21BF8D0-97E4-432C-BDA8-C6625066BEC1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F21BF8D0-97E4-432C-BDA8-C6625066BEC1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F21BF8D0-97E4-432C-BDA8-C6625066BEC1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D33A8893-0B36-4E17-B558-EEA9DEFC02F4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D33A8893-0B36-4E17-B558-EEA9DEFC02F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D33A8893-0B36-4E17-B558-EEA9DEFC02F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D33A8893-0B36-4E17-B558-EEA9DEFC02F4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
