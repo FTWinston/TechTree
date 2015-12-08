@@ -16,6 +16,7 @@ namespace GameModels
         public List<Unit> Units { get; private set; }
 
         public List<BuildingType> AvailableBuildings { get; private set; }
+        public List<UnitType> AvailableUnits { get; private set; }
         public List<Research> CompletedResearch { get; private set; }
 
         public Player(TechTree tree)
@@ -25,14 +26,28 @@ namespace GameModels
             Units = new List<Unit>();
 
             AvailableBuildings = new List<BuildingType>();
+            AvailableUnits = new List<UnitType>();
             CompletedResearch = new List<Research>();
         }
 
         public void BuildingCompleted(Building b)
         {
             foreach (var type in b.Definition.Unlocks)
-                if (!AvailableBuildings.Contains(type))
-                    AvailableBuildings.Add(type);
+            {
+                if (type is BuildingType)
+                {
+                    var building = type as BuildingType;
+                    if (!AvailableBuildings.Contains(building))
+                        AvailableBuildings.Add(building);
+                }
+
+                if (type is UnitType)
+                {
+                    var unit = type as UnitType;
+                    if (!AvailableUnits.Contains(unit))
+                        AvailableUnits.Add(unit);
+                }
+            }
         }
 
         public void BuildingDestroyed(Building b)

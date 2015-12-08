@@ -28,6 +28,20 @@ namespace GameModels.Definitions
         public int VespineCost { get; internal set; }
         public int SupplyCost { get; internal set; }
 
+        private BuildingType prerequisite;
+        public BuildingType Prerequisite
+        {
+            get { return prerequisite; }
+            internal set
+            {
+                if (prerequisite != null)
+                    prerequisite.Unlocks.Remove(this);
+
+                prerequisite = value;
+                prerequisite.Unlocks.Add(this);
+            }
+        }
+
         public List<Feature> Features { get; private set; }
 
         protected EntityType()
@@ -39,7 +53,7 @@ namespace GameModels.Definitions
         {
             sb.AppendFormat("{0}: {1} health, {2} armor, {3} mana", Name, Health, Armor, Mana);
             sb.AppendLine();
-            
+
             sb.AppendFormat("costs {0} minerals, {1} vespine, {3}{2} supply, {4} turn{5} to build", MineralCost, VespineCost, Math.Abs(SupplyCost), SupplyCost < 0 ? "generates " : string.Empty, BuildTime, BuildTime == 1 ? string.Empty : "s");
             sb.AppendLine();
 
@@ -49,6 +63,12 @@ namespace GameModels.Definitions
             foreach (var feature in Features)
             {
                 sb.AppendFormat("{0}: {1}", feature.Name, feature.Description);
+                sb.AppendLine();
+            }
+
+            if (Prerequisite != null)
+            {
+                sb.AppendFormat("Requires: {0}", Prerequisite.Name);
                 sb.AppendLine();
             }
         }

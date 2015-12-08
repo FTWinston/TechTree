@@ -9,15 +9,18 @@ namespace GameModels.Generation
 {
     static class UnitGenerator
     {
-        public static UnitType Generate(Random r, UnitType.Role function, int tier)
+        public static UnitType Generate(TreeGenerator gen, UnitType.Role function, int tier)
         {
+            Random r = gen.Random;
+
             UnitType unit = new UnitType()
             {
-                Name = "Unnamed unit",
+                Name = "Unit " + gen.GetUnusedSymbol(),
                 UnitRole = function,
                 VisionRange = 3,
                 ActionPoints = 4,
                 Tier = tier,
+                BuildTime = r.Next(Math.Max(1, tier - 2), tier + 2),
             };
 
             switch (function)
