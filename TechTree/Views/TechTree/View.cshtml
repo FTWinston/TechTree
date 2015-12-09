@@ -6,6 +6,20 @@
 
 @Styles.Render("~/Content/Tree.css");
 
+@section scripts {
+    <script type="text/javascript">
+        $(function () {
+            $('building, unit').mouseover(function (e) {
+                $(this).addClass('hover');
+                e.stopPropagation();
+            }).mouseout(function (e) {
+                $(this).removeClass('hover');
+                e.stopPropagation();
+            });
+        });
+    </script>
+}
+
 <h2>A randomly generated tech tree</h2>
 
 <pre>
@@ -13,29 +27,102 @@
 </pre>
 
 <techtree>
-@foreach (var b in Model.Buildings)
-{
-    @:<building symbol="@b.Symbol" name="@b.Name" row="@b.DisplayRow" column="@b.DisplayColumn" mineralcost="@b.MineralCost" vespinecost="@b.VespineCost" supplycost="@b.SupplyCost" buildtime="@b.BuildTime" health="@b.Health" armor="@b.Armor" mana="@b.Mana" vision="@b.VisionRange" actionpoints="@b.ActionPoints" detector="@b.IsDetector" requires="@(b.Prerequisite == null ? null : b.Prerequisite.Name)">
-        <unlocks>
-        @foreach (var u in b.Unlocks.Where(x => x is GameModels.Definitions.UnitType))
-        {
-            @:<unit symbol="@u.Symbol" name="@u.Name" mineralcost="@u.MineralCost" vespinecost="@u.VespineCost" supplycost="@u.SupplyCost" buildtime="@u.BuildTime" health="@u.Health" armor="@u.Armor" mana="@u.Mana" vision="@u.VisionRange" actionpoints="@u.ActionPoints" detector="@u.IsDetector" builtby="unknown">
-                
-            @:</unit>
-        }
-        </unlocks>
+    @foreach (var b in Model.Buildings)
+    {
+        <building symbol="@b.Symbol" row="@b.DisplayRow" column="@b.DisplayColumn" requires="@(b.Prerequisite == null ? null : b.Prerequisite.Name)">
+            <info>
+                <name>@b.Name</name>
+                <cost>
+                    @if (b.MineralCost != 0)
+                    {
+                        <minerals>@b.MineralCost</minerals>
+                    }
+                    @if (b.VespineCost!= 0)
+                    {
+                        <vespine>@b.VespineCost</vespine>
+                    }
+                    @if (b.SupplyCost != 0)
+                    {
+                        <supply class="(@b.SupplyCost < 0 ? "positive" : null)">@Math.Abs(b.SupplyCost)</supply>
+                    }
+                    <time>@b.BuildTime</time>
+                </cost>
+                <stats>
+                    <health>@b.Health</health>
+                    <armor>@b.Armor</armor>
+                    @if (b.Mana != 0)
+                    {
+                        <mana>@b.Mana</mana>
+                    }
+                    @if (b.ActionPoints != 0)
+                    {
+                        <actionpoints>@b.ActionPoints</actionpoints>
+                    }
+                    <vision>@b.VisionRange</vision>
+                </stats>
+                @if (b.IsDetector)
+                {
+                    <detector></detector>
+                }
+            </info>
 
-        if (b.Builds.Count > 0)
-        {
-            <builds>
-            @foreach (var u in b.Builds)
+            <unlocks>
+                @foreach (GameModels.Definitions.UnitType u in b.Unlocks.Where(x => x is GameModels.Definitions.UnitType))
+                {
+                    <unit symbol="@u.Symbol">
+                        <info>
+                            <name>@u.Name</name>
+                            <cost>
+                                @if (u.MineralCost != 0)
+                                {
+                                    <minerals>@u.MineralCost</minerals>
+                                }
+                                @if (u.VespineCost != 0)
+                                {
+                                    <vespine>@u.VespineCost</vespine>
+                                }
+                                @if (u.SupplyCost != 0)
+                                {
+                                    <supply class="(@u.SupplyCost < 0 ? "positive" : null)">@Math.Abs(u.SupplyCost)</supply>
+                                }
+                                <time>@u.BuildTime</time>
+                            </cost>
+                            <stats>
+                                <health>@u.Health</health>
+                                <armor>@u.Armor</armor>
+                                @if (u.Mana != 0)
+                                {
+                                    <mana>@u.Mana</mana>
+                                }
+                                @if (u.ActionPoints != 0)
+                                {
+                                    <actionpoints>@u.ActionPoints</actionpoints>
+                                }
+                                <vision>@u.VisionRange</vision>
+                            </stats>
+                            @if (u.IsDetector)
+                            {
+                                <detector></detector>
+                            }
+                            <builtat>@u.BuiltBy.Name</builtat>
+                            @if (@u.Prerequisite != u.BuiltBy)
+                            {
+                                <requires>@u.Prerequisite.Name</requires>
+                            }
+                        </info>
+                    </unit>
+                }
+            </unlocks>
+
+            @if (b.Builds.Count > 0)
             {
-                @:<unit symbol="@u.Symbol" name="@u.Name" requires="@(u.Prerequisite == null ? null : u.Prerequisite.Name)">
-
-                @:</unit>
-            }
+            <builds>
+                @foreach (var u in b.Builds)
+                {
+                    <unit symbol="@u.Symbol" name="@u.Name" requires="@(u.Prerequisite == null ? null : u.Prerequisite.Name)"></unit>
+                }
             </builds>
-        }
-    @:</building>
+            }
+        </building>
 }
 </techtree>

@@ -9,6 +9,20 @@ namespace GameModels.Definitions
 {
     public class UnitType : EntityType<Unit>
     {
+        private BuildingType builtBy;
+        public BuildingType BuiltBy
+        {
+            get { return builtBy; }
+            internal set
+            {
+                if (builtBy != null)
+                    builtBy.Builds.Remove(this);
+
+                builtBy = value;
+                builtBy.Builds.Add(this);
+            }
+        }
+
         [Flags]
         public enum UnitFlags
         {

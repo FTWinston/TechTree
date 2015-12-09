@@ -138,7 +138,7 @@ namespace GameModels.Generation
                 unit = UnitGenerator.Generate(this, role, tier);
             } while (unit == null);
 
-            building.Builds.Add(unit);
+            unit.BuiltBy = building;
             unit.Prerequisite = building;
             Tree.Units.Add(unit);
             return unit;

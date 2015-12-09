@@ -7,44 +7,155 @@ building::before, unit::before {
 	content: attr(symbol);
 }
 
-building, builds {
+building, builds, info {
     display: block;
     width: 2.5em;
     border-style: solid;
     border-width: 2px;
     border-radius: 0.3em;
     position: relative;
+    color: black;
+    background-color: white;
 }
 
 building {
     margin: 1em;
-    padding-top: 0.4em;
+    padding-top: 0.2em;
     border-color: #000;
+    cursor:pointer;
 }
 
 unit {
     display: block;
-    font-size: 60%;
     width: 100%;
     border-top-style: solid;
     border-top-width: 2px;
     border-top-color: inherit;
-    height: 1.75em;
 }
 
-builds {
+unit::before {
+    font-size: 60%;
+}
+
+builds, info {
     display: none;
-}
-
-building:hover builds {
-    display: block;
     position: absolute;
     top: -2px; /* building border width */
-    left: 3em;
     border-color: #aaa;
 }
 
+info {
+    width: 9em;
+    min-height: 3.5em;
+    left: 3em;
+    padding: 0.25em;
+}
+
+builds {
+    left: 12.5em;
+}
+
+building.hover > info, unit.hover > info, building.hover builds {
+    display: block;
+}
+
 builds::before {
-    content: 'builds';
-    font-size:75%;
+    content: "builds";
+    font-size: 75%;
+}
+
+info > * {
+    display: block;
+}
+
+info > *:not(:first-child) {
+    font-size: 50%;
+    padding-left: 2.5em;
+}
+
+info > *:not(:first-child)::before {
+    position: absolute;
+    left: 0.5em;
+}
+
+info cost > *, info stats > * {
+    white-space: nowrap;
+}
+
+info cost > *:not(:first-child), info stats > *:not(:first-child) {
+    margin-left: 0.5em;
+}
+
+info cost::before {
+    content: "cost: ";
+}
+
+info stats::before {
+    content: "stats: ";
+}
+
+info builtat::before {
+    content: "built at: ";
+}
+
+info requires::before {
+    content: "requires: ";
+}
+
+info cost minerals::before {
+    content: "\2604";
+    color: #06f;
+}
+
+info cost vespine::before {
+    content: "\2668";
+    color: #0c0;
+}
+
+info cost supply::before {
+    content: "\26FD";
+    color: #f90;
+}
+
+info cost supply.positive::before {
+    content: "\26FD +";
+}
+
+info cost supply.positive {
+    color: green;
+}
+
+info cost time::before {
+    content: "\26E3";
+    color: #999;
+}
+
+info stats health::before {
+    content: "\2629";
+    color: #c00;
+}
+
+info stats armor::before {
+    content: "\26C9";
+    color: #0c0;
+}
+
+info stats mana::before {
+    content: "\26A1";
+    color: #0cf;
+}
+
+info stats actionpoints::before {
+    content: "\261B";
+    color: #c0c;
+}
+
+info stats vision::before {
+    content: "\26EF";
+    color: #aa0;
+}
+
+info stats detector::before {
+    content: "detector";
+    color: #fc0;
 }
