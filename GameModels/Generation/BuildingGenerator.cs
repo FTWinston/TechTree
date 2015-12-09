@@ -12,9 +12,11 @@ namespace GameModels.Generation
     {
         public static BuildingType GenerateFactory(TreeGenerator gen, int factoryNumber)
         {
+            string symbol = gen.GetUnusedSymbol();
             BuildingType building = new BuildingType()
             {
-                Name = "Factory " + gen.GetUnusedSymbol(),
+                Name = "Factory " + symbol,
+                Symbol = symbol,
                 VisionRange = 2,
             };
             
@@ -33,9 +35,11 @@ namespace GameModels.Generation
 
         public static BuildingType GenerateTechBuilding(TreeGenerator gen, int factoryNumber)
         {
+            string symbol = gen.GetUnusedSymbol();
             BuildingType building = new BuildingType()
             {
-                Name = "Tech building " + gen.GetUnusedSymbol(),
+                Name = "Tech building " + symbol,
+                Symbol = symbol,
                 VisionRange = 2,
             };
 

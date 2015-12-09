@@ -13,9 +13,11 @@ namespace GameModels.Generation
         {
             Random r = gen.Random;
 
+            string symbol = gen.GetUnusedSymbol();
             UnitType unit = new UnitType()
             {
-                Name = "Unit " + gen.GetUnusedSymbol(),
+                Name = "Unit " + symbol,
+                Symbol = symbol,
                 UnitRole = function,
                 VisionRange = 3,
                 ActionPoints = 4,

@@ -1,10 +1,41 @@
-﻿
+﻿@model GameModels.TechTree
+
 @{
     ViewBag.Title = "View Tech Tree";
 }
 
+@Styles.Render("~/Content/Tree.css");
+
 <h2>A randomly generated tech tree</h2>
 
 <pre>
-@ViewBag.Tree.GetDescription()
+@Model.GetDescription()
 </pre>
+
+<techtree>
+@foreach (var b in Model.Buildings)
+{
+    @:<building symbol="@b.Symbol" name="@b.Name" row="@b.DisplayRow" column="@b.DisplayColumn" mineralcost="@b.MineralCost" vespinecost="@b.VespineCost" supplycost="@b.SupplyCost" buildtime="@b.BuildTime" health="@b.Health" armor="@b.Armor" mana="@b.Mana" vision="@b.VisionRange" actionpoints="@b.ActionPoints" detector="@b.IsDetector" requires="@(b.Prerequisite == null ? null : b.Prerequisite.Name)">
+        <unlocks>
+        @foreach (var u in b.Unlocks.Where(x => x is GameModels.Definitions.UnitType))
+        {
+            @:<unit symbol="@u.Symbol" name="@u.Name" mineralcost="@u.MineralCost" vespinecost="@u.VespineCost" supplycost="@u.SupplyCost" buildtime="@u.BuildTime" health="@u.Health" armor="@u.Armor" mana="@u.Mana" vision="@u.VisionRange" actionpoints="@u.ActionPoints" detector="@u.IsDetector" builtby="unknown">
+                
+            @:</unit>
+        }
+        </unlocks>
+
+        if (b.Builds.Count > 0)
+        {
+            <builds>
+            @foreach (var u in b.Builds)
+            {
+                @:<unit symbol="@u.Symbol" name="@u.Name" requires="@(u.Prerequisite == null ? null : u.Prerequisite.Name)">
+
+                @:</unit>
+            }
+            </builds>
+        }
+    @:</building>
+}
+</techtree>

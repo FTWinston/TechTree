@@ -26,18 +26,18 @@ namespace GameModels.Generation
         internal TechTree Tree { get; private set; }
         internal Complexity TreeComplexity { get; private set; }
 
+        const string symbols = "ABCDEFGHIJKLMNOPQRSTUVWXYZΔΣΦΨΩαβγδεζηθλμξπςφω?#@£$%&☺♀♂♠♣♥♦";
+        int nextSymbolIndex = 0;
         internal string GetUnusedSymbol()
         {
-            string symbol = ((char)('A' + usedSymbols.Count)).ToString();
-            usedSymbols.Add(symbol);
-            return symbol;
+            if (nextSymbolIndex >= symbols.Length)
+                return "-";
+            return symbols[nextSymbolIndex++].ToString();
         }
-
-        private SortedSet<string> usedSymbols;
 
         private TechTree Generate()
         {
-            usedSymbols = new SortedSet<string>();
+            nextSymbolIndex = 0;
             Tree = new TechTree();
 
             int numFactories = GenerateFactories();
@@ -139,6 +139,7 @@ namespace GameModels.Generation
             } while (unit == null);
 
             building.Builds.Add(unit);
+            unit.Prerequisite = building;
             Tree.Units.Add(unit);
             return unit;
         }

@@ -16,8 +16,8 @@ namespace TechTree.Controllers
             if (!complexity.HasValue)
                 complexity = TreeGenerator.Complexity.Normal;
 
-            ViewBag.Tree = TreeGenerator.Generate(complexity.Value);
-            return View("View");
+            var tree = TreeGenerator.Generate(complexity.Value);
+            return View("View", tree);
         }
 
         //
@@ -27,8 +27,8 @@ namespace TechTree.Controllers
             if (!complexity.HasValue)
                 complexity = TreeGenerator.Complexity.Normal;
 
-            ViewBag.Tree = TreeGenerator.Generate(complexity.Value, seed);
-            return View("View");
+            var tree = TreeGenerator.Generate(complexity.Value, seed);
+            return View("View", tree);
         }
 	}
 }

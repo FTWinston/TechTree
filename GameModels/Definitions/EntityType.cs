@@ -10,7 +10,7 @@ namespace GameModels.Definitions
     public abstract class EntityType
     {
         public string Name { get; internal set; }
-        public char Appearance { get; internal set; }
+        public string Symbol { get; internal set; }
 
         public int Health { get; internal set; }
         public int Armor { get; internal set; }

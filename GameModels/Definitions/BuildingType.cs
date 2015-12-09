@@ -18,6 +18,9 @@ namespace GameModels.Definitions
         public List<UnitType> Builds { get; private set; }
         public List<Research> Researches { get; private set; }
 
+        public int DisplayRow { get; internal set; }
+        public int DisplayColumn { get; internal set; }
+
         public BuildingType()
         {
             Unlocks = new List<EntityType>();

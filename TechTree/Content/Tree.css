@@ -1,0 +1,50 @@
+﻿techtree {
+    font-size: 200%;
+    text-align:center;
+}
+
+building::before, unit::before {
+	content: attr(symbol);
+}
+
+building, builds {
+    display: block;
+    width: 2.5em;
+    border-style: solid;
+    border-width: 2px;
+    border-radius: 0.3em;
+    position: relative;
+}
+
+building {
+    margin: 1em;
+    padding-top: 0.4em;
+    border-color: #000;
+}
+
+unit {
+    display: block;
+    font-size: 60%;
+    width: 100%;
+    border-top-style: solid;
+    border-top-width: 2px;
+    border-top-color: inherit;
+    height: 1.75em;
+}
+
+builds {
+    display: none;
+}
+
+building:hover builds {
+    display: block;
+    position: absolute;
+    top: -2px; /* building border width */
+    left: 3em;
+    border-color: #aaa;
+}
+
+builds::before {
+    content: 'builds';
+    font-size:75%;
+}
