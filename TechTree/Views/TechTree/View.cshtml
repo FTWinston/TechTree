@@ -7,17 +7,7 @@
 @Styles.Render("~/Content/Tree.css");
 
 @section scripts {
-    <script type="text/javascript">
-        $(function () {
-            $('building, unit').mouseover(function (e) {
-                $(this).addClass('hover');
-                e.stopPropagation();
-            }).mouseout(function (e) {
-                $(this).removeClass('hover');
-                e.stopPropagation();
-            });
-        });
-    </script>
+    @Scripts.Render("~/Scripts/Tree.js");
 }
 
 <h2>A randomly generated tech tree</h2>
@@ -63,6 +53,10 @@
                 @if (b.IsDetector)
                 {
                     <detector></detector>
+                }
+                @if (b.UpgradesFrom != null)
+                {
+                    <upgradesFrom>@b.UpgradesFrom.Name</upgradesFrom>
                 }
             </info>
 

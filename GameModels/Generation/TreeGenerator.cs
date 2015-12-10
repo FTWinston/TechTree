@@ -87,6 +87,8 @@ namespace GameModels.Generation
                 tier++;
             }
 
+            PositionBuildings();
+
             return Tree;
         }
 
@@ -174,6 +176,27 @@ namespace GameModels.Generation
             }
 
             return numFactories;
+        }
+
+        private void PositionBuildings()
+        {
+            BuildingType root = Tree.Buildings[0];
+            SetRowRecursive(0, root);
+
+            int maxRow = Tree.Buildings.Max(b => b.DisplayRow);
+            for (int row=0; row<=maxRow; row++)
+            {
+                int col = 0;
+                foreach (var building in Tree.Buildings.Where(b => b.DisplayRow == row))
+                    building.DisplayColumn = col++;
+            }
+        }
+
+        private void SetRowRecursive(int row, BuildingType b)
+        {
+            b.DisplayRow = row;
+            foreach (BuildingType child in b.Unlocks.Where(u => u is BuildingType))
+                SetRowRecursive(row + 1, child);
         }
 
         public enum Complexity

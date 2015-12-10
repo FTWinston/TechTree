@@ -1,4 +1,6 @@
 ﻿techtree {
+    display: block;
+    position: relative;
     font-size: 200%;
     text-align:center;
 }
@@ -19,6 +21,7 @@ building, builds, info {
 }
 
 building {
+    position: absolute;
     margin: 1em;
     padding-top: 0.2em;
     border-color: #000;
@@ -45,6 +48,7 @@ builds, info {
 }
 
 info {
+    z-index: 999;
     width: 9em;
     min-height: 3.5em;
     left: 3em;
@@ -100,6 +104,10 @@ info builtat::before {
 
 info requires::before {
     content: "requires: ";
+}
+
+info upgradesFrom::before {
+    content: "upgrade of: ";
 }
 
 info cost minerals::before {
