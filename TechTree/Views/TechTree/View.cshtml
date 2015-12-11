@@ -4,10 +4,10 @@
     ViewBag.Title = "View Tech Tree";
 }
 
-@Styles.Render("~/Content/Tree.css");
+@Styles.Render("~/Content/Tree.css")
 
 @section scripts {
-    @Scripts.Render("~/Scripts/Tree.js");
+    @Scripts.Render("~/Scripts/Tree.js")
 }
 
 <h2>A randomly generated tech tree</h2>
@@ -19,7 +19,7 @@
 <techtree>
     @foreach (var b in Model.Buildings)
     {
-        <building symbol="@b.Symbol" row="@b.DisplayRow" column="@b.DisplayColumn" requires="@(b.Prerequisite == null ? null : b.Prerequisite.Name)">
+        <building symbol="@b.Symbol" row="@b.DisplayRow" column="@b.DisplayColumn" requires="@(b.Prerequisite == null ? null : b.Prerequisite.Symbol)">
             <info>
                 <name>@b.Name</name>
                 <cost>
@@ -57,6 +57,10 @@
                 @if (b.UpgradesFrom != null)
                 {
                     <upgradesFrom>@b.UpgradesFrom.Name</upgradesFrom>
+                }
+                @if (@b.Prerequisite != null)
+                {
+                    <requires>@b.Prerequisite.Name</requires>
                 }
             </info>
 
@@ -118,5 +122,5 @@
             </builds>
             }
         </building>
-}
+    }
 </techtree>

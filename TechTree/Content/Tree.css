@@ -48,7 +48,7 @@ builds, info {
 }
 
 info {
-    z-index: 999;
+    z-index: 1;
     width: 9em;
     min-height: 3.5em;
     left: 3em;
@@ -166,4 +166,26 @@ info stats vision::before {
 info stats detector::before {
     content: "detector";
     color: #fc0;
+}
+
+techtree link {
+    display: block;
+    position: absolute;
+    z-index: -1;
+}
+
+techtree link.left, techtree link.right {
+    border-top: 2px solid green;
+}
+
+techtree link.left, techtree link.straight {
+    border-left: 2px solid green;
+}
+
+techtree link.right {
+    border-right: 2px solid green;
+}
+
+techtree link.straight {
+    width: 5px;
 }
