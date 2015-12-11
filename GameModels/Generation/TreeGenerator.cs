@@ -11,17 +11,19 @@ namespace GameModels.Generation
     {
         public static TechTree Generate(Complexity complexity = Complexity.Normal, int? seed = null)
         {
-            Random r = seed == null ? new Random() : new Random(seed.Value);
-
+            if (seed == null)
+                seed = new Random().Next(int.MinValue, int.MaxValue);
+            
             var generator = new TreeGenerator()
             {
-                Random = r,
+                Seed = seed.Value,
                 TreeComplexity = complexity
             };
             return generator.Generate();
         }
 
         private TreeGenerator() { }
+        internal int Seed { get; private set; }
         internal Random Random { get; private set; }
         internal TechTree Tree { get; private set; }
         internal Complexity TreeComplexity { get; private set; }
@@ -37,8 +39,10 @@ namespace GameModels.Generation
 
         private TechTree Generate()
         {
+            Random = new Random(Seed);
             nextSymbolIndex = 0;
             Tree = new TechTree();
+            Tree.Seed = Seed;
 
             int numFactories = GenerateFactories();
 
@@ -94,41 +98,28 @@ namespace GameModels.Generation
 
         private void AddToSubtree(BuildingType root, BuildingType descendent)
         {
-            int numBuildingUnlocks = 0;
-            foreach (var type in root.Unlocks)
-                if (type is BuildingType)
-                    numBuildingUnlocks++;
+            var children = root.Unlocks.Where(t => t is BuildingType);
+            int numChildren = children.Count();
 
-            if (numBuildingUnlocks == 0 || Random.Next(3) == 0)
+            // the more children a node has, the less likely it is to just have this child added directly to it
+            // for a node with 1 child, the chances of "falling on" to the next row are 1/3. For one with 2, it's 2/4, for one with 3, it's 3/5,for one with 4, it's 4/6, etc.
+            if (numChildren == 0 || Random.Next(numChildren + 2) >= numChildren)
             {
                 descendent.Prerequisite = root;
                 return;
             }
 
-            // find another building type that is unlocked by this root
-            BuildingType other = null;
-
-            int iBuildingUnlock = 0, selectedUnlock = Random.Next(numBuildingUnlocks);
-            foreach (var type in root.Unlocks)
-                if (type is BuildingType)
-                {
-                    if (iBuildingUnlock == selectedUnlock)
-                    {
-                        other = type as BuildingType;
-                        break;
-                    }
-                    iBuildingUnlock++;
-                }
+            // choose a building type that is unlocked by this one
+            BuildingType child = children.ElementAt(Random.Next(numChildren)) as BuildingType;
 
             if (Random.Next(3) == 0)
-            {
-                // insert as a prerequisite of this other building we've found
-                other.Prerequisite = descendent;
+            {// on a 1/3 chance, insert as a prerequisite of this other child building
+                child.Prerequisite = descendent;
                 descendent.Prerequisite = root;
             }
             else
-            {// add as a descendent of this other building
-                AddToSubtree(other, descendent);
+            {// otherwise, add as a descendent of this other building
+                AddToSubtree(child, descendent);
             }
         }
 
@@ -184,12 +175,10 @@ namespace GameModels.Generation
             SetRowRecursive(0, root);
 
             int maxRow = Tree.Buildings.Max(b => b.DisplayRow);
-            for (int row=0; row<=maxRow; row++)
-            {
-                int col = 0;
-                foreach (var building in Tree.Buildings.Where(b => b.DisplayRow == row))
-                    building.DisplayColumn = col++;
-            }
+            int mostChildren = Tree.Buildings.Max(b => b.Unlocks.Where(u => u is BuildingType).Count());
+
+            SpreadColumnsRecursive(root, maxRow, mostChildren);
+            ContractColumns();
         }
 
         private void SetRowRecursive(int row, BuildingType b)
@@ -197,6 +186,104 @@ namespace GameModels.Generation
             b.DisplayRow = row;
             foreach (BuildingType child in b.Unlocks.Where(u => u is BuildingType))
                 SetRowRecursive(row + 1, child);
+        }
+
+        private void SpreadColumnsRecursive(BuildingType b, int maxRows, int maxChildren)
+        {
+            int childSpacing = (maxRows - b.DisplayRow) * maxChildren + 1;
+
+            var children = b.Unlocks.Where(u => u is BuildingType);
+            int childNum = 0;
+
+            foreach (BuildingType child in children)
+            {
+                child.DisplayColumn = b.DisplayColumn + (childNum++) * childSpacing;
+                SpreadColumnsRecursive(child, maxRows, maxChildren);
+            }
+        }
+
+        private void ContractColumns()
+        {
+            var buildings = Tree.Buildings.Where(b => b.Prerequisite != null).OrderByDescending(b => b.DisplayRow).ThenBy(b => b.DisplayColumn);
+
+            foreach (var building in buildings)
+            {
+                // shift this building (and its subtree) as far left as we can, until it is in-line with its parent, or is blocked
+                int shift = DetermineMaxSubtreeLeftShift(building, building.DisplayColumn - building.Prerequisite.DisplayColumn);
+                if (shift > 0)
+                    ShiftSubtreeLeft(building, shift);
+            }
+
+            // now shift ALL buildings so that the left-most one is in column 0
+            var minCol = Tree.Buildings.Min(b => b.DisplayColumn);
+            if (minCol != 0)
+                foreach (var b in Tree.Buildings)
+                    b.DisplayColumn -= minCol;
+        }
+
+        private int DetermineMaxSubtreeLeftShift(BuildingType b, int maxShift)
+        {
+            if (maxShift == 0)
+                return 0;
+
+            // first, see how far left this building can go
+            int dist = DetermineAvailableLeftShift(b, maxShift, 0);
+
+            // then, see how far left its left-most descendents can go
+            BuildingType leftChild = b.Unlocks.FirstOrDefault(u => u is BuildingType) as BuildingType;
+            if (leftChild == null)
+            {
+                // if this node has no children, it might be able to "jump" over the node currently blocking it
+                if (dist < maxShift - 2)
+                {
+                    var collision = FindBuilding(b.DisplayRow, b.DisplayRow - dist - 2);
+                    if (collision == null)
+                    {
+                        dist += 2;
+
+                        // could now possibly keep moving further left
+                        dist = DetermineAvailableLeftShift(b, maxShift, dist);
+                    }
+                }
+
+                return dist;
+            }
+
+            if (dist == 0)
+                return 0;
+
+            // return which of the above two is the smallest
+            dist = Math.Min(dist, DetermineMaxSubtreeLeftShift(leftChild as BuildingType, dist));
+
+            return dist;
+        }
+        private int DetermineAvailableLeftShift(BuildingType b, int maxShift, int dist)
+        {
+            do
+            {
+                var collision = FindBuilding(b.DisplayRow, b.DisplayColumn - dist - 1);
+                if (collision != null)
+                    break;
+                dist++;
+            } while (dist < maxShift);
+
+            return dist;
+        }
+
+        private BuildingType FindBuilding(int row, int column)
+        {
+            return Tree.Buildings.SingleOrDefault(b => b.DisplayRow == row && b.DisplayColumn == column);
+        }
+
+        private void ShiftSubtreeLeft(BuildingType b, int distance)
+        {
+            b.DisplayColumn -= distance;
+            var children = b.Unlocks.Where(u => u is BuildingType);
+
+            foreach (BuildingType child in children)
+            {
+                ShiftSubtreeLeft(child, distance);
+            }
         }
 
         public enum Complexity

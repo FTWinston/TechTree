@@ -12,6 +12,7 @@ namespace GameModels
         public List<BuildingType> Buildings { get; private set; }
         public List<UnitType> Units { get; private set; }
         public List<Research> Research { get; private set; }
+        public int Seed { get; internal set; }
 
         public TechTree()
         {
