@@ -190,14 +190,14 @@ namespace GameModels.Generation
 
         private void SpreadColumnsRecursive(BuildingType b, int maxRows, int maxChildren)
         {
-            int childSpacing = (maxRows - b.DisplayRow) * maxChildren + 1;
+            int childSpacing = (int)Math.Pow(maxChildren, maxRows - b.DisplayRow - 1) + 1;
 
             var children = b.Unlocks.Where(u => u is BuildingType);
             int childNum = 0;
 
             foreach (BuildingType child in children)
             {
-                child.DisplayColumn = b.DisplayColumn + (childNum++) * childSpacing;
+                child.DisplayColumn = b.DisplayColumn + (childNum++ * childSpacing);
                 SpreadColumnsRecursive(child, maxRows, maxChildren);
             }
         }
@@ -205,11 +205,22 @@ namespace GameModels.Generation
         private void ContractColumns()
         {
             var buildings = Tree.Buildings.Where(b => b.Prerequisite != null).OrderByDescending(b => b.DisplayRow).ThenBy(b => b.DisplayColumn);
-
+            
             foreach (var building in buildings)
             {
                 // shift this building (and its subtree) as far left as we can, until it is in-line with its parent, or is blocked
                 int shift = DetermineMaxSubtreeLeftShift(building, building.DisplayColumn - building.Prerequisite.DisplayColumn);
+                if (shift > 0)
+                    ShiftSubtreeLeft(building, shift);
+            }
+
+            foreach (var building in buildings)
+            {
+                if (building.Unlocks.FirstOrDefault(u => u is BuildingType) != null)
+                    continue;
+
+                // it might be possible for a childless building to "jump" past a building that is blocking it
+                int shift = DetermineJumpLeftShift(building);
                 if (shift > 0)
                     ShiftSubtreeLeft(building, shift);
             }
@@ -232,22 +243,7 @@ namespace GameModels.Generation
             // then, see how far left its left-most descendents can go
             BuildingType leftChild = b.Unlocks.FirstOrDefault(u => u is BuildingType) as BuildingType;
             if (leftChild == null)
-            {
-                // if this node has no children, it might be able to "jump" over the node currently blocking it
-                if (dist < maxShift - 2)
-                {
-                    var collision = FindBuilding(b.DisplayRow, b.DisplayRow - dist - 2);
-                    if (collision == null)
-                    {
-                        dist += 2;
-
-                        // could now possibly keep moving further left
-                        dist = DetermineAvailableLeftShift(b, maxShift, dist);
-                    }
-                }
-
                 return dist;
-            }
 
             if (dist == 0)
                 return 0;
@@ -257,6 +253,7 @@ namespace GameModels.Generation
 
             return dist;
         }
+
         private int DetermineAvailableLeftShift(BuildingType b, int maxShift, int dist)
         {
             do
@@ -268,6 +265,27 @@ namespace GameModels.Generation
             } while (dist < maxShift);
 
             return dist;
+        }
+
+        private int DetermineJumpLeftShift(BuildingType b)
+        {
+            var maxShift = b.DisplayColumn - b.Prerequisite.DisplayColumn;
+
+            if (maxShift >= 2)
+            {
+                var collision = FindBuilding(b.DisplayRow, b.DisplayColumn - 2);
+                if (collision == null)
+                {
+                    int dist = 2;
+
+                    // could now possibly keep moving further left
+                    dist = DetermineAvailableLeftShift(b, maxShift, dist);
+
+                    return dist;
+                }
+            }
+
+            return 0;
         }
 
         private BuildingType FindBuilding(int row, int column)
