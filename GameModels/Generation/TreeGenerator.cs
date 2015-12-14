@@ -61,6 +61,36 @@ namespace GameModels.Generation
             var children = root.Unlocks.Where(t => t is BuildingType);
             int numChildren = children.Count();
 
+            // sometimes we get a really boring tree, that's just A -> B -> C -> D -> E -> F -> G -> H (etc) with no branching.
+            // instead of generating a subtree like that, if the "ancestor chain" is too long, insert further up the tree, instead.
+            int chainLengthWithNoSiblings = numChildren == 0 ? 1 : 0;
+
+            if (chainLengthWithNoSiblings > 0)
+            {
+                var check = root.Prerequisite;
+                while (check != null)
+                {
+                    if (check.Unlocks.Count(t => t is BuildingType) == 1)
+                        chainLengthWithNoSiblings++;
+                    else
+                        break;
+
+                    check = check.Prerequisite;
+                }
+
+                if (chainLengthWithNoSiblings > 2)
+                {
+                    // insert further up the tree instead, and then return
+                    int stepsUp = Random.Next(1, chainLengthWithNoSiblings + 1);
+
+                    for (int i = 0; i < stepsUp; i++)
+                        root = root.Prerequisite;
+
+                    descendent.Prerequisite = root;
+                    return;
+                }
+            }
+
             // the more children a node has, the less likely it is to just have this child added directly to it
             // for a node with 1 child, the chances of "falling on" to the next row are 1/3. For one with 2, it's 2/4, for one with 3, it's 3/5,for one with 4, it's 4/6, etc.
             if (numChildren == 0 || Random.Next(numChildren + 2) >= numChildren)
