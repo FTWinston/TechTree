@@ -46,50 +46,10 @@ namespace GameModels.Generation
 
             int numFactories = GenerateFactories();
 
-            int tier = 1;
-            foreach (var building in Tree.Buildings)
-            {
-                // each factory building makes 3-4 different types of unit
-                GenerateUnitType(building, UnitType.Role.Fighter, tier);
-                GenerateUnitType(building, UnitType.Role.Fighter, tier);
-                GenerateUnitType(building, UnitType.Role.Hybrid, tier);
-                GenerateUnitType(building, UnitType.Role.Caster, tier);
-                tier++;
-            }
+            GenerateUnits();
 
             // add prerequisite tech buildings for most unit types
-            tier = 0;
-            for (int i = 0; i < numFactories; i++ )
-            {
-                var building = Tree.Buildings[i];
-                BuildingType prevPrerequisite = null;
-                bool first = true;
-
-                foreach (var unit in building.Builds)
-                {
-                    if (first)
-                    {// the first unit type built by a building never has any prerequisites
-                        first = false;
-                        continue;
-                    }
-
-                    // give this unit type a 1 in 3 chance of sharing a prerequisite with its predecessor
-                    if (prevPrerequisite != null & Random.Next(3) == 0)
-                    {
-                        unit.Prerequisite = prevPrerequisite;
-                        continue;
-                    }
-
-                    // generate a new tech building to be this unit type's prerequisite
-                    BuildingType techBuilding = BuildingGenerator.GenerateTechBuilding(this, tier);
-                    Tree.Buildings.Add(techBuilding);
-                    prevPrerequisite = unit.Prerequisite = techBuilding;
-
-                    // insert that into the tech tree somewhere in the factory's subtree
-                    AddToSubtree(building, techBuilding);
-                }
-                tier++;
-            }
+            GenerateTechBuildings(numFactories);
 
             PositionBuildings();
 
@@ -120,6 +80,22 @@ namespace GameModels.Generation
             else
             {// otherwise, add as a descendent of this other building
                 AddToSubtree(child, descendent);
+            }
+        }
+
+        private void GenerateUnits()
+        {
+            // at the point when this is called, every building is a factory
+
+            int tier = 1;
+            foreach (var building in Tree.Buildings)
+            {
+                // each factory building makes 3-4 different types of unit
+                GenerateUnitType(building, UnitType.Role.Fighter, tier);
+                GenerateUnitType(building, UnitType.Role.Fighter, tier);
+                GenerateUnitType(building, UnitType.Role.Hybrid, tier);
+                GenerateUnitType(building, UnitType.Role.Caster, tier);
+                tier++;
             }
         }
 
@@ -167,6 +143,42 @@ namespace GameModels.Generation
             }
 
             return numFactories;
+        }
+
+        private void GenerateTechBuildings(int numFactories)
+        {
+            int tier = 0;
+            for (int i = 0; i < numFactories; i++)
+            {
+                var building = Tree.Buildings[i];
+                BuildingType prevPrerequisite = null;
+                bool first = true;
+
+                foreach (var unit in building.Builds)
+                {
+                    if (first)
+                    {// the first unit type built by a building never has any prerequisites
+                        first = false;
+                        continue;
+                    }
+
+                    // give this unit type a 1 in 3 chance of sharing a prerequisite with its predecessor
+                    if (prevPrerequisite != null & Random.Next(3) == 0)
+                    {
+                        unit.Prerequisite = prevPrerequisite;
+                        continue;
+                    }
+
+                    // generate a new tech building to be this unit type's prerequisite
+                    BuildingType techBuilding = BuildingGenerator.GenerateTechBuilding(this, tier);
+                    Tree.Buildings.Add(techBuilding);
+                    prevPrerequisite = unit.Prerequisite = techBuilding;
+
+                    // insert that into the tech tree somewhere in the factory's subtree
+                    AddToSubtree(building, techBuilding);
+                }
+                tier++;
+            }
         }
 
         private void PositionBuildings()
