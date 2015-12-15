@@ -20,10 +20,5 @@ namespace GameModels.Definitions
         {
             Unlocks = new List<Feature>();
         }
-
-        internal virtual void Describe(StringBuilder sb)
-        {
-            sb.AppendLine();
-        }
     }
 }

@@ -45,13 +45,5 @@ namespace GameModels.Definitions
         internal Role UnitRole { get; set; }
 
         internal int Tier { get; set; }
-
-        internal override void Describe(StringBuilder sb)
-        {
-            base.Describe(sb);
-
-            sb.AppendFormat("(tier {0} {1})", Tier, UnitRole);
-            sb.AppendLine();
-        }
     }
 }

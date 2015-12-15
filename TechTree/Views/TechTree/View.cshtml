@@ -12,11 +12,7 @@
 
 <h2>A randomly generated tech tree</h2>
 
-<pre>
-@Model.GetDescription()
-</pre>
-
-Seed: @Model.Seed
+<h5>Seed: @Model.Seed</h5>
 
 <techtree>
     @foreach (var b in Model.Buildings)
@@ -35,7 +31,7 @@ Seed: @Model.Seed
                     }
                     @if (b.SupplyCost != 0)
                     {
-                        <supply class="(@b.SupplyCost < 0 ? "positive" : null)">@Math.Abs(b.SupplyCost)</supply>
+                        <supply class="@(b.SupplyCost < 0 ? "positive" : null)">@Math.Abs(b.SupplyCost)</supply>
                     }
                     <time>@b.BuildTime</time>
                 </cost>
@@ -64,6 +60,10 @@ Seed: @Model.Seed
                 {
                     <requires>@b.Prerequisite.Name</requires>
                 }
+                @foreach (GameModels.Definitions.Feature f in b.Features)
+                {
+                    <feature name="@f.Name">@f.Description</feature>
+                }
             </info>
 
             <unlocks>
@@ -83,7 +83,7 @@ Seed: @Model.Seed
                                 }
                                 @if (u.SupplyCost != 0)
                                 {
-                                    <supply class="(@u.SupplyCost < 0 ? "positive" : null)">@Math.Abs(u.SupplyCost)</supply>
+                                    <supply class="@(u.SupplyCost < 0 ? "positive" : null)">@Math.Abs(u.SupplyCost)</supply>
                                 }
                                 <time>@u.BuildTime</time>
                             </cost>
@@ -108,6 +108,10 @@ Seed: @Model.Seed
                             @if (@u.Prerequisite != u.BuiltBy)
                             {
                                 <requires>@u.Prerequisite.Name</requires>
+                            }
+                            @foreach (GameModels.Definitions.Feature f in u.Features)
+                            {
+                                <feature name="@f.Name">@f.Description</feature>
                             }
                         </info>
                     </unit>

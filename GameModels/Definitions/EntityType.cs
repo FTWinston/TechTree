@@ -38,7 +38,8 @@ namespace GameModels.Definitions
                     prerequisite.Unlocks.Remove(this);
 
                 prerequisite = value;
-                prerequisite.Unlocks.Add(this);
+                if (prerequisite != null)
+                    prerequisite.Unlocks.Add(this);
             }
         }
 
@@ -47,30 +48,6 @@ namespace GameModels.Definitions
         protected EntityType()
         {
             Features = new List<Feature>();
-        }
-
-        internal virtual void Describe(StringBuilder sb)
-        {
-            sb.AppendFormat("{0}: {1} health, {2} armor, {3} mana", Name, Health, Armor, Mana);
-            sb.AppendLine();
-
-            sb.AppendFormat("costs {0} minerals, {1} vespine, {3}{2} supply, {4} turn{5} to build", MineralCost, VespineCost, Math.Abs(SupplyCost), SupplyCost < 0 ? "generates " : string.Empty, BuildTime, BuildTime == 1 ? string.Empty : "s");
-            sb.AppendLine();
-
-            sb.AppendFormat("{0}-tile vision range, {1} action points{2}", VisionRange, ActionPoints, IsDetector ? ", DETECTOR" : string.Empty);
-            sb.AppendLine();
-
-            foreach (var feature in Features)
-            {
-                sb.AppendFormat("{0}: {1}", feature.Name, feature.Description);
-                sb.AppendLine();
-            }
-
-            if (Prerequisite != null)
-            {
-                sb.AppendFormat("Requires: {0}", Prerequisite.Name);
-                sb.AppendLine();
-            }
         }
     }
 

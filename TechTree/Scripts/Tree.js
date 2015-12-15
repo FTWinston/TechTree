@@ -11,7 +11,7 @@
 });
 
 function alignTree() {
-    var marginSize = 30, row = 0, maxY = marginSize, maxX = 0, num;
+    var marginSize = 30, row = 0, maxY = 0, maxX = 0, num;
     do {
         var items = $('techtree building[row="' + row + '"]');
         items.css('top', maxY + 'px');
@@ -34,7 +34,7 @@ function alignTree() {
         row++;
     } while (num > 0);
 
-    var tree = $('techtree').css('width', maxX + 'px').css('height', maxY + 'px');
+    var tree = $('techtree').css('width', (maxX - marginSize) + 'px').css('height', (maxY - marginSize - marginSize) + 'px');
     var branchHeight = marginSize / 2;
 
     $('techtree building[requires]').each(function (i, child) {
