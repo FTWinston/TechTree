@@ -46,12 +46,14 @@ namespace GameModels.Generation
 
             int numFactories = GenerateFactories();
 
-            GenerateUnits();
+            GenerateUnitStubs();
 
             // add prerequisite tech buildings for most unit types
             GenerateTechBuildings(numFactories);
 
             PositionBuildings();
+
+            PopulateUnits();
 
             return Tree;
         }
@@ -113,34 +115,40 @@ namespace GameModels.Generation
             }
         }
 
-        private void GenerateUnits()
+        private void GenerateUnitStubs()
         {
             // at the point when this is called, every building is a factory
-
-            int tier = 1;
             foreach (var building in Tree.Buildings)
             {
                 // each factory building makes 3-4 different types of unit
-                GenerateUnitType(building, UnitType.Role.Fighter, tier);
-                GenerateUnitType(building, UnitType.Role.Fighter, tier);
-                GenerateUnitType(building, UnitType.Role.Hybrid, tier);
-                GenerateUnitType(building, UnitType.Role.Caster, tier);
-                tier++;
+                for (int i = 0; i < 4; i++)
+                {
+                    UnitType unit = UnitGenerator.GenerateStub(this);
+                    unit.BuiltBy = unit.Prerequisite = building;
+                    Tree.Units.Add(unit);
+                }
             }
         }
 
-        private UnitType GenerateUnitType(BuildingType building, UnitType.Role role, int tier)
+        private void PopulateUnits()
         {
-            UnitType unit;
-            do
+            foreach (var unit in Tree.Units)
             {
-                unit = UnitGenerator.Generate(this, role, tier);
-            } while (unit == null);
+                // determine tier based on # of parents of prerequisite building
+                int tier = 0;
+                var building = unit.Prerequisite;
+                while (building.Prerequisite != null)
+                {
+                    tier++;
+                    building = building.Prerequisite;
+                }
 
-            unit.BuiltBy = building;
-            unit.Prerequisite = building;
-            Tree.Units.Add(unit);
-            return unit;
+                // determine role randomly, although this could be influenced by tier, and should probably be distributed so that all units aren't (e.g.) transport
+                UnitType.Role role = (UnitType.Role)Random.Next((int)UnitType.Role.MaxValue);
+
+                // now populate the unit with features & stats
+                UnitGenerator.Populate(this, unit, role, tier);
+            }
         }
 
         private int GenerateFactories()

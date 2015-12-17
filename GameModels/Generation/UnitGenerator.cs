@@ -9,69 +9,97 @@ namespace GameModels.Generation
 {
     static class UnitGenerator
     {
-        public static UnitType Generate(TreeGenerator gen, UnitType.Role function, int tier)
+        public static UnitType GenerateStub(TreeGenerator gen)
         {
-            Random r = gen.Random;
-
             string symbol = gen.GetUnusedSymbol();
             UnitType unit = new UnitType()
             {
                 Name = "Unit " + symbol,
                 Symbol = symbol,
-                UnitRole = function,
-                VisionRange = 3,
-                ActionPoints = 4,
-                Tier = tier,
-                BuildTime = r.Next(Math.Max(1, tier - 2), tier + 2),
             };
 
-            switch (function)
-            {
-                case UnitType.Role.Fighter:
-                    PopulateFighter(r, unit);
-                    break;
-                case UnitType.Role.Caster:
-                    PopulateCaster(r, unit);
-                    break;
-                case UnitType.Role.Hybrid:
-                    PopulateHybrid(r, unit);
-                    break;
-                default:
-                    throw new Exception("Unexpected unit role: " + function);
-            }
+            return unit;
+        }
 
-            // check that the allocated features fit well together
-            foreach (var feature in unit.Features)
-                if (!feature.Validate(unit))
-                    return null;
-            /*
-            // check units with mana have features that use mana, and vice-versa
-            if (unit.Mana > 0)
+        public static void Populate(TreeGenerator gen, UnitType unit, UnitType.Role function, int tier)
+        {
+            Random r = gen.Random;
+
+            unit.UnitRole = function;
+            unit.VisionRange = 3;
+            unit.ActionPoints = 4;
+            unit.Tier = tier;
+            unit.BuildTime = r.Next(Math.Max(1, tier - 2), tier + 2);
+
+            while (true)
             {
-                bool usesMana = false;
+                switch (function)
+                {
+                    case UnitType.Role.AllRounder:
+                    case UnitType.Role.DamageDealer:
+                    case UnitType.Role.MeatShield:
+                        PopulateFighter(r, unit);
+                        break;
+
+                    case UnitType.Role.SupportCaster:
+                    case UnitType.Role.OffenseCaster:
+                    case UnitType.Role.Worker:
+                        PopulateCaster(r, unit);
+                        break;
+
+                    case UnitType.Role.Scout:
+                    case UnitType.Role.Infiltrator:
+                    case UnitType.Role.Transport:
+                        PopulateHybrid(r, unit);
+                        break;
+                    default:
+                        throw new Exception("Unexpected unit role: " + function);
+                }
+
+                // check that the allocated features fit well together
+                bool featuresValid = true;
                 foreach (var feature in unit.Features)
-                    if (feature.UsesMana)
+                    if (!feature.Validate(unit))
                     {
-                        usesMana = true;
+                        featuresValid = false;
                         break;
                     }
 
-                if (!usesMana)
-                    return null;
+                // check units with mana have features that use mana, and vice-versa
+                if (unit.Mana > 0)
+                {
+                    bool usesMana = false;
+                    foreach (var feature in unit.Features)
+                        if (feature.UsesMana)
+                        {
+                            usesMana = true;
+                            break;
+                        }
+
+                    if (!usesMana)
+                    {
+                        featuresValid = false;
+                        break;
+                    }
+                }
+                else
+                    foreach (var feature in unit.Features)
+                        if (feature.UsesMana)
+                        {
+                            featuresValid = false;
+                            break;
+                        }
+
+                if (featuresValid)
+                    break;
             }
-            else
-                foreach (var feature in unit.Features)
-                    if (feature.UsesMana)
-                        return null;
-            */
+
             // apply a little rounding, to make things feel less artificial
             unit.Health = unit.Health.RoundNearest(5);
             unit.Mana = unit.Mana.RoundNearest(5);
 
             unit.MineralCost = unit.MineralCost.RoundNearest(5);
             unit.VespineCost = unit.VespineCost.RoundNearest(5);
-
-            return unit;
         }
 
         private static void PopulateFighter(Random r, UnitType unit)

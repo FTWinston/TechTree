@@ -29,17 +29,25 @@ namespace GameModels.Definitions
             None = 0,
             Agile = 1, // ignores difficult terrain
             Flying = 2, // ignores difficult and blocking terrain
+            AttacksAir = 4,
+            AttacksGround = 8,
         }
 
         public UnitFlags Flags { get; internal set; }
 
         internal enum Role
         {
-            Fighter, // higher health/armor/damage
-            Caster, // higher mana, more/better spell features
-            Hybrid, // halfway between fighter and caster
-            //Support, // carrier, healer, observer, etc
-            //Worker,
+            Worker, // need to decide how resource gathering and building will actually work!
+            AllRounder,
+            DamageDealer,
+            Scout,
+            MeatShield,
+            Infiltrator,
+            SupportCaster,
+            OffenseCaster, // do we need to distinguish these ourselves, or just let the RNG/players do that for us?
+            Transport,
+
+            MaxValue
         }
 
         internal Role UnitRole { get; set; }
