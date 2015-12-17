@@ -129,11 +129,10 @@ info cost supply::before {
 
 info cost supply.positive::before {
     content: "\26FD +";
-    color: #0e0;
 }
 
 info cost supply.positive {
-    color: #0e0;
+    color: #f90;
 }
 
 info cost time::before {

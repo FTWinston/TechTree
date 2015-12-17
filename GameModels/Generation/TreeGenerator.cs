@@ -220,7 +220,10 @@ namespace GameModels.Generation
             int mostChildren = Tree.Buildings.Max(b => b.Unlocks.Where(u => u is BuildingType).Count());
 
             SpreadColumnsRecursive(root, maxRow, mostChildren);
-            ContractColumns();
+
+            // contract the columns as far as possible. If any node jumps over a neighbour, we MAY be left with un-contracted spaces, so contract everything again.
+            while (ContractColumns())
+                ;
         }
 
         private void SetRowRecursive(int row, BuildingType b)
@@ -232,7 +235,7 @@ namespace GameModels.Generation
 
         private void SpreadColumnsRecursive(BuildingType b, int maxRows, int maxChildren)
         {
-            int childSpacing = (int)Math.Pow(maxChildren, maxRows - b.DisplayRow - 1) + 1;
+            int childSpacing = (int)Math.Pow(maxChildren, maxRows - b.DisplayRow - 1);
 
             var children = b.Unlocks.Where(u => u is BuildingType);
             int childNum = 0;
@@ -244,7 +247,7 @@ namespace GameModels.Generation
             }
         }
 
-        private void ContractColumns()
+        private bool ContractColumns()
         {
             var buildings = Tree.Buildings.Where(b => b.Prerequisite != null).OrderByDescending(b => b.DisplayRow).ThenBy(b => b.DisplayColumn);
             
@@ -256,6 +259,7 @@ namespace GameModels.Generation
                     ShiftSubtreeLeft(building, shift);
             }
 
+            bool anyJumped = false;
             foreach (var building in buildings)
             {
                 if (building.Unlocks.FirstOrDefault(u => u is BuildingType) != null)
@@ -264,7 +268,10 @@ namespace GameModels.Generation
                 // it might be possible for a childless building to "jump" past a building that is blocking it
                 int shift = DetermineJumpLeftShift(building);
                 if (shift > 0)
+                {
+                    anyJumped = true;
                     ShiftSubtreeLeft(building, shift);
+                }
             }
 
             // now shift ALL buildings so that the left-most one is in column 0
@@ -272,6 +279,8 @@ namespace GameModels.Generation
             if (minCol != 0)
                 foreach (var b in Tree.Buildings)
                     b.DisplayColumn -= minCol;
+
+            return anyJumped;
         }
 
         private int DetermineMaxSubtreeLeftShift(BuildingType b, int maxShift)
