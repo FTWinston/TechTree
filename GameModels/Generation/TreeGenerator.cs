@@ -120,7 +120,7 @@ namespace GameModels.Generation
             // at the point when this is called, every building is a factory
             foreach (var building in Tree.Buildings)
             {
-                // each factory building makes 3-4 different types of unit
+                // each factory building makes 4 different types of unit
                 for (int i = 0; i < 4; i++)
                 {
                     UnitType unit = UnitGenerator.GenerateStub(this);
@@ -132,23 +132,46 @@ namespace GameModels.Generation
 
         private void PopulateUnits()
         {
-            foreach (var unit in Tree.Units)
+            // get a list of all units, in a random order
+            List<UnitType> units = new List<UnitType>();
+            units.AddRange(Tree.Units);
+            units.Randomize(Random);
+
+            // ensure that there is always one unit type of each role, by populating one unit of each role
+            for (int i = 0; i < (int)UnitType.Role.MaxValue; i++)
             {
-                // determine tier based on # of parents of prerequisite building
-                int tier = 0;
-                var building = unit.Prerequisite;
-                while (building.Prerequisite != null)
-                {
-                    tier++;
-                    building = building.Prerequisite;
-                }
+                UnitType unit = units.FirstOrDefault();
+                if (unit == null)
+                    break;
 
-                // determine role randomly, although this could be influenced by tier, and should probably be distributed so that all units aren't (e.g.) transport
-                UnitType.Role role = (UnitType.Role)Random.Next((int)UnitType.Role.MaxValue);
+                units.RemoveAt(0);
 
-                // now populate the unit with features & stats
+                UnitType.Role role = (UnitType.Role)i;
+                int tier = DetermineTier(unit);
                 UnitGenerator.Populate(this, unit, role, tier);
             }
+
+            // for the rest of the unit types, determine their role randomly
+            foreach (var unit in units)
+            {
+                UnitType.Role role = (UnitType.Role)Random.Next((int)UnitType.Role.MaxValue);
+                int tier = DetermineTier(unit);
+                UnitGenerator.Populate(this, unit, role, tier);
+            }
+        }
+
+        private int DetermineTier(UnitType unit)
+        {
+            int tier = 0;
+            var building = unit.Prerequisite;
+
+            while (building.Prerequisite != null)
+            {
+                tier++;
+                building = building.Prerequisite;
+            }
+
+            return tier;
         }
 
         private int GenerateFactories()
