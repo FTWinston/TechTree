@@ -28,7 +28,8 @@ namespace GameModels.Generation
         internal TechTree Tree { get; private set; }
         internal Complexity TreeComplexity { get; private set; }
 
-        const string symbols = "ABCDEFGHIJKLMNOPQRSTUVWXYZΔΣΦΨΩαβγδεζηθλμξπςφω?#@£$%&☺♀♂♠♣♥♦";
+        internal const char commandSymbol = '☆', workerSymbol = '⚒';
+        const string symbols = "ABCDEFGHIJKLMNOPQRSTUVWXYZΔΣΦΨΩαβγδεζηθλμξπςφω☤⚕⚚⚛⚜⚝☥☿♀♁♂♃♄♅♆♇⚳⚴⚵⚶⚷☉☊☋☌☍♈♉♊♋♌♍♎♏♐♑♒♓⛎⛲⚖⚗⚘⚙?#@£$%&☺♠♣♥♦";
         int nextSymbolIndex = 0;
         internal string GetUnusedSymbol()
         {
@@ -44,18 +45,32 @@ namespace GameModels.Generation
             Tree = new TechTree();
             Tree.Seed = Seed;
 
-            int numFactories = GenerateFactories();
+            GenerateFactories();
+            List<BuildingType> factories = new List<BuildingType>(Tree.Buildings);
 
-            GenerateUnitStubs();
+            AddCommandBuilding();
+
+            GenerateUnitStubs(factories);
 
             // add prerequisite tech buildings for most unit types
-            GenerateTechBuildings(numFactories);
+            GenerateTechBuildings(factories);
 
             PositionBuildings();
 
             PopulateUnits();
 
             return Tree;
+        }
+
+        private void AddCommandBuilding()
+        {
+            BuildingType building = BuildingGenerator.GenerateCommandBuilding(this);
+            Tree.Buildings.First().Prerequisite = building;
+            Tree.Buildings.Insert(0, building);
+
+            UnitType unit = UnitGenerator.GenerateWorker(this);
+            unit.BuiltBy = unit.Prerequisite = building;
+            Tree.Units.Add(unit);
         }
 
         private void AddToSubtree(BuildingType root, BuildingType descendent)
@@ -115,10 +130,9 @@ namespace GameModels.Generation
             }
         }
 
-        private void GenerateUnitStubs()
+        private void GenerateUnitStubs(List<BuildingType> factories)
         {
-            // at the point when this is called, every building is a factory
-            foreach (var building in Tree.Buildings)
+            foreach (var building in factories)
             {
                 // each factory building makes 4 different types of unit
                 for (int i = 0; i < 4; i++)
@@ -134,19 +148,22 @@ namespace GameModels.Generation
         {
             // get a list of all units, in a random order
             List<UnitType> units = new List<UnitType>();
-            units.AddRange(Tree.Units);
+            units.AddRange(Tree.Units.Where(u => u.UnitRole != UnitType.Role.Worker));
             units.Randomize(Random);
 
             // ensure that there is always one unit type of each role, by populating one unit of each role
             for (int i = 0; i < (int)UnitType.Role.MaxValue; i++)
             {
+                UnitType.Role role = (UnitType.Role)i;
+                if (role == UnitType.Role.Worker)
+                    continue;
+
                 UnitType unit = units.FirstOrDefault();
                 if (unit == null)
                     break;
 
                 units.RemoveAt(0);
 
-                UnitType.Role role = (UnitType.Role)i;
                 int tier = DetermineTier(unit);
                 UnitGenerator.Populate(this, unit, role, tier);
             }
@@ -174,7 +191,7 @@ namespace GameModels.Generation
             return tier;
         }
 
-        private int GenerateFactories()
+        private void GenerateFactories()
         {
             int numFactories;
             switch (TreeComplexity)
@@ -202,16 +219,13 @@ namespace GameModels.Generation
                     building.Prerequisite = prev;
                 prev = building;
             }
-
-            return numFactories;
         }
 
-        private void GenerateTechBuildings(int numFactories)
+        private void GenerateTechBuildings(List<BuildingType> factories)
         {
             int tier = 0;
-            for (int i = 0; i < numFactories; i++)
+            foreach (var building in factories)
             {
-                var building = Tree.Buildings[i];
                 BuildingType prevPrerequisite = null;
                 bool first = true;
 

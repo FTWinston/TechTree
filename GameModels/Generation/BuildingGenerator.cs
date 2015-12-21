@@ -10,6 +10,29 @@ namespace GameModels.Generation
 {
     static class BuildingGenerator
     {
+        public static BuildingType GenerateCommandBuilding(TreeGenerator gen)
+        {
+            string symbol = TreeGenerator.commandSymbol.ToString();
+            BuildingType building = new BuildingType()
+            {
+                Name = "Command Post " + symbol,
+                Symbol = symbol,
+                VisionRange = 2,
+            };
+
+            Random r = gen.Random;
+
+            building.MineralCost = r.Next(250, 401).RoundNearest(25);
+            building.VespineCost = 0;
+
+            building.Health = r.Next(226, 451).RoundNearest(10);
+            building.Armor = r.Next(1, 3);
+
+            building.BuildTime = r.Next(3, 6);
+
+            return building;
+        }
+
         public static BuildingType GenerateFactory(TreeGenerator gen, int factoryNumber)
         {
             string symbol = gen.GetUnusedSymbol();
@@ -22,7 +45,7 @@ namespace GameModels.Generation
             
             Random r = gen.Random;
 
-            building.MineralCost = (r.Next(0, 101) + 100 + r.Next(20,51) * factoryNumber).RoundNearest(25);
+            building.MineralCost = (r.Next(100, 201) + r.Next(20,51) * factoryNumber).RoundNearest(25);
             building.VespineCost = (r.Next(25, 101) * factoryNumber).RoundNearest(25);
 
             building.Health = (r.Next(125, 201) + r.Next(25, 50) * factoryNumber).RoundNearest(10);

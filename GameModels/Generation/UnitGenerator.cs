@@ -9,6 +9,32 @@ namespace GameModels.Generation
 {
     static class UnitGenerator
     {
+        public static UnitType GenerateWorker(TreeGenerator gen)
+        {
+            string symbol = TreeGenerator.workerSymbol.ToString();
+            Random r = gen.Random;
+
+            UnitType unit = new UnitType()
+            {
+                Name = "Worker " + symbol,
+                Symbol = symbol,
+                UnitRole = UnitType.Role.Worker,
+                VisionRange = 3,
+                ActionPoints = 4,
+                Tier = 0,
+                BuildTime = r.Next(1, 4),
+
+                Health = r.Next(18, 51).RoundNearest(5),
+                Mana = 0,
+                Armor = r.Next(4) == 0 ? 1 : 0,
+                
+                MineralCost = r.Next(28,62).RoundNearest(5),
+                VespineCost = 0,
+            };
+
+            return unit;
+        }
+
         public static UnitType GenerateStub(TreeGenerator gen)
         {
             string symbol = gen.GetUnusedSymbol();
@@ -16,6 +42,7 @@ namespace GameModels.Generation
             {
                 Name = "Unit " + symbol,
                 Symbol = symbol,
+                UnitRole = UnitType.Role.AllRounder,
             };
 
             return unit;
@@ -43,7 +70,6 @@ namespace GameModels.Generation
 
                     case UnitType.Role.SupportCaster:
                     case UnitType.Role.OffenseCaster:
-                    case UnitType.Role.Worker:
                         PopulateCaster(r, unit);
                         break;
 
@@ -51,6 +77,8 @@ namespace GameModels.Generation
                     case UnitType.Role.Infiltrator:
                     case UnitType.Role.Transport:
                         PopulateHybrid(r, unit);
+                        break;
+                    case UnitType.Role.Worker:
                         break;
                     default:
                         throw new Exception("Unexpected unit role: " + function);
