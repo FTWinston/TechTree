@@ -148,14 +148,14 @@ namespace GameModels.Generation
         {
             // get a list of all units, in a random order
             List<UnitType> units = new List<UnitType>();
-            units.AddRange(Tree.Units.Where(u => u.UnitRole != UnitType.Role.Worker));
+            units.AddRange(Tree.Units.Where(u => !u.Populated));
             units.Randomize(Random);
 
             // ensure that there is always one unit type of each role, by populating one unit of each role
-            for (int i = 0; i < (int)UnitType.Role.MaxValue; i++)
+            for (int i = 0; i < (int)UnitGenerator.Role.MaxValue; i++)
             {
-                UnitType.Role role = (UnitType.Role)i;
-                if (role == UnitType.Role.Worker)
+                UnitGenerator.Role role = (UnitGenerator.Role)i;
+                if (role == UnitGenerator.Role.Worker)
                     continue;
 
                 UnitType unit = units.FirstOrDefault();
@@ -171,7 +171,7 @@ namespace GameModels.Generation
             // for the rest of the unit types, determine their role randomly
             foreach (var unit in units)
             {
-                UnitType.Role role = (UnitType.Role)Random.Next((int)UnitType.Role.MaxValue);
+                UnitGenerator.Role role = (UnitGenerator.Role)Random.Next((int)UnitGenerator.Role.MaxValue);
                 int tier = DetermineTier(unit);
                 UnitGenerator.Populate(this, unit, role, tier);
             }

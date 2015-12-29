@@ -49,6 +49,8 @@ namespace GameModels.Definitions
         {
             Features = new List<Feature>();
         }
+
+        internal bool Populated { get; set; }
     }
 
     public abstract class EntityType<I> : EntityType

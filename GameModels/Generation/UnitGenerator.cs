@@ -9,6 +9,21 @@ namespace GameModels.Generation
 {
     static class UnitGenerator
     {
+        public enum Role
+        {
+            Worker,
+            AllRounder,
+            DamageDealer,
+            Scout,
+            MeatShield,
+            Infiltrator,
+            SupportCaster,
+            OffensiveCaster,
+            Transport,
+
+            MaxValue
+        }
+
         public static UnitType GenerateStub(TreeGenerator gen)
         {
             string symbol = gen.GetUnusedSymbol();
@@ -16,7 +31,6 @@ namespace GameModels.Generation
             {
                 Name = "Unit " + symbol,
                 Symbol = symbol,
-                UnitRole = UnitType.Role.AllRounder,
             };
 
             return unit;
@@ -33,45 +47,44 @@ namespace GameModels.Generation
                 Symbol = symbol,
             };
 
-            UnitGenerator.Populate(gen, unit, UnitType.Role.Worker, 1);
+            UnitGenerator.Populate(gen, unit, Role.Worker, 1);
 
             return unit;
         }
 
-        public static void Populate(TreeGenerator gen, UnitType unit, UnitType.Role function, int tier)
+        public static void Populate(TreeGenerator gen, UnitType unit, Role function, int tier)
         {
             SetupBaseStats(gen.Random, unit, tier);
-            unit.UnitRole = function;
 
             while (true)
             {
                 switch (function)
                 {
-                    case UnitType.Role.AllRounder:
+                    case Role.AllRounder:
                         PopulateAllRounder(gen, unit, tier);
                         break;
-                    case UnitType.Role.DamageDealer:
+                    case Role.DamageDealer:
                         PopulateDamageDealer(gen, unit, tier);
                         break;
-                    case UnitType.Role.MeatShield:
+                    case Role.MeatShield:
                         PopulateMeatShield(gen, unit, tier);
                         break;
-                    case UnitType.Role.SupportCaster:
+                    case Role.SupportCaster:
                         PopulateSupportCaster(gen, unit, tier);
                         break;
-                    case UnitType.Role.OffensiveCaster:
+                    case Role.OffensiveCaster:
                         PopulateOffensiveCaster(gen, unit, tier);
                         break;
-                    case UnitType.Role.Scout:
+                    case Role.Scout:
                         PopulateScout(gen, unit, tier);
                         break;
-                    case UnitType.Role.Infiltrator:
+                    case Role.Infiltrator:
                         PopulateInfiltrator(gen, unit, tier);
                         break;
-                    case UnitType.Role.Transport:
+                    case Role.Transport:
                         PopulateTransport(gen, unit, tier);
                         break;
-                    case UnitType.Role.Worker:
+                    case Role.Worker:
                         PopulateWorker(gen, unit, tier);
                         break;
                     default:
@@ -122,29 +135,31 @@ namespace GameModels.Generation
 
             unit.MineralCost = unit.MineralCost.RoundNearest(5);
             unit.VespineCost = unit.VespineCost.RoundNearest(5);
+
+            // flag that this unit type has been populated, so that we don't try that again later
+            unit.Populated = true;
         }
 
         private static void SetupBaseStats(Random r, UnitType unit, int tier)
         {
             unit.VisionRange = 3;
             unit.ActionPoints = 4;
-            unit.Tier = tier;
             unit.BuildTime = r.Next(Math.Max(1, tier - 2), tier + 2);
 
 
             // 10-15, plus 13-20 per tier
-            unit.Health = r.Next(10, 16) + r.Next(13, 21) * unit.Tier;
+            unit.Health = r.Next(10, 16) + r.Next(13, 21) * tier;
 
             // 30% chance of 1, plus 0.5 - 0.8 per tier, rounded down
-            unit.Armor = (r.Next(10) < 3 ? 1 : 0) + (int)(r.Next(5, 9) * unit.Tier / 10f);
+            unit.Armor = (r.Next(10) < 3 ? 1 : 0) + (int)(r.Next(5, 9) * tier / 10f);
 
             // 5-10 plus 10 - 20 per tier
-            unit.Mana = r.Next(5, 11) + r.Next(10, 21) * unit.Tier;
-            
+            unit.Mana = r.Next(5, 11) + r.Next(10, 21) * tier;
 
-            unit.MineralCost = r.Next(35, 61) + r.Next(20, 31) * unit.Tier;
-            unit.VespineCost = Math.Max(0, 25 * (unit.Tier - 1));
-            unit.SupplyCost = unit.Tier;
+
+            unit.MineralCost = r.Next(35, 61) + r.Next(20, 31) * tier;
+            unit.VespineCost = Math.Max(0, 25 * (tier - 1));
+            unit.SupplyCost = tier;
         }
 
         private static void PopulateAllRounder(TreeGenerator gen, UnitType unit, int tier)

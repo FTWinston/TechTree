@@ -34,24 +34,5 @@ namespace GameModels.Definitions
         }
 
         public UnitFlags Flags { get; internal set; }
-
-        internal enum Role
-        {
-            Worker,
-            AllRounder,
-            DamageDealer,
-            Scout,
-            MeatShield,
-            Infiltrator,
-            SupportCaster,
-            OffensiveCaster,
-            Transport,
-
-            MaxValue
-        }
-
-        internal Role UnitRole { get; set; }
-
-        internal int Tier { get; set; }
     }
 }
