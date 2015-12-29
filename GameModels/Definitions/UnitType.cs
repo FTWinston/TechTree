@@ -37,14 +37,14 @@ namespace GameModels.Definitions
 
         internal enum Role
         {
-            Worker, // need to decide how resource gathering and building will actually work!
+            Worker,
             AllRounder,
             DamageDealer,
             Scout,
             MeatShield,
             Infiltrator,
             SupportCaster,
-            OffenseCaster, // do we need to distinguish these ourselves, or just let the RNG/players do that for us?
+            OffensiveCaster,
             Transport,
 
             MaxValue

@@ -13,6 +13,11 @@ namespace GameModels
             return value / multiple * multiple;
         }
 
+        public static int Scale(this int value, double factor)
+        {
+            return (int)Math.Round(value * factor);
+        }
+
         public static void Randomize<T>(this List<T> list, Random r)
         {
             int n = list.Count;
