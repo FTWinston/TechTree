@@ -1,4 +1,5 @@
 ﻿using GameModels.Definitions;
+using GameModels.Features;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -54,7 +55,7 @@ namespace GameModels.Generation
 
         public static void Populate(TreeGenerator gen, UnitType unit, Role function, int tier)
         {
-            SetupBaseStats(gen.Random, unit, tier);
+            SetupBaseStats(gen, unit, tier);
 
             while (true)
             {
@@ -140,24 +141,24 @@ namespace GameModels.Generation
             unit.Populated = true;
         }
 
-        private static void SetupBaseStats(Random r, UnitType unit, int tier)
+        private static void SetupBaseStats(TreeGenerator gen, UnitType unit, int tier)
         {
-            unit.VisionRange = 3;
+            unit.VisionRange = gen.UnitVisionRange;
             unit.ActionPoints = 4;
-            unit.BuildTime = r.Next(Math.Max(1, tier - 2), tier + 2);
+            unit.BuildTime = gen.Random.Next(Math.Max(1, tier - 2), tier + 2);
 
 
             // 10-15, plus 13-20 per tier
-            unit.Health = r.Next(10, 16) + r.Next(13, 21) * tier;
+            unit.Health = gen.Random.Next(10, 16) + gen.Random.Next(13, 21) * tier;
 
             // 30% chance of 1, plus 0.5 - 0.8 per tier, rounded down
-            unit.Armor = (r.Next(10) < 3 ? 1 : 0) + (int)(r.Next(5, 9) * tier / 10f);
+            unit.Armor = (gen.Random.Next(10) < 3 ? 1 : 0) + (int)(gen.Random.Next(5, 9) * tier / 10f);
 
             // 5-10 plus 10 - 20 per tier
-            unit.Mana = r.Next(5, 11) + r.Next(10, 21) * tier;
+            unit.Mana = gen.Random.Next(5, 11) + gen.Random.Next(10, 21) * tier;
 
 
-            unit.MineralCost = r.Next(35, 61) + r.Next(20, 31) * tier;
+            unit.MineralCost = gen.Random.Next(35, 61) + gen.Random.Next(20, 31) * tier;
             unit.VespineCost = Math.Max(0, 25 * (tier - 1));
             unit.SupplyCost = tier;
         }
@@ -171,9 +172,14 @@ namespace GameModels.Generation
             // scale costs
             unit.MineralCost = unit.MineralCost.Scale(1.05);
 
-            // TODO: abilities
-            var features = Feature.GetAttackFeatures();
-            AddFeature(gen.Random, unit, PickRandomIndex(gen.Random, features)());
+            // attack feature
+            int range = gen.Random.Next(1, 4), damageMin = gen.Random.Next(tier * 5, tier * 8), damageMax = damageMin + gen.Random.Next(tier + 1);
+            unit.Features.Add(new Attack(range, damageMin, damageMax));
+            
+            // TODO: features
+
+            // flags
+            unit.Flags |= UnitType.UnitFlags.AttacksGround | UnitType.UnitFlags.AttacksAir;
         }
 
         private static void PopulateDamageDealer(TreeGenerator gen, UnitType unit, int tier)
@@ -188,9 +194,20 @@ namespace GameModels.Generation
             unit.VespineCost = unit.VespineCost.Scale(1.25);
             unit.SupplyCost = unit.SupplyCost.Scale(1.1);
 
-            // TODO: abilities
-            var features = Feature.GetAttackFeatures();
-            AddFeature(gen.Random, unit, PickRandomIndex(gen.Random, features)());
+            // attack feature
+            int range = gen.Random.Next(1, 5), damageMin = gen.Random.Next(tier * 8, tier * 11), damageMax = damageMin + gen.Random.Next(tier * 2 + 1);
+            unit.Features.Add(new Attack(range, damageMin, damageMax));
+
+            // TODO: features
+
+            // flags
+            unit.Flags |= UnitType.UnitFlags.AttacksGround;
+            if (unit.Flags.HasFlag(UnitType.UnitFlags.Flying))
+                unit.Flags |= UnitType.UnitFlags.AttacksAir;
+            else if (gen.Random.Next(3) == 0)
+                unit.Flags |= UnitType.UnitFlags.AttacksAir;
+
+            unit.Flags |= UnitType.UnitFlags.AttacksGround | UnitType.UnitFlags.AttacksAir;
         }
 
         private static void PopulateMeatShield(TreeGenerator gen, UnitType unit, int tier)
@@ -205,17 +222,20 @@ namespace GameModels.Generation
             unit.VespineCost = unit.VespineCost.Scale(1.1);
             unit.SupplyCost = unit.SupplyCost.Scale(1.25);
 
-            // TODO: abilities
+            // attack feature
+            int range = gen.Random.Next(1, 3), damageMin = gen.Random.Next(tier * 3, tier * 6), damageMax = damageMin + gen.Random.Next(tier + 1);
+            unit.Features.Add(new Attack(range, damageMin, damageMax));
 
-            // add an attack feature
-            var features = Feature.GetAttackFeatures();
-            AddFeature(gen.Random, unit, PickRandomIndex(gen.Random, features)());
-
-            features = Feature.GetPassiveFeatures();
-
-            // 0-2 passive features
-            for (int i=gen.Random.Next(3); i>=0; i--)
+            // TODO: features
+            var features = Feature.GetPassiveFeatures();
+            for (int i = gen.Random.Next(3); i >= 0; i--) // 0-2 passive features
                 AddFeature(gen.Random, unit, PickRandomIndex(gen.Random, features)());
+
+            // flags
+            if (unit.Flags.HasFlag(UnitType.UnitFlags.Flying))
+                unit.Flags |= UnitType.UnitFlags.AttacksAir;
+            else
+                unit.Flags |= UnitType.UnitFlags.AttacksGround;
         }
 
         private static void PopulateSupportCaster(TreeGenerator gen, UnitType unit, int tier)
@@ -229,7 +249,7 @@ namespace GameModels.Generation
             unit.VespineCost = unit.VespineCost.Scale(2) + 25;
             unit.SupplyCost = unit.SupplyCost.Scale(0.75);
 
-            // TODO: abilities
+            // TODO: features
         }
 
         private static void PopulateOffensiveCaster(TreeGenerator gen, UnitType unit, int tier)
@@ -244,7 +264,7 @@ namespace GameModels.Generation
             unit.VespineCost = unit.VespineCost.Scale(2.25) + 25;
             unit.SupplyCost = unit.SupplyCost.Scale(0.9);
 
-            // TODO: abilities
+            // TODO: features
         }
 
         private static void PopulateScout(TreeGenerator gen, UnitType unit, int tier)
@@ -259,9 +279,21 @@ namespace GameModels.Generation
             unit.VespineCost = unit.VespineCost.Scale(0.7);
             unit.SupplyCost = unit.SupplyCost.Scale(0.7);
 
-            // TODO: abilities
-            var features = Feature.GetAttackFeatures();
-            AddFeature(gen.Random, unit, PickRandomIndex(gen.Random, features)());
+            // attack feature
+            if (gen.Random.Next(4) != 0)
+            {
+                int range = gen.Random.Next(1, 4), damageMin = gen.Random.Next(tier * 3, tier * 6), damageMax = damageMin + gen.Random.Next(tier + 1);
+                unit.Features.Add(new Attack(range, damageMin, damageMax));
+            }
+            else
+                unit.MineralCost = unit.MineralCost.Scale(0.75);
+
+            // TODO: features
+
+            // flags
+            unit.Flags |= UnitType.UnitFlags.AttacksGround;
+            if (gen.Random.Next(3) == 0)
+                unit.Flags |= UnitType.UnitFlags.AttacksAir;
         }
 
         private static void PopulateInfiltrator(TreeGenerator gen, UnitType unit, int tier)
@@ -276,17 +308,19 @@ namespace GameModels.Generation
             unit.VespineCost = unit.VespineCost.Scale(1.6);
             unit.SupplyCost = unit.SupplyCost.Scale(1.4);
 
-            // TODO: abilities
-            var features = Feature.GetAttackFeatures();
-            AddFeature(gen.Random, unit, PickRandomIndex(gen.Random, features)());
+            // attack feature
+            int range = gen.Random.Next(1, 3), damageMin = gen.Random.Next(tier * 3, tier * 6), damageMax = damageMin + gen.Random.Next(tier + 1);
+            unit.Features.Add(new Attack(range, damageMin, damageMax));
 
-            features = Feature.GetPassiveFeatures();
-
-            // 0-1 passive features
-            for (int i = gen.Random.Next(3); i >= 0; i--)
+            // TODO: features
+            var features = Feature.GetPassiveFeatures();
+            for (int i = gen.Random.Next(3); i >= 0; i--) // 0-1 passive features
                 AddFeature(gen.Random, unit, PickRandomIndex(gen.Random, features)());
 
-            // TODO: add spell feature(s)!
+            // flags
+            unit.Flags |= UnitType.UnitFlags.AttacksGround;
+            if (gen.Random.Next(5) == 0)
+                unit.Flags |= UnitType.UnitFlags.AttacksAir;
         }
 
         private static void PopulateTransport(TreeGenerator gen, UnitType unit, int tier)
@@ -301,7 +335,10 @@ namespace GameModels.Generation
             unit.VespineCost = unit.VespineCost.Scale(0.25);
             unit.SupplyCost = unit.SupplyCost.Scale(0.45);
 
-            // TODO: abilities
+            // TODO: features
+
+            // flags
+            unit.Flags |= UnitType.UnitFlags.Flying;
         }
 
         private static void PopulateWorker(TreeGenerator gen, UnitType unit, int tier)
@@ -316,7 +353,11 @@ namespace GameModels.Generation
             unit.VespineCost = 0;
             unit.SupplyCost = 1;
 
-            // TODO: abilities
+            // attack feature
+            int range = gen.Random.Next(1, 2), damageMin = gen.Random.Next(3, 6), damageMax = damageMin + gen.Random.Next(3);
+            unit.Features.Add(new Attack(range, damageMin, damageMax));
+
+            // TODO: features
         }
 
         private static void AddFeature(Random r, UnitType unit, Feature feature)

@@ -27,6 +27,7 @@ namespace GameModels.Generation
         internal Random Random { get; private set; }
         internal TechTree Tree { get; private set; }
         internal Complexity TreeComplexity { get; private set; }
+        internal int UnitVisionRange { get; private set; }
 
         internal const char commandSymbol = '☆', workerSymbol = '⚒';
         const string symbols = "ABCDEFGHIJKLMNOPQRSTUVWXYZΔΣΦΨΩαβγδεζηθλμξπςφω☤⚕⚚⚛⚜⚝☥☿♀♁♂♃♄♅♆♇⚳⚴⚵⚶⚷☉☊☋☌☍♈♉♊♋♌♍♎♏♐♑♒♓⛎⛲⚖⚗⚘⚙?#@£$%&☺♠♣♥♦";
@@ -146,6 +147,8 @@ namespace GameModels.Generation
 
         private void PopulateUnits()
         {
+            UnitVisionRange = Random.Next(2, 5);
+
             // get a list of all units, in a random order
             List<UnitType> units = new List<UnitType>();
             units.AddRange(Tree.Units.Where(u => !u.Populated));

@@ -26,7 +26,7 @@ namespace GameModels.Definitions
             Triggered,
         }
 
-        public abstract double Initialize(EntityType type, Random r);
+        public virtual double Initialize(EntityType type, Random r) { return 1; }
         public virtual bool Validate(EntityType type) { return true; }
         public abstract bool Clicked(Entity entity);
     }

@@ -7,63 +7,53 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GameModels.Definitions
-{
-    public partial class Feature
-    {
-        internal static IList<Func<Feature>> GetAttackFeatures()
-        {
-            return new Func<Feature>[] {
-                () => new RangedAttack(),
-                () => new RangedAttack(),
-                () => new MeleeAttack(),
-            };
-        }
-    }
-}
-
 namespace GameModels.Features
 {
-    public class RangedAttack : ActivatedFeature
+    public class Attack : ActivatedFeature
     {
         public override string Name { get { return "Attack"; } }
-        public override string Description { get { return "Deals damage to an enemy several tiles away"; } }
+        public override string Description
+        {
+            get
+            {
+                StringBuilder sb = new StringBuilder();
+
+                sb.Append("Deals ");
+                sb.Append(DamageMin);
+                if (DamageMin != DamageMax)
+                {
+                    sb.Append("-");
+                    sb.Append(DamageMax);
+                }
+                sb.Append(" damage to an enemy ");
+
+                if (Range == 1)
+                    sb.Append(" 1 tile away");
+                else
+                {
+                    sb.Append(" up to ");
+                    sb.Append(Range);
+                    sb.Append(" tiles away");
+                }
+
+                return sb.ToString();
+            }
+        }
         public override char Appearance { get { return '='; } }
         public int Range { get; protected set; }
+        public int DamageMin { get; protected set; }
+        public int DamageMax { get; protected set; }
 
-        public override double Initialize(EntityType type, Random r)
+        public Attack(int range, int damageMin, int damageMax)
         {
-            // TODO: damage and range should be based on tier and role
-            Range = r.Next(1, 4);
-            int damage = r.Next(5, 10);
-            return 1;// +0.2 * Range;
+            Range = range;
+            DamageMin = damageMin;
+            DamageMax = damageMax;
         }
 
         public override void Activate(Entity entity)
         {
             throw new NotImplementedException();
-        }
-    }
-
-    public class MeleeAttack : RangedAttack
-    {
-        public override string Description { get { return "Deals damage to an adjacent enemy"; } }
-        public override char Appearance { get { return '-'; } }
-
-        public override double Initialize(EntityType type, Random r)
-        {
-            // TODO: damage should be based on tier and role
-            Range = 0;
-            int damage = r.Next(7, 15);
-            return 1;// .25;
-        }
-
-        public override void Activate(Entity entity)
-        {
-            // first move, then activate as before
-            throw new NotImplementedException();
-
-            base.Activate(entity);
         }
     }
 }
