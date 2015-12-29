@@ -40,7 +40,7 @@ namespace GameModels.Features
             }
         }
         public override char Appearance { get { return '='; } }
-        public int Range { get; protected set; }
+        public int Range { get; internal set; }
         public int DamageMin { get; protected set; }
         public int DamageMax { get; protected set; }
 

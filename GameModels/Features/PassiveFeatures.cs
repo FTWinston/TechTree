@@ -15,16 +15,13 @@ namespace GameModels.Definitions
         {
             return new Func<Feature>[] {
                 () => new HigherHealth(),
-                () => new LowerHealth(),
                 () => new Armored(),
                 () => new GreaterMobility(),
-                () => new ReducedMobility(),
                 () => new GreaterVisibility(),
-                () => new ReducedVisibility(),
                 () => new HigherMana(),
-                () => new LowerMana(),
                 () => new Detector(),
-                () => new Supply()
+                () => new Supply(),
+                () => new LongerRange(),
             };
         }
     }
@@ -45,26 +42,7 @@ namespace GameModels.Features
             return 1.0 + .2 * scale;
         }
     }
-
-    public class LowerHealth : PassiveFeature
-    {
-        public override string Name { get { return "Lower Health"; } }
-        public override string Description { get { return "Decreases hitpoints"; } }
-        public override char Appearance { get { return '-'; } }
-
-        public override double Initialize(EntityType type, Random r)
-        {
-            double scale = r.NextDouble() * 0.75 + 0.25;
-            type.Health -= (int)(30 * scale);
-            return 1.0 - .2 * scale;
-        }
-
-        public override bool Validate(EntityType type)
-        {// don't allow on a type that also has "higher health"
-            return type.Health > 0 && type.Features.Find(f => f.GetType() == typeof(HigherHealth)) == null;
-        }
-    }
-
+    
     public class Armored : PassiveFeature
     {
         public override string Name { get { return "Armored"; } }
@@ -98,25 +76,6 @@ namespace GameModels.Features
         }
     }
 
-    public class ReducedMobility : PassiveFeature
-    {
-        public override string Name { get { return "Reduced Mobility"; } }
-        public override string Description { get { return "Decreases action points"; } }
-        public override char Appearance { get { return '<'; } }
-
-        public override double Initialize(EntityType type, Random r)
-        {
-            int points = r.Next(1, 3);
-            type.ActionPoints -= points;
-            return 1.0 - points * 0.15;
-        }
-
-        public override bool Validate(EntityType type)
-        {// don't allow on a type that is a building, or also has "greater mobility"
-            return type.ActionPoints > 0 && !(type is BuildingType) && type.Features.Find(f => f.GetType() == typeof(GreaterMobility)) == null;
-        }
-    }
-
     public class GreaterVisibility : PassiveFeature
     {
         public override string Name { get { return "Greater Visibility"; } }
@@ -128,25 +87,6 @@ namespace GameModels.Features
             int points = r.Next(1, 3);
             type.VisionRange += points;
             return 1.0 + points * 0.1;
-        }
-    }
-
-    public class ReducedVisibility : PassiveFeature
-    {
-        public override string Name { get { return "Reduced Visibility"; } }
-        public override string Description { get { return "Decreases vision range"; } }
-        public override char Appearance { get { return 'o'; } }
-
-        public override double Initialize(EntityType type, Random r)
-        {
-            int points = r.Next(1, 3);
-            type.VisionRange -= points;
-            return 1.0 - points * 0.15;
-        }
-
-        public override bool Validate(EntityType type)
-        {// don't reduce visibility below zero, don't allow combining with "greater visibility"
-            return type.VisionRange >= 0 && type.Features.Find(f => f.GetType() == typeof(GreaterVisibility)) == null; ;
         }
     }
 
@@ -169,25 +109,6 @@ namespace GameModels.Features
         }
     }
 
-    public class LowerMana : PassiveFeature
-    {
-        public override string Name { get { return "Reduced Potency"; } }
-        public override string Description { get { return "Decreases mana"; } }
-        public override char Appearance { get { return 'W'; } }
-
-        public override double Initialize(EntityType type, Random r)
-        {
-            double scale = r.NextDouble() * 0.75 + 0.25;
-            type.Mana -= (int)(30 * scale);
-            return 1.0 - .05 * scale;
-        }
-
-        public override bool Validate(EntityType type)
-        {// don't allow on a type that doesn't have any mana-using features
-            return type.Mana > 0 && type.Features.Find(f => f.UsesMana) != null && type.Features.Find(f => f.GetType() == typeof(HigherMana)) == null;
-        }
-    }
-
     public class Detector : PassiveFeature
     {
         public override string Name { get { return "Awareness"; } }
@@ -202,7 +123,7 @@ namespace GameModels.Features
 
         public override bool Validate(EntityType type)
         {// only allow this feature exactly once
-            return type.VisionRange > 0 && type.Features.Count(f => f.GetType() == typeof(Detector)) == 1;
+            return type.VisionRange > 0 && type.Features.Count(f => f is Detector) == 1;
         }
     }
 
@@ -224,6 +145,31 @@ namespace GameModels.Features
 
             int diff = before - type.SupplyCost;
             return 1.0 + diff * 0.1;
+        }
+    }
+
+    public class LongerRange : PassiveFeature
+    {
+        public override string Name { get { return "Range"; } }
+        public override string Description { get { return "Increases attack range"; } }
+        public override char Appearance { get { return 'S'; } }
+
+        public override double Initialize(EntityType type, Random r)
+        {
+            int points = r.Next(1, 3);
+
+            Attack feature = type.Features.SingleOrDefault(f => f is Attack) as Attack;
+            if (feature == null)
+                return 1;
+
+            feature.Range += points;
+
+            return 1.0 + points * 0.1;
+        }
+
+        public override bool Validate(EntityType type)
+        {// only allow this feature exactly once
+            return type.Features.SingleOrDefault(f => f is Attack) != null;
         }
     }
 }
