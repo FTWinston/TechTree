@@ -10,7 +10,7 @@ namespace GameModels.Definitions
     public abstract partial class Feature
     {
         public abstract string Name { get; }
-        public abstract string Description { get; }
+        public abstract string GetDescription();
         public abstract char Appearance { get; }
 
         public EntityType EntityDefinition { get; internal set; }
@@ -42,6 +42,49 @@ namespace GameModels.Definitions
         }
     }
 
+    public abstract class ActivatedFeature : Feature
+    {
+        public override Feature.InteractionMode Mode { get { return InteractionMode.Triggered; } }
+        public override bool UsesMana { get { return ManaCost > 0; } }
+
+        public int CooldownTurns { get; internal set; }
+        public int ManaCost { get; internal set; }
+
+        public abstract void Activate(Entity user);
+
+        public override bool Clicked(Entity entity)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public abstract class TargettedFeature : ActivatedFeature
+    {
+        public abstract void Activate(Entity user, Cell target);
+
+        public int Range { get; internal set; }
+
+        public virtual bool IsValidTarget(Entity user, Cell target) { return true; }
+
+        public override void Activate(Entity user)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public abstract class EntityTargettedFeature : TargettedFeature
+    {
+        public override bool IsValidTarget(Entity user, Cell target)
+        {
+            if (target.Entity == null)
+                return false;
+
+            return IsValidTarget(user, target.Entity);
+        }
+
+        public abstract bool IsValidTarget(Entity user, Entity target);
+    }
+
     public abstract class ToggleFeature : Feature
     {
         public override Feature.InteractionMode Mode { get { return InteractionMode.Toggled; } }
@@ -59,17 +102,86 @@ namespace GameModels.Definitions
         }
     }
 
-    public abstract class ActivatedFeature : Feature
+    public abstract class ToggleFeature<Effect> : ToggleFeature
+        where Effect : IStatusEffect
     {
-        public override Feature.InteractionMode Mode { get { return InteractionMode.Triggered; } }
-        public override bool UsesMana { get { return ManaCost > 0; } }
+        protected ToggleFeature()
+        {
+            EffectInstance = Activator.CreateInstance<Effect>();
+        }
 
-        public abstract void Activate(Entity entity);
+        protected Effect EffectInstance { get; private set; }
 
-        public int CooldownTurns { get; internal set; }
-        public int ManaCost { get; internal set; }
+        public override void Enable(Entity entity)
+        {
+            entity.AddEffect(EffectInstance);
+        }
+        public override void Disable(Entity entity)
+        {
+            entity.RemoveEffect(EffectInstance);
+        }
+    }
 
-        public override bool Clicked(Entity entity)
+    public abstract class SelfStatusEffectFeature<Effect> : ActivatedFeature
+        where Effect : IStatusEffect
+    {
+        protected SelfStatusEffectFeature()
+        {
+            EffectInstance = Activator.CreateInstance<Effect>();
+        }
+
+        protected Effect EffectInstance { get; private set; }
+
+        public override void Activate(Entity user)
+        {
+            user.AddEffect(EffectInstance);
+            throw new NotImplementedException(); // drain mana etc
+        }
+    }
+
+    public abstract class TargettedStatusEffectFeature<Effect> : EntityTargettedFeature
+        where Effect : IStatusEffect
+    {
+        protected TargettedStatusEffectFeature()
+        {
+            EffectInstance = Activator.CreateInstance<Effect>();
+        }
+
+        protected Effect EffectInstance { get; private set; }
+
+        public override void Activate(Entity user, Cell target)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public abstract class SelfCellEffectFeature<Effect> : ActivatedFeature
+        where Effect : ICellEffect
+    {
+        protected SelfCellEffectFeature()
+        {
+            EffectInstance = Activator.CreateInstance<Effect>();
+        }
+
+        protected Effect EffectInstance { get; private set; }
+
+        public override void Activate(Entity user)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public abstract class TargettedCellEffectFeature<Effect> : TargettedFeature
+        where Effect : ICellEffect
+    {
+        protected TargettedCellEffectFeature()
+        {
+            EffectInstance = Activator.CreateInstance<Effect>();
+        }
+
+        protected Effect EffectInstance { get; private set; }
+
+        public override void Activate(Entity user, Cell target)
         {
             throw new NotImplementedException();
         }

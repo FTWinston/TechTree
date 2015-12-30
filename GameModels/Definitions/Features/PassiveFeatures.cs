@@ -1,5 +1,5 @@
 ﻿using GameModels.Definitions;
-using GameModels.Features;
+using GameModels.Definitions.Features;
 using GameModels.Instances;
 using System;
 using System.Collections.Generic;
@@ -27,18 +27,20 @@ namespace GameModels.Definitions
     }
 }
 
-namespace GameModels.Features
+namespace GameModels.Definitions.Features
 {
     public class HigherHealth : PassiveFeature
     {
         public override string Name { get { return "More Health"; } }
-        public override string Description { get { return "Increases hitpoints"; } }
+        public override string GetDescription() { return string.Format("Adds {0} hitpoints", ExtraPoints); }
         public override char Appearance { get { return '+'; } }
+        private int ExtraPoints { get; set; }
 
         public override double Initialize(EntityType type, Random r)
         {
             double scale = r.NextDouble() * 0.75 + 0.25;
-            type.Health += (int)(30 * scale);
+            ExtraPoints = (int)(30 * scale);
+            type.Health += ExtraPoints;
             return 1.0 + .2 * scale;
         }
     }
@@ -46,28 +48,30 @@ namespace GameModels.Features
     public class Armored : PassiveFeature
     {
         public override string Name { get { return "Armored"; } }
-        public override string Description { get { return "Increases armor"; } }
+        public override string GetDescription() { return string.Format("Adds {0} armor points", ExtraPoints); }
         public override char Appearance { get { return '#'; } }
+        private int ExtraPoints { get; set; }
 
         public override double Initialize(EntityType type, Random r)
         {
-            int armor = r.Next(1, 3);
-            type.Armor += armor;
-            return 1.0 + armor * 0.05;
+            ExtraPoints = r.Next(1, 3);
+            type.Armor += ExtraPoints;
+            return 1.0 + ExtraPoints * 0.05;
         }
     }
 
     public class GreaterMobility : PassiveFeature
     {
         public override string Name { get { return "Greater Mobility"; } }
-        public override string Description { get { return "Increases action points"; } }
+        public override string GetDescription() { return string.Format("Adds {0} action points", ExtraPoints); }
         public override char Appearance { get { return '>'; } }
+        private int ExtraPoints { get; set; }
 
         public override double Initialize(EntityType type, Random r)
         {
-            int points = r.Next(1, 3);
-            type.ActionPoints += points;
-            return 1.0 + points * 0.15;
+            ExtraPoints = r.Next(1, 3);
+            type.ActionPoints += ExtraPoints;
+            return 1.0 + ExtraPoints * 0.15;
         }
         
         public override bool Validate(EntityType type)
@@ -79,27 +83,30 @@ namespace GameModels.Features
     public class GreaterVisibility : PassiveFeature
     {
         public override string Name { get { return "Greater Visibility"; } }
-        public override string Description { get { return "Increases vision range"; } }
+        public override string GetDescription() { return string.Format("Increases vision range by {0} tiles", ExtraPoints); }
         public override char Appearance { get { return 'O'; } }
+        private int ExtraPoints { get; set; }
 
         public override double Initialize(EntityType type, Random r)
         {
-            int points = r.Next(1, 3);
-            type.VisionRange += points;
-            return 1.0 + points * 0.1;
+            ExtraPoints = r.Next(1, 3);
+            type.VisionRange += ExtraPoints;
+            return 1.0 + ExtraPoints * 0.1;
         }
     }
 
 	public class HigherMana : PassiveFeature
     {
         public override string Name { get { return "Potency"; } }
-        public override string Description { get { return "Increases mana"; } }
+        public override string GetDescription() { return string.Format("Adds {0} mana points", ExtraPoints); }
         public override char Appearance { get { return 'M'; } }
+        private int ExtraPoints { get; set; }
 
         public override double Initialize(EntityType type, Random r)
         {
             double scale = r.NextDouble() * 0.75 + 0.25;
-            type.Mana += (int)(30 * scale);
+            ExtraPoints = (int)(30 * scale);
+            type.Mana += ExtraPoints;
             return 1.0 + .05 * scale;
         }
 
@@ -112,7 +119,7 @@ namespace GameModels.Features
     public class Detector : PassiveFeature
     {
         public override string Name { get { return "Awareness"; } }
-        public override string Description { get { return "Allows detection of invisible units"; } }
+        public override string GetDescription() { return "Allows detection of invisible units"; }
         public override char Appearance { get { return 'I'; } }
 
         public override double Initialize(EntityType type, Random r)
@@ -130,18 +137,19 @@ namespace GameModels.Features
     public class Supply : PassiveFeature
     {
         public override string Name { get { return "Supply"; } }
-        public override string Description { get { return "Provides supply, allowing units to be built"; } }
+        public override string GetDescription() { return string.Format("Provides {0} supply points, allowing units to be built", Points); }
         public override char Appearance { get { return 'S'; } }
+        private int Points { get; set; }
 
         public override double Initialize(EntityType type, Random r)
         {
-            int points = r.Next(3, 6);
+            Points = r.Next(3, 6);
             int before = type.SupplyCost;
 
             if (type.SupplyCost >= 0)
-                type.SupplyCost = -points;
+                type.SupplyCost = -Points;
             else
-                type.SupplyCost -= points;
+                type.SupplyCost -= Points;
 
             int diff = before - type.SupplyCost;
             return 1.0 + diff * 0.1;
@@ -151,20 +159,21 @@ namespace GameModels.Features
     public class LongerRange : PassiveFeature
     {
         public override string Name { get { return "Range"; } }
-        public override string Description { get { return "Increases attack range"; } }
+        public override string GetDescription() { return string.Format("Increases attack range by {0} tiles", ExtraPoints); }
         public override char Appearance { get { return 'S'; } }
+        private int ExtraPoints { get; set; }
 
         public override double Initialize(EntityType type, Random r)
         {
-            int points = r.Next(1, 3);
+            ExtraPoints = r.Next(1, 3);
 
             Attack feature = type.Features.SingleOrDefault(f => f is Attack) as Attack;
             if (feature == null)
                 return 1;
 
-            feature.Range += points;
+            feature.Range += ExtraPoints;
 
-            return 1.0 + points * 0.1;
+            return 1.0 + ExtraPoints * 0.1;
         }
 
         public override bool Validate(EntityType type)

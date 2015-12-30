@@ -1,5 +1,5 @@
 ﻿using GameModels.Definitions;
-using GameModels.Features;
+using GameModels.Definitions.Features;
 using System;
 using System.Collections.Generic;
 using System.Linq;

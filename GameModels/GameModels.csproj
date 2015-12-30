@@ -39,11 +39,65 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Definitions\CellEffects\Shield.cs" />
+    <Compile Include="Definitions\CellEffects\Wall.cs" />
+    <Compile Include="Definitions\CellEffects\DamageOverTime.cs" />
+    <Compile Include="Definitions\Effects.cs" />
+    <Compile Include="Definitions\Features\AreaDetection.cs" />
+    <Compile Include="Definitions\Features\AreaHealthReduction.cs" />
+    <Compile Include="Definitions\Features\DeployableAttack.cs" />
+    <Compile Include="Definitions\Features\Suicide.cs" />
+    <Compile Include="Definitions\Features\Stim.cs" />
+    <Compile Include="Definitions\Features\DrainOwnHealth.cs" />
+    <Compile Include="Definitions\Features\MassTeleport.cs" />
+    <Compile Include="Definitions\Features\PersonalTeleport.cs" />
+    <Compile Include="Definitions\Features\AreaShield.cs" />
+    <Compile Include="Definitions\Features\Cloaking_AOE_MainDrain.cs" />
+    <Compile Include="Definitions\Features\Cloaking_AOE_Permanent.cs" />
+    <Compile Include="Definitions\Features\Burrow.cs" />
+    <Compile Include="Definitions\Features\Cloaking_Permanent.cs" />
+    <Compile Include="Definitions\Features\Cloaking_ManaDrain.cs" />
+    <Compile Include="Definitions\Features\Possession.cs" />
+    <Compile Include="Definitions\Features\MindControl.cs" />
+    <Compile Include="Definitions\Features\ManaBurn.cs" />
+    <Compile Include="Definitions\Features\KillForMana.cs" />
+    <Compile Include="Definitions\Features\DrainHealth.cs" />
+    <Compile Include="Definitions\Features\StealVision.cs" />
+    <Compile Include="Definitions\Features\Wall.cs" />
+    <Compile Include="Definitions\Features\AreaDoT.cs" />
+    <Compile Include="Definitions\Features\AreaManaDrain.cs" />
+    <Compile Include="Definitions\Features\AreaInstant.cs" />
+    <Compile Include="Definitions\Features\Immobilize.cs" />
+    <Compile Include="Definitions\Features\Slow.cs" />
+    <Compile Include="Definitions\Features\Freeze.cs" />
+    <Compile Include="Definitions\Features\HealthBoost.cs" />
+    <Compile Include="Definitions\Features\HealOverTime.cs" />
+    <Compile Include="Definitions\Features\InstantHeal.cs" />
+    <Compile Include="Definitions\Features\Blind.cs" />
+    <Compile Include="Definitions\Features\Landmine.cs" />
+    <Compile Include="Definitions\Features\TargettedDoT.cs" />
+    <Compile Include="Definitions\Features\RemoveEffects.cs" />
+    <Compile Include="Definitions\Features\TargettedInstant.cs" />
+    <Compile Include="Definitions\StatusEffects\StolenVision.cs" />
+    <Compile Include="Definitions\StatusEffects\ReducedHealth.cs" />
+    <Compile Include="Definitions\StatusEffects\HealthDrain.cs" />
+    <Compile Include="Definitions\StatusEffects\Stimmed.cs" />
+    <Compile Include="Definitions\StatusEffects\Exploding.cs" />
+    <Compile Include="Definitions\StatusEffects\Teleporting.cs" />
+    <Compile Include="Definitions\StatusEffects\AreaInvisible.cs" />
+    <Compile Include="Definitions\StatusEffects\Burrowed.cs" />
+    <Compile Include="Definitions\StatusEffects\Invisible.cs" />
+    <Compile Include="Definitions\StatusEffects\Immobilized.cs" />
+    <Compile Include="Definitions\StatusEffects\Slowed.cs" />
+    <Compile Include="Definitions\StatusEffects\Frozen.cs" />
+    <Compile Include="Definitions\StatusEffects\HealthBoost.cs" />
+    <Compile Include="Definitions\StatusEffects\Blinded.cs" />
+    <Compile Include="Instances\Cell.cs" />
     <Compile Include="Definitions\BuildingType.cs" />
     <Compile Include="Definitions\EntityType.cs" />
     <Compile Include="Definitions\Feature.cs" />
     <Compile Include="ExtensionMethods.cs" />
-    <Compile Include="Features\AttackFeatures.cs" />
+    <Compile Include="Definitions\Features\Attack.cs" />
     <Compile Include="Generation\BuildingGenerator.cs" />
     <Compile Include="Generation\TreeGenerator.cs" />
     <Compile Include="Generation\UnitGenerator.cs" />
@@ -53,10 +107,13 @@
     <Compile Include="Player.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Definitions\Research.cs" />
-    <Compile Include="Features\PassiveFeatures.cs" />
+    <Compile Include="Definitions\Features\PassiveFeatures.cs" />
     <Compile Include="Definitions\UnitType.cs" />
+    <Compile Include="Definitions\StatusEffects\DamageOverTime.cs" />
+    <Compile Include="Definitions\StatusEffects\Healing.cs" />
     <Compile Include="TechTree.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
