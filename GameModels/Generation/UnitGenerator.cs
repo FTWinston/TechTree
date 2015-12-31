@@ -173,10 +173,28 @@ namespace GameModels.Generation
             unit.MineralCost = unit.MineralCost.Scale(1.05);
 
             // attack feature
-            int range = gen.Random.Next(1, 4), damageMin = gen.Random.Next(tier * 5, tier * 8), damageMax = damageMin + gen.Random.Next(tier + 1);
-            unit.Features.Add(new Attack(range, damageMin, damageMax));
-            
-            // TODO: features
+            {
+                int range = gen.Random.Next(1, 4), damageMin = gen.Random.Next(tier * 5, tier * 8), damageMax = damageMin + gen.Random.Next(tier + 1);
+                unit.Features.Add(new Attack(range, damageMin, damageMax));
+            }
+
+            // features
+            SortedList<Func<Feature>, int> features = new SortedList<Func<Feature>, int>();
+            features.Add(() =>
+            {
+                int range = gen.Random.Next(2, 6), radius = gen.Random.Next(4) == 0 ? 3 : 2;
+                int damageMin = gen.Random.Next(20 + tier * 7, 20 + tier * 11), damageMax = damageMin + gen.Random.Next(3 * tier + 1);
+                return new AreaInstant(range, radius, damageMin, damageMax);
+            }, 4);
+            features.Add(() => new Burrow(0), 1);
+            features.Add(() =>
+            {
+                int duration = gen.Random.Next(2, 6), points = gen.Random.Next(2, 5);
+                int drain = (int)((unit.Health * 0.65) * (duration + points) / 20);
+                return new Stim(duration, drain, points);
+            }, 6);
+
+            AllocateFeatures(gen, unit, features, gen.Random.Next(1, 4));
 
             // flags
             unit.Flags |= UnitType.UnitFlags.AttacksGround | UnitType.UnitFlags.AttacksAir;
@@ -226,10 +244,15 @@ namespace GameModels.Generation
             int range = gen.Random.Next(1, 3), damageMin = gen.Random.Next(tier * 3, tier * 6), damageMax = damageMin + gen.Random.Next(tier + 1);
             unit.Features.Add(new Attack(range, damageMin, damageMax));
 
-            // TODO: features
-            var features = Feature.GetPassiveFeatures();
-            for (int i = gen.Random.Next(3); i >= 0; i--) // 0-2 passive features
-                AddFeature(gen.Random, unit, PickRandomIndex(gen.Random, features)());
+            // TODO: active features
+
+            // passive features
+            SortedList<Func<Feature>, int> features = new SortedList<Func<Feature>, int>();
+            features.Add(() => new HigherHealth(gen.Random.Next(unit.Health * 15 / 100, unit.Health * 30 / 100).RoundNearest(5)), 3);
+            features.Add(() => new Armored(gen.Random.Next(tier + 1, tier + 2)), 3);
+            features.Add(() => new GreaterMobility(gen.Random.Next(tier + 1, tier + 2)), 3);
+            features.Add(() => new HigherMana(gen.Random.Next(unit.Health * 15 / 100, unit.Health * 35 / 100).RoundNearest(5)), 1);
+            AllocateFeatures(gen, unit, features, gen.Random.Next(1, 3));
 
             // flags
             if (unit.Flags.HasFlag(UnitType.UnitFlags.Flying))
@@ -312,10 +335,17 @@ namespace GameModels.Generation
             int range = gen.Random.Next(1, 3), damageMin = gen.Random.Next(tier * 3, tier * 6), damageMax = damageMin + gen.Random.Next(tier + 1);
             unit.Features.Add(new Attack(range, damageMin, damageMax));
 
-            // TODO: features
-            var features = Feature.GetPassiveFeatures();
-            for (int i = gen.Random.Next(3); i >= 0; i--) // 0-1 passive features
-                AddFeature(gen.Random, unit, PickRandomIndex(gen.Random, features)());
+            // TODO: active features
+
+            // passive features
+            SortedList<Func<Feature>, int> features = new SortedList<Func<Feature>, int>();
+            features.Add(() => new GreaterMobility(gen.Random.Next(tier + 1, tier + 2)), 3);
+            features.Add(() => new GreaterVisibility(gen.Random.Next(1, 4)), 3);
+            features.Add(() => new HigherMana(gen.Random.Next(unit.Health * 15 / 100, unit.Health * 35 / 100).RoundNearest(5)), 3);
+            features.Add(() => new Detector(), 3);
+            features.Add(() => new Supply(gen.Random.Next(2, 5)), 3);
+            features.Add(() => new LongerRange(gen.Random.Next(1, 4)), 3);
+            AllocateFeatures(gen, unit, features, gen.Random.Next(2));
 
             // flags
             unit.Flags |= UnitType.UnitFlags.AttacksGround;
@@ -360,10 +390,34 @@ namespace GameModels.Generation
             // TODO: features
         }
 
-        private static void AddFeature(Random r, UnitType unit, Feature feature)
+        private static void AllocateFeatures(TreeGenerator gen, UnitType unit, SortedList<Func<Feature>, int> features, int numFeatures)
+        {
+            int total = features.Values.Sum();
+
+            for (int i = 0; i < numFeatures; i++)
+            {
+                int selected = gen.Random.Next(total);
+
+                int cumulative = 0;
+                foreach (var feature in features)
+                {
+                    cumulative += feature.Value;
+
+                    if (cumulative > selected)
+                    {
+                        AddFeature(gen, unit, feature.Key());
+                        total -= feature.Value;
+                        features.Remove(feature.Key);
+                        break;
+                    }
+                }
+            }
+        }
+
+        private static void AddFeature(TreeGenerator gen, UnitType unit, Feature feature)
         {
             unit.Features.Add(feature);
-            double costScale = feature.Initialize(unit, r);
+            double costScale = feature.Initialize(unit);
 
             unit.MineralCost = (int)(unit.MineralCost * costScale);
             unit.VespineCost = (int)(unit.VespineCost * costScale);
