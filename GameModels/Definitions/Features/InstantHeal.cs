@@ -55,5 +55,11 @@ namespace GameModels.Definitions.Features
         {
             throw new NotImplementedException();
         }
+
+        public override bool Validate(EntityType type)
+        {
+            // don't allow on a type that also has heal-over-time
+            return type.Features.FirstOrDefault(f => f is HealOverTime) == null;
+        }
     }
 }

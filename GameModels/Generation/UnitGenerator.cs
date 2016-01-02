@@ -293,14 +293,14 @@ namespace GameModels.Generation
 
             // active features
             List<Selector> features = new List<Selector>();
-            AllocateFeatures(gen, unit, features, gen.Random.Next(1, 3));
+            AllocateFeatures(gen, unit, features, gen.Random.Next(0, 2));
 
             // passive features
             features = new List<Selector>();
             features.Add(new Selector(3, () => new HigherHealth(gen.Random.Next(unit.Health * 15 / 100, unit.Health * 30 / 100).RoundNearest(5))));
             features.Add(new Selector(3, () => new Armored(gen.Random.Next(tier + 1, tier + 2))));
             features.Add(new Selector(2, () => new GreaterMobility(gen.Random.Next(tier + 1, tier + 2))));
-            features.Add(new Selector(1, () => new HigherMana(gen.Random.Next(unit.Health * 15 / 100, unit.Health * 35 / 100).RoundNearest(5))));
+            features.Add(new Selector(1, () => new HigherMana(gen.Random.Next(unit.Mana * 15 / 100, unit.Mana * 35 / 100).RoundNearest(5))));
             AllocateFeatures(gen, unit, features, gen.Random.Next(1, 3));
 
             // flags
@@ -321,7 +321,42 @@ namespace GameModels.Generation
             unit.VespineCost = unit.VespineCost.Scale(2) + 25;
             unit.SupplyCost = unit.SupplyCost.Scale(0.75);
 
-            // TODO: features
+            // active features
+            List<Selector> features = new List<Selector>();
+            features.Add(new Selector(2, () => 
+            {
+                int range = gen.Random.Next(3, 6), duration = gen.Random.Next(2) == 0 ? 0 : gen.Random.Next(3,10);
+                int damageMin = gen.Random.Next(tier * 2, tier * 5), damageMax = damageMin + gen.Random.Next(tier + 1);
+                return new TargettedDoT(range, duration, damageMin, damageMax);
+            }));
+            features.Add(new Selector(4, () =>
+            {
+                int range = gen.Random.Next(1, 6);
+                int damageMin = gen.Random.Next(tier * 4, tier * 6), damageMax = damageMin + gen.Random.Next(tier + 1);
+                return new InstantHeal(range, damageMin, damageMax);
+            }));
+            features.Add(new Selector(4, () =>
+            {
+                int range = gen.Random.Next(1, 4), duration = gen.Random.Next(3, 6);
+                int damageMin = gen.Random.Next(tier * 1, tier * 4), damageMax = damageMin + gen.Random.Next(tier + 1);
+                return new HealOverTime(range, duration, damageMin, damageMax);
+            }));
+            features.Add(new Selector(3, () => new Blind(gen.Random.Next(3,7), gen.Random.Next(2) == 0 ? 0 : gen.Random.Next(4, 10))));
+            features.Add(new Selector(4, () => new RemoveEffects(gen.Random.Next(1, 5))));
+            features.Add(new Selector(2, () => new Freeze(gen.Random.Next(3, 7), 1, gen.Random.Next(3, 6))));
+            features.Add(new Selector(2, () => new Slow(gen.Random.Next(3, 7), gen.Random.Next(2, 4), gen.Random.Next(4, 8))));
+            features.Add(new Selector(2, () => new Immobilize(gen.Random.Next(3, 7), 1, gen.Random.Next(4, 7))));
+            features.Add(new Selector(4, () => new Wall(gen.Random.Next(1, 5), gen.Random.Next(4, 10))));
+            features.Add(new Selector(1, () => new Possession(gen.Random.Next(1, 4))));
+            features.Add(new Selector(2, () => new DrainOwnHealth(gen.Random.Next(1, 4), gen.Random.Next(unit.Health / 10, unit.Health / 5), gen.Random.Next(10, 31) / 10f)));
+            features.Add(new Selector(3, () => new AreaDetection(gen.Random.Next(5, 12), gen.Random.Next(2, 6), gen.Random.Next(1, 3))));
+            features.Add(new Selector(3, () => new StealVision(gen.Random.Next(5, 10), gen.Random.Next(3) == 0 ? 0 : gen.Random.Next(3, 12))));
+            AllocateFeatures(gen, unit, features, gen.Random.Next(3, 4));
+
+            // passive features
+            features = new List<Selector>();
+            features.Add(new Selector(1, () => new HigherMana(gen.Random.Next(unit.Mana * 15 / 100, unit.Mana * 35 / 100).RoundNearest(5))));
+            AllocateFeatures(gen, unit, features, gen.Random.Next(1, 2));
         }
 
         private static void PopulateOffensiveCaster(TreeGenerator gen, UnitType unit, int tier)

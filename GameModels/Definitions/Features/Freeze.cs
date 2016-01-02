@@ -58,5 +58,12 @@ namespace GameModels.Definitions.Features
         {
             return user.Owner != target.Owner;
         }
+
+        public override bool Validate(EntityType type)
+        {
+            // an entity type should only have one of freeze, slow, immobilize
+            return type.Features.FirstOrDefault(f => f is Slow) == null
+                && type.Features.FirstOrDefault(f => f is Immobilize) == null;
+        }
     }
 }
