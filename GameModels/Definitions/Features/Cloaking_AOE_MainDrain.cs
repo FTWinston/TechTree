@@ -19,11 +19,21 @@ namespace GameModels.Definitions.Features
             return sb.ToString();
         }
         public override char Appearance { get { return '~'; } }
+        public int Radius { get; private set; }
 
-        public Cloaking_AOE_ManaDrain(int manaCostPerTurn, int activateManaCost)
+        public Cloaking_AOE_ManaDrain(int manaCostPerTurn, int activateManaCost, int radius)
         {
+            Radius = radius;
             ManaCostPerTurn = manaCostPerTurn;
             ActivateManaCost = activateManaCost;
+        }
+
+        public override bool Validate(EntityType type)
+        {
+            // an entity type should only have one cloak
+            return type.Features.FirstOrDefault(f => f is Cloaking_ManaDrain) == null
+                && type.Features.FirstOrDefault(f => f is Cloaking_Permanent) == null
+                && type.Features.FirstOrDefault(f => f is Cloaking_AOE_Permanent) == null;
         }
     }
 }

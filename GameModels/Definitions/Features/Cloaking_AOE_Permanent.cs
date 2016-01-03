@@ -19,14 +19,23 @@ namespace GameModels.Definitions.Features
             return sb.ToString();
         }
         public override char Appearance { get { return '~'; } }
-
+        public int Radius { get; private set; }
         private AreaInvisible EffectInstance { get; set; }
 
-        public Cloaking_AOE_Permanent()
+        public Cloaking_AOE_Permanent(int radius)
         {
+            Radius = radius;
             EffectInstance = new AreaInvisible();
 
             // TODO: work out how to actually apply this effect to units
+        }
+
+        public override bool Validate(EntityType type)
+        {
+            // an entity type should only have one cloak
+            return type.Features.FirstOrDefault(f => f is Cloaking_ManaDrain) == null
+                && type.Features.FirstOrDefault(f => f is Cloaking_Permanent) == null
+                && type.Features.FirstOrDefault(f => f is Cloaking_AOE_ManaDrain) == null;
         }
     }
 }

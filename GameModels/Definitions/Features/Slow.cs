@@ -49,11 +49,12 @@ namespace GameModels.Definitions.Features
         public override char Appearance { get { return '+'; } }
         public int Radius { get; internal set; }
 
-        public Slow(int range, int radius, int duration)
+        public Slow(int range, int radius, int duration, int reducedPoints)
         {
             Range = range;
             Radius = radius;
             EffectInstance.Duration = duration;
+            EffectInstance.ReducedPoints = reducedPoints;
         }
 
         public override bool IsValidTarget(Entity user, Entity target)

@@ -25,5 +25,13 @@ namespace GameModels.Definitions.Features
             ManaCostPerTurn = manaCostPerTurn;
             ActivateManaCost = activateManaCost;
         }
+
+        public override bool Validate(EntityType type)
+        {
+            // an entity type should only have one cloak
+            return type.Features.FirstOrDefault(f => f is Cloaking_Permanent) == null
+                && type.Features.FirstOrDefault(f => f is Cloaking_AOE_ManaDrain) == null
+                && type.Features.FirstOrDefault(f => f is Cloaking_AOE_Permanent) == null;
+        }
     }
 }
