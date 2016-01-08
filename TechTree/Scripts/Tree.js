@@ -1,14 +1,54 @@
 ﻿$(function () {
-    $('building, unit').mouseover(function (e) {
-        $(this).addClass('hover');
+    $('building, unit, feature').mouseover(function (e) {
+        startHover(this);
         e.stopPropagation();
     }).mouseout(function (e) {
-        $(this).removeClass('hover');
+        var exited = this;
+        timer = setTimeout(function () { stopHover(exited) }, 750);
         e.stopPropagation();
     });
 
     alignTree();
 });
+
+var lastHover = null;
+var timer = null;
+
+function startHover(element) {
+    clearHover(element.nodeName == 'FEATURE' || element == lastHover ? null : lastHover);
+    if (element == lastHover)
+        return;
+
+    lastHover = element;
+    $(element).addClass('hover');
+}
+
+function stopHover(element) {
+    if (lastHover != element)
+        return;
+
+    $(element).removeClass('hover');
+
+    if (element.nodeName == 'FEATURE')
+        $(element).closest('unit, building').removeClass('hover');
+
+    lastHover = null;
+    timer = null;
+}
+
+function clearHover(element) {
+    if (timer != null) {
+        clearTimeout(timer);
+        timer = null;
+    }
+    if (element == null)
+        return;
+
+    $(lastHover).removeClass('hover');
+
+    if (element.nodeName == 'FEATURE')
+        $(element).closest('unit, building').removeClass('hover');
+}
 
 function alignTree() {
     var marginSize = 30, row = 0, maxY = 0, maxX = 0, num;

@@ -9,20 +9,43 @@ building::before, unit::before {
 	content: attr(symbol);
 }
 
-building, builds, info {
-    display: block;
+building, builds, info, feature {
     width: 2.5em;
-    border-style: solid;
-    border-width: 2px;
-    border-radius: 0.3em;
-    position: relative;
+    display: block;
     color: black;
     background-color: white;
 }
 
+building::before, builds, info, feature {
+    border-style: solid;
+    border-width: 2px;
+    border-radius: 0.3em;
+}
+
+builds, info, feature {
+    border-width: 2px;
+}
+
+building::before {
+    display: block;
+    padding-top: 0.2em;
+    border-width: 2px 2px 0 2px;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+unit:last-of-type {
+    border-bottom-width: 2px;
+    border-bottom-left-radius: 0.3em;
+    border-bottom-right-radius: 0.3em;
+}
+
+building, builds {
+    position: relative;
+}
+
 building {
     position: absolute;
-    padding-top: 0.2em;
     border-color: #000;
     cursor:pointer;
 }
@@ -30,9 +53,18 @@ building {
 unit {
     display: block;
     width: 100%;
+    border-color: inherit;
+}
+
+unlocks > unit {
+    border-style: solid;
+    border-radius: 0;
+    border-width: 2px 2px 0 2px;
+}
+
+builds > unit {
     border-top-style: solid;
     border-top-width: 2px;
-    border-top-color: inherit;
 }
 
 unit::before {
@@ -54,11 +86,15 @@ info {
     padding: 0.25em;
 }
 
+building > info, unit > info, building > builds {
+    top: 0.75em;
+}
+
 builds {
     left: 12.5em;
 }
 
-building.hover > info, unit.hover > info, building.hover builds {
+building.hover > info, unit.hover > info, feature.hover > info, building.hover > builds {
     display: block;
 }
 
@@ -67,15 +103,12 @@ builds::before {
     font-size: 75%;
 }
 
-info > * {
+info > *:not(feature) {
     display: block;
 }
 
-info > *:not(name) {
-    font-size: 50%;
-}
-
 info > *:not(name):not(feature) {
+    font-size: 50%;
     padding-left: 2.5em;
 }
 
@@ -170,18 +203,26 @@ info stats detector::before {
     color: #fc0;
 }
 
-info feature:first-of-type {
-    margin-top: 0.5em;
-}
-
-info feature {
+feature > info > description {
+    padding-left: 0em;
     text-align: left;
 }
 
+info feature {
+    display: inline-block;
+    border-style: solid;
+    border-width: 2px;
+    border-radius: 0.3em;
+    border-color: #aaa;
+    margin-top: 0.25em;
+}
+
 info feature::before {
-    content: attr(name) ":";
-    text-decoration: underline;
-    margin-right: 0.4em;
+    content: attr(symbol);
+}
+
+feature > info {
+    left: 9.5em;
 }
 
 techtree link {
