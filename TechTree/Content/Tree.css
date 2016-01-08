@@ -46,25 +46,26 @@ building, builds {
 
 building {
     position: absolute;
-    border-color: #000;
     cursor:pointer;
 }
 
 unit {
     display: block;
     width: 100%;
-    border-color: inherit;
+    color: black;
 }
 
 unlocks > unit {
     border-style: solid;
     border-radius: 0;
     border-width: 2px 2px 0 2px;
+    border-color: #000;
 }
 
 builds > unit {
     border-top-style: solid;
     border-top-width: 2px;
+    border-color: inherit;
 }
 
 unit::before {
@@ -223,6 +224,15 @@ info feature::before {
 
 feature > info {
     left: 9.5em;
+}
+
+.hover {
+    color: #f90;
+    border-color: #f90;
+}
+
+.hover + unit, building.hover > unlocks > unit:first-child {
+    border-top-color: #f90;
 }
 
 techtree link {
