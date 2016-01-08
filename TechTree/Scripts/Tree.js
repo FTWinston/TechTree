@@ -15,12 +15,16 @@ var lastHover = null;
 var timer = null;
 
 function startHover(element) {
-    clearHover(element.nodeName == 'FEATURE' || element == lastHover ? null : lastHover);
+    clearHover(element == lastHover ? null : lastHover);
     if (element == lastHover)
         return;
 
-    lastHover = element;
     $(element).addClass('hover');
+
+    if (element.nodeName == 'FEATURE')
+        $(element).closest('unit, building').addClass('hover');
+
+    lastHover = element;
 }
 
 function stopHover(element) {
