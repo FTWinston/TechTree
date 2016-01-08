@@ -35,7 +35,7 @@ namespace GameModels.Definitions.Features
 
             return sb.ToString();
         }
-        public override char Appearance { get { return 'x'; } }
+        public override string Symbol { get { return "♆"; } }
         public int DamageMin { get; protected set; }
         public int DamageMax { get; protected set; }
 

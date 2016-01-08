@@ -38,7 +38,7 @@ namespace GameModels.Definitions.Features
             sb.Append(" tiles away");
             return sb.ToString();
         }
-        public override char Appearance { get { return 's'; } }
+        public override string Symbol { get { return "♄"; } }
 
         public Suicide(int duration, int damageMin, int damageMax, int damageDistance)
         {

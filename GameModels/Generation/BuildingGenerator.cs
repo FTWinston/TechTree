@@ -12,7 +12,7 @@ namespace GameModels.Generation
     {
         public static BuildingType GenerateCommandBuilding(TreeGenerator gen)
         {
-            string symbol = TreeGenerator.commandSymbol.ToString();
+            string symbol = TreeGenerator.commandBuildingSymbol.ToString();
             BuildingType building = new BuildingType()
             {
                 Name = "Command Post " + symbol,
@@ -35,7 +35,7 @@ namespace GameModels.Generation
 
         public static BuildingType GenerateFactory(TreeGenerator gen, int factoryNumber)
         {
-            string symbol = gen.GetUnusedSymbol();
+            string symbol = gen.AllocateBuildingSymbol();
             BuildingType building = new BuildingType()
             {
                 Name = "Factory " + symbol,
@@ -58,7 +58,7 @@ namespace GameModels.Generation
 
         public static BuildingType GenerateTechBuilding(TreeGenerator gen, int factoryNumber)
         {
-            string symbol = gen.GetUnusedSymbol();
+            string symbol = gen.AllocateBuildingSymbol();
             BuildingType building = new BuildingType()
             {
                 Name = "Tech building " + symbol,

@@ -26,7 +26,7 @@ namespace GameModels.Definitions.Features
 
             return sb.ToString();
         }
-        public override char Appearance { get { return 'd'; } }
+        public override string Symbol { get { return "⚷"; } }
 
         public Stim(int duration, int initialHealthDrain, int extraPoints)
         {

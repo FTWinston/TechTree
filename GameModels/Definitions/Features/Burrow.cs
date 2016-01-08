@@ -18,7 +18,7 @@ namespace GameModels.Definitions.Features
             sb.Append("Prevents this unit from moving, attacking, or being seen by enemy units that lack the [detector] feature");
             return sb.ToString();
         }
-        public override char Appearance { get { return '~'; } }
+        public override string Symbol { get { return "♉"; } }
 
         public Burrow(int activateManaCost)
         {

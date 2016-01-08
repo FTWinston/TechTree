@@ -62,7 +62,7 @@
                 }
                 @foreach (GameModels.Definitions.Feature f in b.Features)
                 {
-                    <feature symbol="@f.Appearance">
+                    <feature symbol="@f.Symbol">
                         <info>
                             <name>@f.Name</name>
                             <description>@f.GetDescription()</description>
@@ -116,7 +116,7 @@
                             }
                             @foreach (GameModels.Definitions.Feature f in u.Features)
                             {
-                                <feature symbol="@f.Appearance">
+                                <feature symbol="@f.Symbol">
                                     <info>
                                         <name>@f.Name</name>
                                         <description>@f.GetDescription()</description>

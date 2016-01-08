@@ -29,7 +29,7 @@ namespace GameModels.Definitions.Features
 
             return sb.ToString();
         }
-        public override char Appearance { get { return '+'; } }
+        public override string Symbol { get { return "⚚"; } }
 
         public HealthBoost(int range, int duration, int healthBoost, int armorBoost)
         {

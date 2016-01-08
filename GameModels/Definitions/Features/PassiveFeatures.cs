@@ -17,7 +17,7 @@ namespace GameModels.Definitions.Features
 
         public override string Name { get { return "More Health"; } }
         public override string GetDescription() { return string.Format("Adds {0} hitpoints", ExtraPoints); }
-        public override char Appearance { get { return '+'; } }
+        public override string Symbol { get { return "☥"; } }
         private int ExtraPoints { get; set; }
 
         public override double Initialize(EntityType type)
@@ -37,7 +37,7 @@ namespace GameModels.Definitions.Features
 
         public override string Name { get { return "Armored"; } }
         public override string GetDescription() { return string.Format("Adds {0} armor points", ExtraPoints); }
-        public override char Appearance { get { return '#'; } }
+        public override string Symbol { get { return "♈"; } }
         private int ExtraPoints { get; set; }
 
         public override double Initialize(EntityType type)
@@ -56,7 +56,7 @@ namespace GameModels.Definitions.Features
 
         public override string Name { get { return "Greater Mobility"; } }
         public override string GetDescription() { return string.Format("Adds {0} action points", ExtraPoints); }
-        public override char Appearance { get { return '>'; } }
+        public override string Symbol { get { return "♒"; } }
         private int ExtraPoints { get; set; }
 
         public override double Initialize(EntityType type)
@@ -80,7 +80,7 @@ namespace GameModels.Definitions.Features
 
         public override string Name { get { return "Greater Visibility"; } }
         public override string GetDescription() { return string.Format("Increases vision range by {0} tiles", ExtraPoints); }
-        public override char Appearance { get { return 'O'; } }
+        public override string Symbol { get { return "⚙"; } }
         private int ExtraPoints { get; set; }
 
         public override double Initialize(EntityType type)
@@ -99,7 +99,7 @@ namespace GameModels.Definitions.Features
 
         public override string Name { get { return "Potency"; } }
         public override string GetDescription() { return string.Format("Adds {0} mana points", ExtraPoints); }
-        public override char Appearance { get { return 'M'; } }
+        public override string Symbol { get { return "⚛"; } }
         private int ExtraPoints { get; set; }
 
         public override double Initialize(EntityType type)
@@ -119,7 +119,7 @@ namespace GameModels.Definitions.Features
     {
         public override string Name { get { return "Awareness"; } }
         public override string GetDescription() { return "Allows detection of invisible units"; }
-        public override char Appearance { get { return 'I'; } }
+        public override string Symbol { get { return "☉"; } }
 
         public override double Initialize(EntityType type)
         {
@@ -142,7 +142,7 @@ namespace GameModels.Definitions.Features
 
         public override string Name { get { return "Supply"; } }
         public override string GetDescription() { return string.Format("Provides {0} supply points, allowing units to be built", Points); }
-        public override char Appearance { get { return 'S'; } }
+        public override string Symbol { get { return "⛽"; } }
         private int Points { get; set; }
 
         public override double Initialize(EntityType type)
@@ -168,7 +168,7 @@ namespace GameModels.Definitions.Features
 
         public override string Name { get { return "Range"; } }
         public override string GetDescription() { return string.Format("Increases attack range by {0} tiles", ExtraPoints); }
-        public override char Appearance { get { return 'S'; } }
+        public override string Symbol { get { return "♐"; } }
         private int ExtraPoints { get; set; }
 
         public override double Initialize(EntityType type)

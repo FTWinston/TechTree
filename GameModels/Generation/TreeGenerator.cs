@@ -29,20 +29,28 @@ namespace GameModels.Generation
         internal Complexity TreeComplexity { get; private set; }
         internal int UnitVisionRange { get; private set; }
 
-        internal const char commandSymbol = '☆', workerSymbol = '⚒';
-        const string symbols = "ABCDEFGHIJKLMNOPQRSTUVWXYZΔΣΦΨΩαβγδεζηθλμξπςφω☤⚕⚚⚛⚜⚝☥☿♀♁♂♃♄♅♆♇⚳⚴⚵⚶⚷☉☊☋☌☍♈♉♊♋♌♍♎♏♐♑♒♓⛎⛲⚖⚗⚘⚙?#@£$%&☺♠♣♥♦";
-        int nextSymbolIndex = 0;
-        internal string GetUnusedSymbol()
+        const string buildingSymbols = "BCDEFGHIJKLMNOPQRSTUVWXYZ";
+        const string unitSymbols = "αβγδεζηθιλμνξπρσςφχψωυτκοϐϑϕϖϗϙϝϞϡϣϥϧϩϫϭϯϰϱϲϳ϶ϸϻ";
+        internal const char commandBuildingSymbol = 'A';
+        int nextBuildingSymbol, nextUnitSymbol = 0;
+        internal string AllocateBuildingSymbol()
         {
-            if (nextSymbolIndex >= symbols.Length)
+            if (nextBuildingSymbol >= buildingSymbols.Length)
                 return "-";
-            return symbols[nextSymbolIndex++].ToString();
+            return buildingSymbols[nextBuildingSymbol++].ToString();
         }
 
+        internal string AllocateUnitSymbol()
+        {
+            if (nextUnitSymbol >= unitSymbols.Length)
+                return "-";
+            return unitSymbols[nextUnitSymbol++].ToString();
+        }
+        
         private TechTree Generate()
         {
             Random = new Random(Seed);
-            nextSymbolIndex = 0;
+            nextBuildingSymbol = nextUnitSymbol = 0;
             Tree = new TechTree();
             Tree.Seed = Seed;
 

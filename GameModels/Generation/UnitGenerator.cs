@@ -27,7 +27,7 @@ namespace GameModels.Generation
 
         public static UnitType GenerateStub(TreeGenerator gen)
         {
-            string symbol = gen.GetUnusedSymbol();
+            string symbol = gen.AllocateUnitSymbol();
             UnitType unit = new UnitType()
             {
                 Name = "Unit " + symbol,
@@ -38,10 +38,8 @@ namespace GameModels.Generation
         }
 
         public static UnitType GenerateWorker(TreeGenerator gen)
-        {
-            string symbol = TreeGenerator.workerSymbol.ToString();
-            Random r = gen.Random;
-
+        {   
+            string symbol = gen.AllocateUnitSymbol();
             UnitType unit = new UnitType()
             {
                 Name = "Worker " + symbol,
@@ -610,6 +608,8 @@ namespace GameModels.Generation
             // attack feature
             int range = gen.Random.Next(1, 2), damageMin = gen.Random.Next(3, 6), damageMax = damageMin + gen.Random.Next(3);
             unit.Features.Add(new Attack(range, damageMin, damageMax));
+
+            unit.Features.Add(new Build());
 
             /*
             // active features

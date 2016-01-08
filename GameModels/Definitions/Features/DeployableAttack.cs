@@ -18,8 +18,8 @@ namespace GameModels.Definitions.Features
             sb.Append("Deploys this unit into an immobile configuration with a greater attack range and damage");
             return sb.ToString();
         }
-        public override char Appearance { get { return '#'; } }
-
+        public override string Symbol { get { return "⚗"; } }
+        
         public DeployableAttack(int manaCostPerTurn, int activateManaCost)
         {
             ManaCostPerTurn = manaCostPerTurn;

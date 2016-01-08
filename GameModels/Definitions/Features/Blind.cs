@@ -11,7 +11,7 @@ namespace GameModels.Definitions.Features
 {
     public class Blind : TargettedStatusEffectFeature<Blinded>
     {
-        public override string Name { get { return "Targetted DoT"; } }
+        public override string Name { get { return "Blind"; } }
         public override string GetDescription()
         {
             StringBuilder sb = new StringBuilder();
@@ -34,7 +34,7 @@ namespace GameModels.Definitions.Features
 
             return sb.ToString();
         }
-        public override char Appearance { get { return '+'; } }
+        public override string Symbol { get { return "☊"; } }
 
         public Blind(int range, int duration)
         {

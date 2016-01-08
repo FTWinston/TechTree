@@ -54,7 +54,7 @@ namespace GameModels.Definitions.Features
 
             return sb.ToString();
         }
-        public override char Appearance { get { return '*'; } }
+        public override string Symbol { get { return "♎"; } }
         public int Radius { get; internal set; }
 
         public AreaShield(int range, int radius, int duration, int extraHealth, int extraArmor)
