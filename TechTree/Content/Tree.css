@@ -234,6 +234,19 @@ feature > info {
     left: 9.5em;
 }
 
+info > feature[mode=Passive] {
+    border-style: dotted;
+}
+
+info > feature[mode=Toggled] {
+    border-style: double;
+    border-width: 3px;
+}
+
+info > feature[mode=Triggered] {
+    border-style: solid;
+}
+
 .hover {
     color: #f90;
     border-color: #f90;
