@@ -46,6 +46,7 @@ namespace GameModels.Definitions
     {
         public override Feature.InteractionMode Mode { get { return InteractionMode.Triggered; } }
         public override bool UsesMana { get { return ManaCost > 0; } }
+        public virtual int LimitedUses { get { return 0; } }
 
         public int CooldownTurns { get; internal set; }
         public int ManaCost { get; internal set; }

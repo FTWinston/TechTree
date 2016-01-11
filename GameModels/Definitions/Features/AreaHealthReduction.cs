@@ -38,7 +38,7 @@ namespace GameModels.Definitions.Features
 
             if (EffectInstance.Duration > 0)
             {
-                sb.Append("for ");
+                sb.Append(" for ");
                 sb.Append(EffectInstance.Duration);
                 sb.Append(" turns");
             }

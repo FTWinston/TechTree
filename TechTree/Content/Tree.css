@@ -113,7 +113,7 @@ info > *:not(name):not(feature) {
     padding-left: 2.5em;
 }
 
-info > *:not(name):not(feature)::before {
+info > *:not(name):not(feature):not(description)::before {
     position: absolute;
     left: 0.5em;
 }
@@ -132,6 +132,10 @@ info cost::before {
 
 info stats::before {
     content: "stats: ";
+}
+
+feature info stats::before {
+    content: "use: ";
 }
 
 info builtat::before {
@@ -169,7 +173,7 @@ info cost supply.positive {
     color: #f90;
 }
 
-info cost time::before {
+info cost time::before, info cost cooldown::before {
     content: "\26E3";
     color: #999;
 }
@@ -204,6 +208,10 @@ info stats detector::before {
     color: #fc0;
 }
 
+info cost uses::before {
+    content: "\267B";
+    color: #999;
+}
 feature > info > description {
     padding-left: 0em;
     text-align: left;
