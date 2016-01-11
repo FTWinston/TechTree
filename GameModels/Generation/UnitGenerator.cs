@@ -129,6 +129,8 @@ namespace GameModels.Generation
 
                 if (featuresValid)
                     break;
+                else
+                    unit.Features.Clear();
             }
 
             // apply a little rounding, to make things feel less artificial
