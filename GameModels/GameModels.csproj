@@ -45,6 +45,7 @@
     <Compile Include="Definitions\Effects.cs" />
     <Compile Include="Definitions\Features\AreaDetection.cs" />
     <Compile Include="Definitions\Features\AreaHealthReduction.cs" />
+    <Compile Include="Definitions\Features\PerformResearch.cs" />
     <Compile Include="Definitions\Features\Build.cs" />
     <Compile Include="Definitions\Features\Construction.cs" />
     <Compile Include="Definitions\Features\Carrier.cs" />

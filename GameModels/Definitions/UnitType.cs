@@ -21,7 +21,7 @@ namespace GameModels.Definitions
 
                 builtBy = value;
                 builtBy.Builds.Add(this);
-                builtBy.Features.Add(new Build(this));
+                builtBy.AddFeature(new Build(this));
             }
         }
 

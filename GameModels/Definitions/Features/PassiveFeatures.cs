@@ -111,7 +111,7 @@ namespace GameModels.Definitions.Features
 
         public override bool Validate(EntityType type)
         {// don't allow on a type that doesn't havea any mana-using features
-            return type.Mana > 0 && type.Features.Find(f => f.UsesMana) != null;
+            return type.Mana > 0 && type.Features.FirstOrDefault(f => f.UsesMana) != null;
         }
     }
 

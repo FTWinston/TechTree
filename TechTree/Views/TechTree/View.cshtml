@@ -62,41 +62,7 @@
                 }
                 @foreach (var f in b.Features)
                 {
-                    <feature symbol="@f.Symbol" mode="@f.Mode">
-                        <info>
-                            <name>@f.Name</name>
-                            @if (f.UsesMana || (f is GameModels.Definitions.ActivatedFeature && ((f as GameModels.Definitions.ActivatedFeature).CooldownTurns > 0 || (f as GameModels.Definitions.ActivatedFeature).CooldownTurns > 0)))
-                            {
-                                <stats>
-                                @if (f is GameModels.Definitions.ActivatedFeature)
-                                {
-                                    var a = f as GameModels.Definitions.ActivatedFeature;
-                                    if (a.UsesMana)
-                                    {
-                                        @:<mana>@a.ManaCost</mana>
-                                    }
-                                    if (a.LimitedUses > 0)
-                                    {
-                                        @:<uses>@a.LimitedUses</uses>
-                                    }
-                                    if (a.CooldownTurns > 0)
-                                    {
-                                        @:<cooldown>@a.CooldownTurns</cooldown>
-                                    }
-                                }
-                                @if (f is GameModels.Definitions.ToggleFeature)
-                                {
-                                    var t = f as GameModels.Definitions.ToggleFeature;
-                                    if (t.UsesMana)
-                                    {
-                                        @:<mana>@(t.ActivateManaCost > 0 ? t.ActivateManaCost : 0) to activate, @(t.ManaCostPerTurn > 0 ? t.ManaCostPerTurn : 0) per turn</mana>
-                                    }
-                                }
-                                </stats>
-                            }
-                            <description>@f.GetDescription()</description>
-                        </info>
-                    </feature>
+                    @Html.Partial("_FeaturePartial", f);
                 }
             </info>
 
@@ -145,41 +111,7 @@
                             }
                             @foreach (GameModels.Definitions.Feature f in u.Features)
                             {
-                                <feature symbol="@f.Symbol" mode="@f.Mode">
-                                    <info>
-                                        <name>@f.Name</name>
-                                        @if (f.UsesMana || (f is GameModels.Definitions.ActivatedFeature && ((f as GameModels.Definitions.ActivatedFeature).CooldownTurns > 0 || (f as GameModels.Definitions.ActivatedFeature).CooldownTurns > 0)))
-                                        {
-                                        <stats>
-                                            @if (f is GameModels.Definitions.ActivatedFeature)
-                                            {
-                                                var a = f as GameModels.Definitions.ActivatedFeature;
-                                                if (a.UsesMana)
-                                                {
-                                                @:<mana>@a.ManaCost</mana>
-                                                }
-                                                if (a.LimitedUses > 0)
-                                                {
-                                                @:<uses>@a.LimitedUses</uses>
-                                                }
-                                                if (a.CooldownTurns > 0)
-                                                {
-                                                @:<cooldown>@a.CooldownTurns</cooldown>
-                                                }
-                                            }
-                                            @if (f is GameModels.Definitions.ToggleFeature)
-                                            {
-                                                var t = f as GameModels.Definitions.ToggleFeature;
-                                                if (t.UsesMana)
-                                                {
-                                                    @:<mana>@(t.ActivateManaCost > 0 ? t.ActivateManaCost : 0) to activate, @(t.ManaCostPerTurn > 0 ? t.ManaCostPerTurn : 0) per turn</mana>
-                                                }
-                                            }
-                                        </stats>
-                                        }
-                                        <description>@f.GetDescription()</description>
-                                    </info>
-                                </feature>
+                                @Html.Partial("_FeaturePartial", f);
                             }
                         </info>
                     </unit>

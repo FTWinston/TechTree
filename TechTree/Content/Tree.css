@@ -131,6 +131,10 @@ info requires::before {
     content: "requires: ";
 }
 
+info unlocked::before {
+    content: "unlocked at: ";
+}
+
 info upgradesFrom::before {
     content: "upgrade of: ";
 }

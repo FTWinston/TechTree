@@ -7,20 +7,10 @@ using System.Threading.Tasks;
 
 namespace GameModels.Definitions
 {
-    public abstract class EntityType
+    public abstract class Purchasable
     {
         public string Name { get; internal set; }
         public string Symbol { get; internal set; }
-
-        public int Health { get; internal set; }
-        public int Armor { get; internal set; }
-        public int Mana { get; internal set; }
-
-        public int VisionRange { get; internal set; }
-        public bool IsDetector { get; internal set; }
-
-        // TODO: decide if we really do want to use action points for movement etc
-        public int ActionPoints { get; internal set; }
 
         public int BuildTime { get; internal set; }
 
@@ -42,12 +32,37 @@ namespace GameModels.Definitions
                     prerequisite.Unlocks.Add(this);
             }
         }
+    }
 
-        public List<Feature> Features { get; private set; }
+    public abstract class EntityType : Purchasable
+    {
+        public int Health { get; internal set; }
+        public int Armor { get; internal set; }
+        public int Mana { get; internal set; }
+
+        public int VisionRange { get; internal set; }
+        public bool IsDetector { get; internal set; }
+
+        // TODO: decide if we really do want to use action points for movement etc
+        public int ActionPoints { get; internal set; }
+
+        private List<Feature> features;
+        public IReadOnlyList<Feature> Features { get { return features; } }
 
         protected EntityType()
         {
-            Features = new List<Feature>();
+            features = new List<Feature>();
+        }
+
+        internal void AddFeature(Feature feature)
+        {
+            features.Add(feature);
+            feature.EntityDefinition = this;
+        }
+
+        internal void RemoveAllFeatures()
+        {
+            features.Clear();
         }
 
         internal bool Populated { get; set; }

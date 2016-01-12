@@ -9,7 +9,7 @@ namespace GameModels.Definitions
 {
     public class BuildingType : EntityType<Building>
     {
-        public List<EntityType> Unlocks { get; private set; }
+        public List<Purchasable> Unlocks { get; private set; }
 
         // TODO: decide if building units, researching and upgrading could become part of building features
         public List<BuildingType> UpgradesTo { get; private set; }
@@ -36,7 +36,7 @@ namespace GameModels.Definitions
 
         public BuildingType()
         {
-            Unlocks = new List<EntityType>();
+            Unlocks = new List<Purchasable>();
             UpgradesTo = new List<BuildingType>();
             Builds = new List<UnitType>();
             Researches = new List<Research>();

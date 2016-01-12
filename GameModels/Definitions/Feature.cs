@@ -14,7 +14,7 @@ namespace GameModels.Definitions
         public abstract string Symbol { get; }
 
         public EntityType EntityDefinition { get; internal set; }
-        public virtual Research UnlockedBy { get { return null; } }
+        public virtual Research UnlockedBy { get; internal set; }
 
         public abstract bool UsesMana { get; }
         public abstract InteractionMode Mode { get; }
