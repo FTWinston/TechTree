@@ -185,16 +185,6 @@
                     </unit>
                 }
             </unlocks>
-
-            @if (b.Builds.Count > 0)
-            {
-            <builds>
-                @foreach (var u in b.Builds)
-                {
-                    <unit symbol="@u.Symbol" name="@u.Name" requires="@(u.Prerequisite == null ? null : u.Prerequisite.Name)"></unit>
-                }
-            </builds>
-            }
         </building>
     }
 </techtree>

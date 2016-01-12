@@ -611,7 +611,7 @@ namespace GameModels.Generation
             int range = gen.Random.Next(1, 2), damageMin = gen.Random.Next(3, 6), damageMax = damageMin + gen.Random.Next(3);
             unit.Features.Add(new Attack(range, damageMin, damageMax));
 
-            unit.Features.Add(new Build());
+            unit.Features.Add(new Construction());
 
             /*
             // active features

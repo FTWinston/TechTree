@@ -9,20 +9,20 @@ building::before, unit::before {
 	content: attr(symbol);
 }
 
-building, builds, info, feature {
+building, info, feature {
     width: 2.5em;
     display: block;
     color: black;
     background-color: white;
 }
 
-building::before, builds, info, feature {
+building::before, info, feature {
     border-style: solid;
     border-width: 2px;
     border-radius: 0.3em;
 }
 
-builds, info, feature {
+info, feature {
     border-width: 2px;
 }
 
@@ -40,7 +40,7 @@ unit:last-of-type {
     border-bottom-right-radius: 0.3em;
 }
 
-building, builds {
+building {
     position: relative;
 }
 
@@ -62,17 +62,11 @@ unlocks > unit {
     border-color: #000;
 }
 
-builds > unit {
-    border-top-style: solid;
-    border-top-width: 2px;
-    border-color: inherit;
-}
-
 unit::before {
     font-size: 60%;
 }
 
-builds, info {
+info {
     z-index: 1;
     display: none;
     position: absolute;
@@ -87,21 +81,12 @@ info {
     padding: 0.25em;
 }
 
-building > info, unit > info, building > builds {
+building > info, unit > info {
     top: 0.75em;
 }
 
-builds {
-    left: 12.5em;
-}
-
-building.hover > info, unit.hover > info, feature.hover > info, building.hover > builds {
+building.hover > info, unit.hover > info, feature.hover > info {
     display: block;
-}
-
-builds::before {
-    content: "builds";
-    font-size: 75%;
 }
 
 info > *:not(feature) {
@@ -246,6 +231,11 @@ info > feature[mode=Toggled] {
 info > feature[mode=Triggered] {
     border-style: solid;
 }
+
+info > feature[mode=Purchased] {
+    border-style: dashed;
+}
+
 
 .hover {
     color: #f90;

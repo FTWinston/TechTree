@@ -1,4 +1,5 @@
-﻿using GameModels.Instances;
+﻿using GameModels.Definitions.Features;
+using GameModels.Instances;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,6 +21,7 @@ namespace GameModels.Definitions
 
                 builtBy = value;
                 builtBy.Builds.Add(this);
+                builtBy.Features.Add(new Build(this));
             }
         }
 

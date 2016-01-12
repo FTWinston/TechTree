@@ -24,6 +24,7 @@ namespace GameModels.Definitions
             Passive,
             Toggled,
             Triggered,
+            Purchased,
         }
 
         public virtual double Initialize(EntityType type) { return 1; }
@@ -183,20 +184,6 @@ namespace GameModels.Definitions
         protected Effect EffectInstance { get; private set; }
 
         public override void Activate(Entity user, Cell target)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-    public abstract class BuildFeature : Feature
-    {
-        public override Feature.InteractionMode Mode { get { return InteractionMode.Triggered; } }
-        public override bool UsesMana { get { return false; } }
-
-        public UnitType TypeToBuild { get; internal set; }
-        public int TurnsToComplete { get; internal set; }
-
-        public override bool Clicked(Entity entity)
         {
             throw new NotImplementedException();
         }
