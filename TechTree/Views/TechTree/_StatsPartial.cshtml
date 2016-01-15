@@ -1,0 +1,35 @@
+﻿@model GameModels.Definitions.EntityType
+
+<name>@Model.Name</name>
+<cost>
+    @if (Model.MineralCost != 0)
+    {
+        <minerals>@Model.MineralCost</minerals>
+    }
+    @if (Model.VespineCost != 0)
+    {
+        <vespine>@Model.VespineCost</vespine>
+    }
+    @if (Model.SupplyCost != 0)
+    {
+        <supply class="@(Model.SupplyCost < 0 ? "positive" : null)">@Math.Abs(Model.SupplyCost)</supply>
+    }
+    <time>@Model.BuildTime</time>
+</cost>
+<stats>
+    <health>@Model.Health</health>
+    <armor>@Model.Armor</armor>
+    @if (Model.Mana != 0)
+    {
+        <mana>@Model.Mana</mana>
+    }
+    @if (Model.ActionPoints != 0)
+    {
+        <actionpoints>@Model.ActionPoints</actionpoints>
+    }
+    <vision>@Model.VisionRange</vision>
+</stats>
+@if (Model.IsDetector)
+{
+    <detector></detector>
+} 

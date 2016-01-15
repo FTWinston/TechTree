@@ -19,39 +19,8 @@
     {
         <building symbol="@b.Symbol" row="@b.DisplayRow" column="@b.DisplayColumn" requires="@(b.Prerequisite == null ? null : b.Prerequisite.Symbol)">
             <info>
-                <name>@b.Name</name>
-                <cost>
-                    @if (b.MineralCost != 0)
-                    {
-                        <minerals>@b.MineralCost</minerals>
-                    }
-                    @if (b.VespineCost!= 0)
-                    {
-                        <vespine>@b.VespineCost</vespine>
-                    }
-                    @if (b.SupplyCost != 0)
-                    {
-                        <supply class="@(b.SupplyCost < 0 ? "positive" : null)">@Math.Abs(b.SupplyCost)</supply>
-                    }
-                    <time>@b.BuildTime</time>
-                </cost>
-                <stats>
-                    <health>@b.Health</health>
-                    <armor>@b.Armor</armor>
-                    @if (b.Mana != 0)
-                    {
-                        <mana>@b.Mana</mana>
-                    }
-                    @if (b.ActionPoints != 0)
-                    {
-                        <actionpoints>@b.ActionPoints</actionpoints>
-                    }
-                    <vision>@b.VisionRange</vision>
-                </stats>
-                @if (b.IsDetector)
-                {
-                    <detector></detector>
-                }
+                @Html.Partial("_StatsPartial", b)
+
                 @if (b.UpgradesFrom != null)
                 {
                     <upgradesFrom>@b.UpgradesFrom.Name</upgradesFrom>
@@ -71,39 +40,8 @@
                 {
                     <unit symbol="@u.Symbol">
                         <info>
-                            <name>@u.Name</name>
-                            <cost>
-                                @if (u.MineralCost != 0)
-                                {
-                                    <minerals>@u.MineralCost</minerals>
-                                }
-                                @if (u.VespineCost != 0)
-                                {
-                                    <vespine>@u.VespineCost</vespine>
-                                }
-                                @if (u.SupplyCost != 0)
-                                {
-                                    <supply class="@(u.SupplyCost < 0 ? "positive" : null)">@Math.Abs(u.SupplyCost)</supply>
-                                }
-                                <time>@u.BuildTime</time>
-                            </cost>
-                            <stats>
-                                <health>@u.Health</health>
-                                <armor>@u.Armor</armor>
-                                @if (u.Mana != 0)
-                                {
-                                    <mana>@u.Mana</mana>
-                                }
-                                @if (u.ActionPoints != 0)
-                                {
-                                    <actionpoints>@u.ActionPoints</actionpoints>
-                                }
-                                <vision>@u.VisionRange</vision>
-                            </stats>
-                            @if (u.IsDetector)
-                            {
-                                <detector></detector>
-                            }
+                            @Html.Partial("_StatsPartial", u)
+
                             <builtat>@u.BuiltBy.Name</builtat>
                             @if (@u.Prerequisite != u.BuiltBy)
                             {
