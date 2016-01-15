@@ -660,7 +660,7 @@ namespace GameModels.Generation
             }
         }
 
-        private static void AddFeature(TreeGenerator gen, UnitType unit, Feature feature, BuildingType researchBuilding, int tier)
+        private static void AddFeature(TreeGenerator gen, UnitType unit, Feature feature, BuildingType prerequisite, int tier)
         {
             unit.AddFeature(feature);
             double costScale = feature.Initialize(unit);
@@ -668,8 +668,20 @@ namespace GameModels.Generation
             unit.MineralCost = (int)(unit.MineralCost * costScale);
             unit.VespineCost = (int)(unit.VespineCost * costScale);
 
-            if (researchBuilding != null && unit.Features.Count > 1)
+            if (prerequisite != null && unit.Features.Count > 1)
             {// a unit's first feature never requires an unlock
+                
+                // research should be done at pure-research buildings, not at factories. If unit's prerequisite is a factory, give its research to a research building under that factory instead.
+                BuildingType researchBuilding;
+                if (prerequisite.Builds.Count == 0)
+                    researchBuilding = prerequisite;
+                else
+                {
+                    researchBuilding = prerequisite.Unlocks.FirstOrDefault(u => u is BuildingType && (u as BuildingType).Builds.Count == 0) as BuildingType;
+                    if (researchBuilding == null)
+                        researchBuilding = prerequisite;
+                }
+
                 feature.UnlockedBy = Research.CreateForFeature(gen, researchBuilding, feature, tier);
             }
         }
