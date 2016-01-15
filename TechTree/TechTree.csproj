@@ -159,12 +159,13 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\GameController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\TechTreeController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\GameModel.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
@@ -190,9 +191,9 @@
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
+    <Content Include="Scripts\GameUI.js" />
     <Content Include="Scripts\Tree.js" />
     <Content Include="Scripts\_references.js" />
-    <Content Include="Views\TechTree\View.cshtml" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -218,8 +219,10 @@
     <Content Include="Views\Account\Manage.cshtml" />
     <Content Include="Views\Account\Register.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
-    <Content Include="Views\TechTree\_FeaturePartial.cshtml" />
-    <Content Include="Views\TechTree\_StatsPartial.cshtml" />
+    <Content Include="Views\Game\Tree\_FeaturePartial.cshtml" />
+    <Content Include="Views\Game\Tree\_StatsPartial.cshtml" />
+    <Content Include="Views\Game\Play.cshtml" />
+    <Content Include="Views\Game\Tree\_TreePartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

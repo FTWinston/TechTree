@@ -1,17 +1,5 @@
 ﻿@model GameModels.TechTree
 
-@{
-    ViewBag.Title = "View Tech Tree";
-}
-
-@Styles.Render("~/Content/Tree.css")
-
-@section scripts {
-    @Scripts.Render("~/Scripts/Tree.js")
-}
-
-<h2>A randomly generated tech tree</h2>
-
 <h5>Seed: @Model.Seed</h5>
 
 <techtree>
@@ -19,11 +7,11 @@
     {
         <building symbol="@b.Symbol" row="@b.DisplayRow" column="@b.DisplayColumn" requires="@(b.Prerequisite == null ? null : b.Prerequisite.Symbol)">
             <info>
-                @Html.Partial("_StatsPartial", b)
+                @Html.Partial("Tree/_StatsPartial", b)
 
                 @if (b.UpgradesFrom != null)
                 {
-                    <upgradesFrom>@b.UpgradesFrom.Name</upgradesFrom>
+                    <upgradesfrom>@b.UpgradesFrom.Name</upgradesfrom>
                 }
                 @if (@b.Prerequisite != null)
                 {
@@ -31,7 +19,7 @@
                 }
                 @foreach (var f in b.Features)
                 {
-                    @Html.Partial("_FeaturePartial", f);
+                    @Html.Partial("Tree/_FeaturePartial", f);
                 }
             </info>
 
@@ -40,7 +28,7 @@
                 {
                     <unit symbol="@u.Symbol">
                         <info>
-                            @Html.Partial("_StatsPartial", u)
+                            @Html.Partial("Tree/_StatsPartial", u)
 
                             <builtat>@u.BuiltBy.Name</builtat>
                             @if (@u.Prerequisite != u.BuiltBy)
@@ -49,7 +37,7 @@
                             }
                             @foreach (GameModels.Definitions.Feature f in u.Features)
                             {
-                                @Html.Partial("_FeaturePartial", f);
+                                @Html.Partial("Tree/_FeaturePartial", f);
                             }
                         </info>
                     </unit>
