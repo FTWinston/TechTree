@@ -40,3 +40,27 @@ input[type="checkbox"].input-validation-error {
 .validation-summary-valid {
     display: none;
 }
+
+
+.game {
+	overflow: hidden;
+    position: relative;
+
+    position:absolute;
+    top: 4em; left: 0; right: 0; bottom: 0;
+}
+
+.game > .sideBar {
+    position: absolute;
+    right: 0; top: 0; bottom: 0em;
+    width: 8em;
+    background-color: #eee;
+
+}
+
+.game > .bottomBar {
+    position: absolute;
+    height: 2em;
+    bottom: 0em; left: 0em; right: 8em;
+    background-color: #ccc;
+}

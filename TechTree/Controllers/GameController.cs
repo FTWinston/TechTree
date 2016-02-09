@@ -26,5 +26,16 @@ namespace TechTree.Controllers
 
             return View("Play", model);
         }
+
+        //
+        // GET: /Game/Tree/123
+        public JsonResult Tree(int id)
+        {
+            var tree = TreeGenerator.Generate(TreeGenerator.Complexity.Normal);
+
+            object data = tree;
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
 	}
 }

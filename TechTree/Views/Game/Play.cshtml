@@ -5,16 +5,11 @@
 }
 
 @section scripts {
-    @Scripts.Render("~/Scripts/Tree.js")
-    @Scripts.Render("~/Scripts/GameUI.js")
+    @Scripts.Render("~/bundles/game")
+
+    <script type="text/javascript">
+        ReactDOM.render(React.createElement(GameClient), document.getElementById('gameRoot'));
+    </script>
 }
 
-<div class="toggleTree">show tree</div>
-
-<div id="treeHolder">
-    @Html.Partial("Tree/_TreePartial", Model.Tree)
-</div>
-
-<canvas id="mainView" width="800" height="600">
-    Enable javascript to play
-</canvas>
+<div id="gameRoot"></div>
