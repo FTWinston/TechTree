@@ -1,32 +1,43 @@
-﻿techtree {
-    display: block;
-    position: relative;
+﻿.treePopup {
+    position: fixed;
+    top: 4em;
+    bottom: 2em;
+    left: 2em;
+    right: 2em;
+    background-color: white;
+    border: 1px solid black;
+    border-radius: 1em;
+    padding: 0.5em;
+}
+
+.techTree {
     font-size: 200%;
+    position: relative;
     text-align:center;
 }
 
-building::before, unit::before {
-	content: attr(symbol);
+.techTree .building::before, .techTree .unit::before {
+	content: attr(data-symbol);
 }
 
-building, info, feature {
+.techTree .building, .techTree .info, .techTree .feature {
     width: 2.5em;
     display: block;
     color: black;
     background-color: white;
 }
 
-building::before, info, feature {
+.techTree .building::before, .techTree .info, .techTree .feature {
     border-style: solid;
     border-width: 2px;
     border-radius: 0.3em;
 }
 
-info, feature {
+.techTree .info, .techTree .feature {
     border-width: 2px;
 }
 
-building::before {
+.techTree .building::before {
     display: block;
     padding-top: 0.2em;
     border-width: 2px 2px 0 2px;
@@ -34,39 +45,35 @@ building::before {
     border-bottom-right-radius: 0;
 }
 
-unit:last-of-type {
+.techTree .unit:last-of-type { /* "type" isn't quite correct here. Does this matter? */
     border-bottom-width: 2px;
     border-bottom-left-radius: 0.3em;
     border-bottom-right-radius: 0.3em;
 }
 
-building {
-    position: relative;
-}
-
-building {
+.techTree .building {
     position: absolute;
     cursor:pointer;
 }
 
-unit {
+.techTree .unit {
     display: block;
     width: 100%;
     color: black;
 }
 
-unlocks > unit {
+.techTree .unlocks > .unit {
     border-style: solid;
     border-radius: 0;
     border-width: 2px 2px 0 2px;
     border-color: #000;
 }
 
-unit::before {
+.techTree .unit::before {
     font-size: 60%;
 }
 
-info {
+.techTree .info {
     z-index: 1;
     display: none;
     position: absolute;
@@ -74,139 +81,139 @@ info {
     border-color: #aaa;
 }
 
-info {
+.techTree .info {
     width: 9em;
     min-height: 3.5em;
     left: 3em;
     padding: 0.25em;
 }
 
-building > info, unit > info {
+.techTree .building > .info, .techTree .unit > .info {
     top: 0.75em;
 }
 
-building.hover > info, unit.hover > info, feature.hover > info {
+.techTree .building.hover > .info, .techTree .unit.hover > .info, .techTree .feature.hover > .info {
     display: block;
 }
 
-info > *:not(feature) {
+.techTree .info > *:not(.feature) {
     display: block;
 }
 
-info > *:not(name):not(feature) {
+.techTree .info > *:not(.name):not(.feature) {
     font-size: 50%;
     padding-left: 2.5em;
 }
 
-info > *:not(name):not(feature):not(description)::before {
+.techTree .info > *:not(.name):not(.feature):not(.description)::before {
     position: absolute;
     left: 0.5em;
 }
 
-info cost > *, info stats > * {
+.techTree .info .cost > *, .techTree .info .stats > * {
     white-space: nowrap;
 }
 
-info cost > *:not(:first-child), info stats > *:not(:first-child) {
+.techTree .info .cost > *:not(:first-child), .techTree .info .stats > *:not(:first-child) {
     margin-left: 0.5em;
 }
 
-info cost::before {
+.techTree .info .cost::before {
     content: "cost: ";
 }
 
-info stats::before {
+.techTree .info .stats::before {
     content: "stats: ";
 }
 
-feature info stats::before {
+.techTree .feature info .stats::before {
     content: "use: ";
 }
 
-info builtat::before {
+.techTree .info .builtat::before {
     content: "built at: ";
 }
 
-info requires::before {
+.techTree .info .requires::before {
     content: "requires: ";
 }
 
-info unlocked::before {
+.techTree .info .unlocked::before {
     content: "unlocked at: ";
 }
 
-info upgradesFrom::before {
+.techTree .info .upgradesFrom::before {
     content: "upgrade of: ";
 }
 
-info cost minerals::before {
+.techTree .info .cost .minerals::before {
     content: "\2604";
     color: #06f;
 }
 
-info cost vespine::before {
+.techTree .info .cost .vespine::before {
     content: "\2668";
     color: #0c0;
 }
 
-info cost supply::before {
+.techTree .info .cost .supply::before {
     content: "\26FD";
     color: #f90;
 }
 
-info cost supply.positive::before {
+.techTree .info .cost .supply.positive::before {
     content: "\26FD +";
 }
 
-info cost supply.positive {
+.techTree .info .cost .supply.positive {
     color: #f90;
 }
 
-info cost time::before, info cost cooldown::before {
+.techTree .info .cost .time::before, .techTree .info .cost .cooldown::before {
     content: "\26E3";
     color: #999;
 }
 
-info stats health::before {
+.techTree .info .stats .health::before {
     content: "\2629";
     color: #c00;
 }
 
-info stats armor::before {
+.techTree .info .stats .armor::before {
     content: "\26C9";
     color: #0c0;
 }
 
-info stats mana::before {
+.techTree .info .stats .mana::before {
     content: "\26A1";
     color: #0cf;
 }
 
-info stats actionpoints::before {
+.techTree .info .stats .actionpoints::before {
     content: "\261B";
     color: #c0c;
 }
 
-info stats vision::before {
+.techTree .info .stats .vision::before {
     content: "\26EF";
     color: #aa0;
 }
 
-info stats detector::before {
+.techTree .info .stats .detector::before {
     content: "detector";
     color: #fc0;
 }
 
-info cost uses::before {
+.techTree .info .cost .uses::before {
     content: "\267B";
     color: #999;
 }
-feature > info > description {
+.techTree .feature > .info > .description {
     padding-left: 0em;
     text-align: left;
 }
 
-info feature {
+.techTree .info .feature {
     display: inline-block;
     border-style: solid;
     border-width: 2px;
@@ -215,59 +222,59 @@ info feature {
     margin-top: 0.25em;
 }
 
-info feature::before {
+.techTree .info .feature::before {
     content: attr(symbol);
 }
 
-feature > info {
+.techTree .feature > .info {
     left: 9.5em;
 }
 
-info > feature[mode=Passive] {
+.techTree .info > .feature[data-mode=Passive] {
     border-style: dotted;
 }
 
-info > feature[mode=Toggled] {
+.techTree .info > .feature[data-mode=Toggled] {
     border-style: double;
     border-width: 3px;
 }
 
-info > feature[mode=Triggered] {
+.techTree .info > .feature[data-mode=Triggered] {
     border-style: solid;
 }
 
-info > feature[mode=Purchased] {
+.techTree .info > .feature[data-mode=Purchased] {
     border-style: dashed;
 }
 
 
-.hover {
+.techTree .hover {
     color: #f90;
     border-color: #f90;
 }
 
-.hover + unit, building.hover > unlocks > unit:first-child {
+.techTree .hover + .unit, .techTree .building.hover > .unlocks > .unit:first-child {
     border-top-color: #f90;
 }
 
-techtree link {
+.techTree .techtree .link {
     display: block;
     position: absolute;
     z-index: -1;
 }
 
-techtree link.left, techtree link.right {
+.techTree .techtree .link.left, .techtree .link.right {
     border-top: 2px solid green;
 }
 
-techtree link.left, techtree link.straight {
+.techtree .link.left, .techtree .link.straight {
     border-left: 2px solid green;
 }
 
-techtree link.right {
+.techtree .link.right {
     border-right: 2px solid green;
 }
 
-techtree link.straight {
+.techtree .link.straight {
     width: 5px;
 }

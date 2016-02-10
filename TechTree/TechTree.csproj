@@ -269,9 +269,7 @@
     <Content Include="Views\Account\Register.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\Game\Tree\_FeaturePartial.cshtml" />
-    <Content Include="Views\Game\Tree\_StatsPartial.cshtml" />
     <Content Include="Views\Game\Play.cshtml" />
-    <Content Include="Views\Game\Tree\_TreePartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
