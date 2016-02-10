@@ -12,7 +12,7 @@ namespace GameModels.Definitions.Features
     public class Attack : EntityTargettedFeature
     {
         public override string Name { get { return "Attack"; } }
-        public override string GetDescription()
+        protected override string GetDescription()
         {
             StringBuilder sb = new StringBuilder();
 

@@ -12,7 +12,7 @@ namespace GameModels.Definitions.Features
     public class Blind : TargettedStatusEffectFeature<Blinded>
     {
         public override string Name { get { return "Blind"; } }
-        public override string GetDescription()
+        protected override string GetDescription()
         {
             StringBuilder sb = new StringBuilder();
             sb.Append("Reduces the vision radius to zero, for an enemy");

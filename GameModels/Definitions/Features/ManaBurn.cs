@@ -11,7 +11,7 @@ namespace GameModels.Definitions.Features
     public class ManaBurn : EntityTargettedFeature
     {
         public override string Name { get { return "Mana Burn"; } }
-        public override string GetDescription()
+        protected override string GetDescription()
         {
             StringBuilder sb = new StringBuilder();
 

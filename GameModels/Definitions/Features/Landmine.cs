@@ -10,7 +10,7 @@ namespace GameModels.Definitions.Features
     public class Landmine : ActivatedFeature
     {
         public override string Name { get { return "Landmine"; } }
-        public override string GetDescription()
+        protected override string GetDescription()
         {
             StringBuilder sb = new StringBuilder();
 

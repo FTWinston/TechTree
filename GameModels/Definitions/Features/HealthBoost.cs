@@ -12,7 +12,7 @@ namespace GameModels.Definitions.Features
     public class HealthBoost : TargettedStatusEffectFeature<StatusEffects.HealthBoost>
     {
         public override string Name { get { return "Health Boost"; } }
-        public override string GetDescription()
+        protected override string GetDescription()
         {
             StringBuilder sb = new StringBuilder();
             sb.Append(EffectInstance.GetDescription());

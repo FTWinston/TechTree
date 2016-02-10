@@ -11,7 +11,7 @@ namespace GameModels.Definitions.Features
     public class InstantHeal : EntityTargettedFeature
     {
         public override string Name { get { return "Instant Healing"; } }
-        public override string GetDescription()
+        protected override string GetDescription()
         {
             StringBuilder sb = new StringBuilder();
 

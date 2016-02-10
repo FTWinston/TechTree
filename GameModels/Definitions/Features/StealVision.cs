@@ -12,7 +12,7 @@ namespace GameModels.Definitions.Features
     public class StealVision : TargettedStatusEffectFeature<StolenVision>
     {
         public override string Name { get { return "Steal Vision"; } }
-        public override string GetDescription()
+        protected override string GetDescription()
         {
             StringBuilder sb = new StringBuilder();
             sb.Append("Gains the vision of an enemy unit");

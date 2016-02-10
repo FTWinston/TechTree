@@ -12,7 +12,7 @@ namespace GameModels.Definitions.Features
     public class DrainHealth : TargettedStatusEffectFeature<HealthDrain>
     {
         public override string Name { get { return "Drain Health"; } }
-        public override string GetDescription()
+        protected override string GetDescription()
         {
             StringBuilder sb = new StringBuilder();
 

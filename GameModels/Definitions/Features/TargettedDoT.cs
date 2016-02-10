@@ -12,7 +12,7 @@ namespace GameModels.Definitions.Features
     public class TargettedDoT : TargettedStatusEffectFeature<DamageOverTime>
     {
         public override string Name { get { return "Targetted DoT"; } }
-        public override string GetDescription()
+        protected override string GetDescription()
         {
             StringBuilder sb = new StringBuilder();
             sb.Append(EffectInstance.GetDescription());

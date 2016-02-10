@@ -12,7 +12,7 @@ namespace GameModels.Definitions.Features
     public class DeployableAttack : ToggleFeature
     {
         public override string Name { get { return "Deploy"; } }
-        public override string GetDescription()
+        protected override string GetDescription()
         {
             StringBuilder sb = new StringBuilder();
             sb.Append("Deploys this unit into an immobile configuration with a greater attack range and damage");

@@ -11,7 +11,7 @@ namespace GameModels.Definitions.Features
     public class RemoveEffects : EntityTargettedFeature
     {
         public override string Name { get { return "Remove Effects"; } }
-        public override string GetDescription()
+        protected override string GetDescription()
         {
             StringBuilder sb = new StringBuilder();
 

@@ -11,7 +11,7 @@ namespace GameModels.Definitions.Features
     public class PersonalTeleport : TargettedFeature
     {
         public override string Name { get { return "Teleport"; } }
-        public override string GetDescription()
+        protected override string GetDescription()
         {
             StringBuilder sb = new StringBuilder();
 

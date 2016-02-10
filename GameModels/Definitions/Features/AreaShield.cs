@@ -8,7 +8,7 @@ namespace GameModels.Definitions.Features
     public class AreaShield : TargettedCellEffectFeature<CellEffects.Shield>
     {
         public override string Name { get { return "Area Shield"; } }
-        public override string GetDescription()
+        protected override string GetDescription()
         {
             StringBuilder sb = new StringBuilder();
 

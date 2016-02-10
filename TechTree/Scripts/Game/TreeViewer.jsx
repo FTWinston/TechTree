@@ -101,6 +101,44 @@ var TreeStats = React.createClass({
 
 var TreeFeature = React.createClass({
 	render: function() {
-		return <div className="feature"></div>;
+		var f = this.props.feature;
+
+		var unlocked = f.UnlockedBy === undefined ? null : <div className="unlocked">f.UnlockedBy.PerformedAt.Name</div>;
+
+		var stats = null, cost = null;
+		if (f.UsesMana || f.LimitedUses > 0 || f.CooldownTurns > 0) {
+			var mana = f.UsesMana ? <div class="mana">{f.ActivateManaCost > 0 || f.ManaCostPerTurn > 0 ? (f.ActivateManaCost > 0 ? f.ActivateManaCost : 0) + " to activate, " + (f.ManaCostPerTurn > 0 ? f.ManaCostPerTurn : 0) + " per turn" : f.ManaCost}</div> : null;
+			var uses = f.LimitedUses > 0 ? <div class="uses">{f.LimitedUses}</div> : null;
+			var cooldown = f.CooldownTurns > 0 ? <div class="cooldown">{f.CooldownTurns}</div> : null;
+
+			stats = <div className="stats">
+				{mana}
+				{uses}
+				{cooldown}
+			</div>;
+		}
+
+		if (f.MineralCost > 0 || f.VespineCost > 0 || f.SupplyCost > 0 || f.SupplyCost < 0 || f.BuildTime > 0) {
+			var minerals = f.MineralCost == 0 ? null : <div className="minerals">{f.MineralCost}</div>;
+			var vespine = f.VespineCost == 0 ? null : <div className="vespine">{f.VespineCost}</div>;
+			var supply = f.SupplyCost == 0 ? null : <div className={f.SupplyCost < 0 ? "supply positive" : "supply"}>{Math.abs(f.SupplyCost)}</div>;
+			var time = f.BuildTime == 0 ? null : <div className="time">{f.BuildTime}</div>;
+			cost = <div className="cost">
+				{minerals}
+				{vespine}
+				{supply}
+				{time}
+			</div>;
+		}
+
+		return <div className="feature" data-symbol={f.Symbol} data-mode={f.Mode}>
+			<div className="info">
+				<div className="name">{f.Name}</div>
+				{stats}
+				{cost}
+				{unlocked}
+				<div className="description">f.Description</div>
+			</div>
+		</div>;
 	}
 });

@@ -11,7 +11,7 @@ namespace GameModels.Definitions.Features
     public class AreaDetection : TargettedFeature
     {
         public override string Name { get { return "Detection"; } }
-        public override string GetDescription()
+        protected override string GetDescription()
         {
             StringBuilder sb = new StringBuilder();
 

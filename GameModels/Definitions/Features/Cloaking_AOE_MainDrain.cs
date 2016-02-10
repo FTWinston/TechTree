@@ -12,7 +12,7 @@ namespace GameModels.Definitions.Features
     public class Cloaking_AOE_ManaDrain : ToggleFeature<AreaInvisible>
     {
         public override string Name { get { return "AOE Cloaking"; } }
-        public override string GetDescription()
+        protected override string GetDescription()
         {
             StringBuilder sb = new StringBuilder();
             sb.Append("Prevents this unit from being seen by enemy units that lack the [detector] feature");

@@ -12,7 +12,7 @@ namespace GameModels.Definitions.Features
     public class Immobilize : TargettedStatusEffectFeature<Immobilized>
     {
         public override string Name { get { return "Immobilize"; } }
-        public override string GetDescription()
+        protected override string GetDescription()
         {
             StringBuilder sb = new StringBuilder();
             sb.Append("Prevents units");

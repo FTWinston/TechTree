@@ -21,7 +21,7 @@ namespace GameModels.Definitions.Features
         public override string Name { get { return "Build: " + Unit.Name; } }
         public override string Symbol { get { return Unit.Symbol; } }
         
-        public override string GetDescription()
+        protected override string GetDescription()
         {
             StringBuilder sb = new StringBuilder();
             sb.Append("Builds a new ");

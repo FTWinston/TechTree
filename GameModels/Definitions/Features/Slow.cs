@@ -12,7 +12,7 @@ namespace GameModels.Definitions.Features
     public class Slow : TargettedStatusEffectFeature<Slowed>
     {
         public override string Name { get { return "Slow"; } }
-        public override string GetDescription()
+        protected override string GetDescription()
         {
             StringBuilder sb = new StringBuilder();
             sb.Append("Reduces by ");

@@ -8,7 +8,7 @@ namespace GameModels.Definitions.Features
     public class Wall : TargettedCellEffectFeature<CellEffects.Wall>
     {
         public override string Name { get { return "Wall"; } }
-        public override string GetDescription()
+        protected override string GetDescription()
         {
             StringBuilder sb = new StringBuilder();
 

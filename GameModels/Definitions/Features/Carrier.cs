@@ -14,7 +14,7 @@ namespace GameModels.Definitions.Features
         }
 
         public override string Name { get { return "Carrier"; } }
-        public override string GetDescription() { return string.Format("Carries up to {0} units", Capacity); }
+        protected override string GetDescription() { return string.Format("Carries up to {0} units", Capacity); }
         public override string Symbol { get { return "⚖"; } }
         private int Capacity { get; set; }
 

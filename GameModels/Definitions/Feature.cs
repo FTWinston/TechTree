@@ -12,7 +12,8 @@ namespace GameModels.Definitions
     public abstract partial class Feature
     {
         public abstract string Name { get; }
-        public abstract string GetDescription();
+        public string Description { get { return GetDescription(); } }
+        protected abstract string GetDescription();
         public abstract string Symbol { get; }
 
         [JsonIgnore]

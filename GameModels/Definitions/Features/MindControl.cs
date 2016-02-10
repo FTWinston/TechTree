@@ -11,7 +11,7 @@ namespace GameModels.Definitions.Features
     public class MindControl : EntityTargettedFeature
     {
         public override string Name { get { return "Mind Control"; } }
-        public override string GetDescription()
+        protected override string GetDescription()
         {
             StringBuilder sb = new StringBuilder();
 

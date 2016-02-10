@@ -9,7 +9,7 @@ namespace GameModels.Definitions.Features
     public class AreaHealthReduction : TargettedStatusEffectFeature<ReducedHealth>
     {
         public override string Name { get { return "Health Reduction"; } }
-        public override string GetDescription()
+        protected override string GetDescription()
         {
             StringBuilder sb = new StringBuilder();
 

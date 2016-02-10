@@ -12,7 +12,7 @@ namespace GameModels.Definitions.Features
     public class MassTeleport : TargettedStatusEffectFeature<Teleporting>
     {
         public override string Name { get { return "Mass Teleport"; } }
-        public override string GetDescription()
+        protected override string GetDescription()
         {
             StringBuilder sb = new StringBuilder();
 

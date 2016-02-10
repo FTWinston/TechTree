@@ -13,7 +13,7 @@ namespace GameModels.Definitions.Features
     public class Construction : ActivatedFeature
     {
         public override string Name { get { return "Build"; } }
-        public override string GetDescription()
+        protected override string GetDescription()
         {
             return "Constructs buildings";
         }

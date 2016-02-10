@@ -12,7 +12,7 @@ namespace GameModels.Definitions.Features
     public class HealOverTime : TargettedStatusEffectFeature<Healing>
     {
         public override string Name { get { return "Healing over Time"; } }
-        public override string GetDescription()
+        protected override string GetDescription()
         {
             StringBuilder sb = new StringBuilder();
             sb.Append(EffectInstance.GetDescription());

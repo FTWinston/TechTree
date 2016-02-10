@@ -12,7 +12,7 @@ namespace GameModels.Definitions.Features
     public class Freeze : TargettedStatusEffectFeature<Frozen>
     {
         public override string Name { get { return "Freeze"; } }
-        public override string GetDescription()
+        protected override string GetDescription()
         {
             StringBuilder sb = new StringBuilder();
             sb.Append("Prevents units");

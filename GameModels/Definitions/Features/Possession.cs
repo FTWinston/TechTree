@@ -11,7 +11,7 @@ namespace GameModels.Definitions.Features
     public class Possession : EntityTargettedFeature
     {
         public override string Name { get { return "Possession"; } }
-        public override string GetDescription()
+        protected override string GetDescription()
         {
             StringBuilder sb = new StringBuilder();
 

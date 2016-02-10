@@ -8,7 +8,7 @@ namespace GameModels.Definitions.Features
     public class AreaDoT : TargettedCellEffectFeature<DamageOverTime>
     {
         public override string Name { get { return "Area DoT"; } }
-        public override string GetDescription()
+        protected override string GetDescription()
         {
             StringBuilder sb = new StringBuilder();
 
