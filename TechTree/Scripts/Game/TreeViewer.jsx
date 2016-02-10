@@ -11,7 +11,7 @@
 			var buildings = [];
 			for (var i=0; i<this.props.tree.Buildings.length; i++) {
 				var b = this.props.tree.Buildings[i];
-				buildings.push(<TreeBuilding building={b} allUnits={this.props.tree.Units} key={i} />);
+				buildings.push(<TreeBuilding building={b} allUnits={this.props.tree.Units} key={i} onMouseOver={this.onMouseOver} onMouseOut = {this.onMouseOut} />);
 			}
 
 			return <div className="treePopup" onClick={this.hideTree}>
@@ -29,6 +29,56 @@
 	},
 	hideTree: function() {
 		this.setState({expanded: false});
+	},
+	onMouseOver: function(e) {
+		var element = e.target;
+		this.clearHover(element == this.lastHover ? null : this.lastHover);
+		if (element == this.lastHover)
+			return;
+
+		// TODO: implement this not-using-jquery
+		if (element.getAttribute('class').indexOf('feature') != -1)
+			;//$(element).closest('unit, building').addClass('hover');
+
+		element.setAttribute('class', element.getAttribute('class') + ' hover');
+		this.lastHover = element;
+
+		e.stopPropagation();
+	},
+	onMouseOut: function(e) {
+		var self = this;
+        this.mouseOutTimer = setTimeout(function () { self.delayMouseOut(e) }, 750);
+		e.stopPropagation();
+	},
+	mouseOutTimer: null,
+	lastHover: null,
+	delayMouseOut: function(e) {
+		var element = e.target;
+		if (this.lastHover != element)
+	        return;
+
+		element.setAttribute('class', element.getAttribute('class').replace('hover', '').trim());
+		
+		// TODO: implement this not-using-jquery
+		if (element.getAttribute('class').indexOf('feature') != -1)
+			;//$(element).closest('unit, building').removeClass('hover');
+
+		this.lastHover = null;
+		this.mouseOutTimer = null;
+	},
+	clearHover: function(element) {
+		if (this.mouseOutTimer != null) {
+			clearTimeout(this.mouseOutTimer);
+			this.mouseOutTimer = null;
+		}
+		if (element == null)
+			return;
+
+		this.lastHover.setAttribute('class', this.lastHover.getAttribute('class').replace('hover', '').trim());
+		
+		// TODO: implement this not-using-jquery
+		if (element.getAttribute('class').indexOf('feature') != -1)
+			;//$(element).closest('unit, building').removeClass('hover');
 	}
 });
 
@@ -45,13 +95,15 @@ var TreeBuilding = React.createClass({
 			if (u.Prerequisite != b)
 				continue;
 
-			var builtAt = <div className="builtat" key={'b' + i}>{u.BuiltBy.Name}</div>;
-            var requires = u.Prerequisite === undefined ? null : <div className="requires" key={'r' + i}>{u.Prerequisite.Name}</div>;
-			units.push(<TreeStats entity={u} extra1={builtAt} extra2={requires} key={i} />);
+			var builtAt = <div className="builtat">{u.BuiltBy.Name}</div>;
+            var requires = u.Prerequisite === undefined ? null : <div className="requires">{u.Prerequisite.Name}</div>;
+			units.push(<div className="unit" key={i} onMouseOver={this.props.onMouseOver} onMouseOut={this.props.onMouseOut}>
+				<TreeStats entity={u} extra1={builtAt} extra2={requires} onMouseOver={this.onMouseOver} onMouseOut = {this.onMouseOut} />
+			</div>);
 		}
 
-		return <div className="building" data-symbol={b.Symbol}>
-			<TreeStats entity={b} extra1={upgrades} extra2={requires} />
+		return <div className="building" data-symbol={b.Symbol} onMouseOver={this.props.onMouseOver} onMouseOut={this.props.onMouseOut}>
+			<TreeStats entity={b} extra1={upgrades} extra2={requires} onMouseOver={this.onMouseOver} onMouseOut = {this.onMouseOut} />
 			<div className="unlocks">
 				{units}
 			</div>
@@ -74,7 +126,7 @@ var TreeStats = React.createClass({
 
 		var features = [];
 		for (var i=0; i<e.Features.length; i++)
-			features.push(<TreeFeature feature={e.Features[i]} key={i} />);
+			features.push(<TreeFeature feature={e.Features[i]} key={i} onMouseOver={this.onMouseOver} onMouseOut = {this.onMouseOut} />);
 
 		return <div className="info">
 			<div className="name">{e.Name}</div>
@@ -107,9 +159,9 @@ var TreeFeature = React.createClass({
 
 		var stats = null, cost = null;
 		if (f.UsesMana || f.LimitedUses > 0 || f.CooldownTurns > 0) {
-			var mana = f.UsesMana ? <div class="mana">{f.ActivateManaCost > 0 || f.ManaCostPerTurn > 0 ? (f.ActivateManaCost > 0 ? f.ActivateManaCost : 0) + " to activate, " + (f.ManaCostPerTurn > 0 ? f.ManaCostPerTurn : 0) + " per turn" : f.ManaCost}</div> : null;
-			var uses = f.LimitedUses > 0 ? <div class="uses">{f.LimitedUses}</div> : null;
-			var cooldown = f.CooldownTurns > 0 ? <div class="cooldown">{f.CooldownTurns}</div> : null;
+			var mana = f.UsesMana ? <div className="mana">{f.ActivateManaCost > 0 || f.ManaCostPerTurn > 0 ? (f.ActivateManaCost > 0 ? f.ActivateManaCost : 0) + " to activate, " + (f.ManaCostPerTurn > 0 ? f.ManaCostPerTurn : 0) + " per turn" : f.ManaCost}</div> : null;
+			var uses = f.LimitedUses > 0 ? <div className="uses">{f.LimitedUses}</div> : null;
+			var cooldown = f.CooldownTurns > 0 ? <div className="cooldown">{f.CooldownTurns}</div> : null;
 
 			stats = <div className="stats">
 				{mana}
@@ -131,7 +183,7 @@ var TreeFeature = React.createClass({
 			</div>;
 		}
 
-		return <div className="feature" data-symbol={f.Symbol} data-mode={f.Mode}>
+		return <div className="feature" data-symbol={f.Symbol} data-mode={f.Mode} onMouseOver={this.props.onMouseOver} onMouseOut={this.props.onMouseOut}>
 			<div className="info">
 				<div className="name">{f.Name}</div>
 				{stats}

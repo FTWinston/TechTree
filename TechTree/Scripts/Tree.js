@@ -1,58 +1,6 @@
 ﻿$(function () {
-    $('building, unit, feature').mouseover(function (e) {
-        startHover(this);
-        e.stopPropagation();
-    }).mouseout(function (e) {
-        var exited = this;
-        timer = setTimeout(function () { stopHover(exited) }, 750);
-        e.stopPropagation();
-    });
-
     alignTree();
 });
-
-var lastHover = null;
-var timer = null;
-
-function startHover(element) {
-    clearHover(element == lastHover ? null : lastHover);
-    if (element == lastHover)
-        return;
-
-    $(element).addClass('hover');
-
-    if (element.nodeName == 'FEATURE')
-        $(element).closest('unit, building').addClass('hover');
-
-    lastHover = element;
-}
-
-function stopHover(element) {
-    if (lastHover != element)
-        return;
-
-    $(element).removeClass('hover');
-
-    if (element.nodeName == 'FEATURE')
-        $(element).closest('unit, building').removeClass('hover');
-
-    lastHover = null;
-    timer = null;
-}
-
-function clearHover(element) {
-    if (timer != null) {
-        clearTimeout(timer);
-        timer = null;
-    }
-    if (element == null)
-        return;
-
-    $(lastHover).removeClass('hover');
-
-    if (element.nodeName == 'FEATURE')
-        $(element).closest('unit, building').removeClass('hover');
-}
 
 function alignTree() {
     var marginSize = 30, row = 0, maxY = 0, maxX = 0, num;
