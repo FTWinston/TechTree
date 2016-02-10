@@ -54,10 +54,9 @@ namespace GameModels.Generation
             Tree = new TechTree();
             Tree.Seed = Seed;
 
-            GenerateFactories();
-            List<BuildingType> factories = new List<BuildingType>(Tree.Buildings);
-
             AddCommandBuilding();
+
+            List<BuildingType> factories = GenerateFactories();
 
             GenerateUnitStubs(factories);
 
@@ -74,8 +73,7 @@ namespace GameModels.Generation
         private void AddCommandBuilding()
         {
             BuildingType building = BuildingGenerator.GenerateCommandBuilding(this);
-            Tree.Buildings.First().Prerequisite = building;
-            Tree.Buildings.Insert(0, building);
+            Tree.Buildings.Add(building);
 
             UnitType unit = UnitGenerator.GenerateWorker(this);
             unit.BuiltBy = unit.Prerequisite = building;
@@ -202,7 +200,7 @@ namespace GameModels.Generation
             return tier;
         }
 
-        private void GenerateFactories()
+        private List<BuildingType> GenerateFactories()
         {
             int numFactories;
             switch (TreeComplexity)
@@ -220,16 +218,21 @@ namespace GameModels.Generation
                     throw new ArgumentException("Unexpected Complexity value: " + TreeComplexity);
             }
 
-            BuildingType prev = null;
+            var output = new List<BuildingType>();
+
+            BuildingType prev = Tree.Buildings.First();
             for (int i = 0; i < numFactories; i++)
             {
                 BuildingType building = BuildingGenerator.GenerateFactory(this, i);
                 Tree.Buildings.Add(building);
+                output.Add(building);
 
                 if (prev != null)
                     building.Prerequisite = prev;
                 prev = building;
             }
+
+            return output;
         }
 
         private void GenerateTechBuildings(List<BuildingType> factories)

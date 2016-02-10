@@ -20,8 +20,8 @@ namespace GameModels.Definitions
         [JsonIgnore]
         public virtual Research UnlockedBy { get; internal set; }
 
-        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public string UnlockedByID { get { return UnlockedBy == null ? null : UnlockedBy.Symbol; } }
+        [JsonProperty("UnlockedBy", NullValueHandling = NullValueHandling.Ignore)]
+        public int? UnlockedByNumber { get { if (UnlockedBy == null) return null; return UnlockedBy.ResearchNumber; } }
 
         public abstract bool UsesMana { get; }
 

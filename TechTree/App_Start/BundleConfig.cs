@@ -28,7 +28,10 @@ namespace TechTree
                       "~/Content/bootstrap.css",
                       "~/Content/site.css"));
 
-            bundles.Add(new BabelBundle("~/bundles/game").IncludeDirectory("~/Scripts/Game", "*.jsx"));
+            bundles.Add(new BabelBundle("~/bundles/game")
+                .IncludeDirectory("~/Scripts/Game", "*.jsx")
+                .IncludeDirectory("~/Scripts/Game", "*.js")
+            );
         }
     }
 }

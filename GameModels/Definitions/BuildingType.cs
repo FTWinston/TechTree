@@ -32,8 +32,8 @@ namespace GameModels.Definitions
             }
         }
 
-        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public string UpgradesFromID { get { return upgradesFrom == null ? null : upgradesFrom.Symbol; } }
+        [JsonProperty("UpgradesFrom",  NullValueHandling = NullValueHandling.Ignore)]
+        public int? UpgradesFromNumber { get { if (upgradesFrom == null) return null; return upgradesFrom.BuildingNumber; } }
 
         [JsonIgnore]
         public List<UnitType> Builds { get; private set; }
@@ -42,6 +42,8 @@ namespace GameModels.Definitions
 
         public int DisplayRow { get; internal set; }
         public int DisplayColumn { get; internal set; }
+
+        internal int BuildingNumber { get; set; }
 
         public BuildingType()
         {

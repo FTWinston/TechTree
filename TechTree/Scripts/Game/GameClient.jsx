@@ -19,7 +19,7 @@
         return <div ref="self" className="game">
             <MainView ref="main" width={this.state.mainWidth} height={this.state.mainHeight} />
 			<div ref="side" className="sideBar">
-				<TreeViewer ref="tree" />
+				<TreeViewer ref="tree" tree={this.props.tree} />
 				<MiniMap ref="map" />
 			</div>
 			<div ref="bottom" className="bottomBar">

@@ -18,6 +18,7 @@ namespace GameModels.Generation
                 Name = "Command Post " + symbol,
                 Symbol = symbol,
                 VisionRange = 2,
+                BuildingNumber = gen.Tree.Buildings.Count
             };
 
             Random r = gen.Random;
@@ -41,6 +42,7 @@ namespace GameModels.Generation
                 Name = "Factory " + symbol,
                 Symbol = symbol,
                 VisionRange = 2,
+                BuildingNumber = gen.Tree.Buildings.Count
             };
             
             Random r = gen.Random;
@@ -64,6 +66,7 @@ namespace GameModels.Generation
                 Name = "Tech building " + symbol,
                 Symbol = symbol,
                 VisionRange = 2,
+                BuildingNumber = gen.Tree.Buildings.Count
             };
 
             Random r = gen.Random;

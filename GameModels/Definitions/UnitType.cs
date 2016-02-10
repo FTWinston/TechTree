@@ -27,8 +27,8 @@ namespace GameModels.Definitions
             }
         }
 
-        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public string BuiltByID { get { return builtBy == null ? null : builtBy.Symbol; } }
+        [JsonProperty("BuiltBy", NullValueHandling = NullValueHandling.Ignore)]
+        public int? BuiltByNumber { get { if (builtBy == null) return null; return builtBy.BuildingNumber; } }
 
         [Flags]
         public enum UnitFlags

@@ -35,8 +35,8 @@ namespace GameModels.Definitions
             }
         }
 
-        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public string PrerequisiteID { get { return prerequisite == null ? null : prerequisite.Symbol; } }
+        [JsonProperty("Prerequisite", NullValueHandling = NullValueHandling.Ignore)]
+        public int? PrerequisiteNumber { get { if (prerequisite == null) return null; return prerequisite.BuildingNumber; } }
     }
 
     public abstract class EntityType : Purchasable
