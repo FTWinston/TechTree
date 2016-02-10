@@ -1,5 +1,6 @@
 ﻿using GameModels.Definitions.Features;
 using GameModels.Generation;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,8 @@ namespace GameModels.Definitions
         public string Description { get; internal set; }
 
         public BuildingType PerformedAt { get; private set; }
+        
+        [JsonIgnore]
         public List<Feature> Unlocks { get; private set; }
 
         public Research(params Feature[] features)

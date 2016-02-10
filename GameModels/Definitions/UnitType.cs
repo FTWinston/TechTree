@@ -1,5 +1,6 @@
 ﻿using GameModels.Definitions.Features;
 using GameModels.Instances;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +12,7 @@ namespace GameModels.Definitions
     public class UnitType : EntityType<Unit>
     {
         private BuildingType builtBy;
+        [JsonIgnore]
         public BuildingType BuiltBy
         {
             get { return builtBy; }
@@ -25,6 +27,9 @@ namespace GameModels.Definitions
             }
         }
 
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        public string BuiltByID { get { return builtBy == null ? null : builtBy.Symbol; } }
+
         [Flags]
         public enum UnitFlags
         {
@@ -35,6 +40,7 @@ namespace GameModels.Definitions
             AttacksGround = 8,
         }
 
+        [JsonIgnore]
         public UnitFlags Flags { get; internal set; }
     }
 }

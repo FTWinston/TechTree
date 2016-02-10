@@ -1,4 +1,6 @@
 ﻿using GameModels.Instances;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,10 +15,17 @@ namespace GameModels.Definitions
         public abstract string GetDescription();
         public abstract string Symbol { get; }
 
+        [JsonIgnore]
         public EntityType EntityDefinition { get; internal set; }
+        [JsonIgnore]
         public virtual Research UnlockedBy { get; internal set; }
 
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        public string UnlockedByID { get { return UnlockedBy == null ? null : UnlockedBy.Symbol; } }
+
         public abstract bool UsesMana { get; }
+
+        [JsonConverter(typeof(StringEnumConverter))]
         public abstract InteractionMode Mode { get; }
 
         public enum InteractionMode

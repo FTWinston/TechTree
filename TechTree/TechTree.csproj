@@ -221,7 +221,6 @@
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
     <Content Include="gulpfile.js" />
-    <Content Include="readme.txt" />
     <Content Include="Resources\babel.js" />
     <Content Include="Resources\react.js" />
     <Content Include="Scripts\bootstrap.js" />

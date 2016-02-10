@@ -1,4 +1,5 @@
 ﻿using GameModels.Instances;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,6 +20,7 @@ namespace GameModels.Definitions
         public int SupplyCost { get; internal set; }
 
         private BuildingType prerequisite;
+        [JsonIgnore]
         public BuildingType Prerequisite
         {
             get { return prerequisite; }
@@ -32,6 +34,9 @@ namespace GameModels.Definitions
                     prerequisite.Unlocks.Add(this);
             }
         }
+
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        public string PrerequisiteID { get { return prerequisite == null ? null : prerequisite.Symbol; } }
     }
 
     public abstract class EntityType : Purchasable

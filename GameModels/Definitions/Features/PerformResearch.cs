@@ -1,4 +1,5 @@
 ﻿using GameModels.Instances;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,6 +32,7 @@ namespace GameModels.Definitions.Features
             return sb.ToString();
         }
 
+        [JsonIgnore]
         public Research Research { get; private set; }
 
         public override bool Clicked(Entity entity)

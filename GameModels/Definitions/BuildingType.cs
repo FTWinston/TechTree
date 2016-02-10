@@ -1,4 +1,5 @@
 ﻿using GameModels.Instances;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,12 +10,15 @@ namespace GameModels.Definitions
 {
     public class BuildingType : EntityType<Building>
     {
+        [JsonIgnore]
         public List<Purchasable> Unlocks { get; private set; }
 
         // TODO: decide if building units, researching and upgrading could become part of building features
+        [JsonIgnore]
         public List<BuildingType> UpgradesTo { get; private set; }
 
         private BuildingType upgradesFrom;
+        [JsonIgnore]
         public BuildingType UpgradesFrom
         {
             get { return upgradesFrom; }
@@ -28,7 +32,12 @@ namespace GameModels.Definitions
             }
         }
 
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        public string UpgradesFromID { get { return upgradesFrom == null ? null : upgradesFrom.Symbol; } }
+
+        [JsonIgnore]
         public List<UnitType> Builds { get; private set; }
+        [JsonIgnore]
         public List<Research> Researches { get; private set; }
 
         public int DisplayRow { get; internal set; }
