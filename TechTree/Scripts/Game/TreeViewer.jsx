@@ -8,15 +8,41 @@
 	render: function() {
 		if (this.state.expanded)
 		{
-			var buildings = [];
+			var buildings = [], styles = new Array(this.props.tree.Buildings.length);
+
+			var marginSize = 30, buildingWidth = 70, buildingHeight = 50, row = 0, maxY = 0, maxX = 0, numOnThisRow;
+			do {
+				var rowHeight = 0;
+				numOnThisRow = 0;
+
+				for (var i = 0; i < this.props.tree.Buildings.length; i++) {
+					var b = this.props.tree.Buildings[i];
+					if (b.DisplayRow != row)
+						continue;
+            
+					numOnThisRow++;
+					rowHeight = Math.max(rowHeight, buildingHeight * (this.countUnlockedUnits(b) + 1));
+					var left = (buildingWidth + marginSize) * b.DisplayColumn;
+
+					styles[i] = {top: maxY + 'px', left: left + 'px'};
+					maxX = Math.max(maxX, left + buildingWidth + marginSize);
+				}
+
+				// find the tallest item in this set, increase maxY by that plus some border amount
+				maxY += rowHeight + marginSize;
+				row++;
+			} while (numOnThisRow > 0);
+
 			for (var i=0; i<this.props.tree.Buildings.length; i++) {
 				var b = this.props.tree.Buildings[i];
-				buildings.push(<TreeBuilding building={b} allUnits={this.props.tree.Units} key={i} onMouseOver={this.onMouseOver} onMouseOut={this.onMouseOut} />);
+				buildings.push(<TreeBuilding building={b} allUnits={this.props.tree.Units} key={i} onMouseOver={this.onMouseOver} onMouseOut={this.onMouseOut} style={styles[i]} />);
 			}
+
+		    var treeStyle = {width: (maxX - marginSize) + 'px', height: (maxY - marginSize - marginSize) + 'px'};
 
 			return <div className="treePopup" onClick={this.hideTree}>
 				yo, this is the tree. It has {this.props.tree.Buildings.length} buildings & {this.props.tree.Units.length} units.
-				<div className="techTree">
+				<div className="techTree" style={treeStyle}>
 					{buildings}
 				</div>
 			</div>;
@@ -24,6 +50,13 @@
 		else
 			return <div className="treeLink" onClick={this.showTree}>show tech tree</div>;
 	},
+    countUnlockedUnits: function(b) {
+        var numChildren = 0;
+        for (var i=0; i<this.props.tree.Units.length; i++)
+            if (this.props.tree.Units[i].Prerequisite == b)
+                numChildren++;
+	    return numChildren;
+    },
 	showTree: function() {
 		this.setState({expanded: true});
 	},
@@ -95,12 +128,12 @@ var TreeBuilding = React.createClass({
 
 			var builtAt = <div className="builtat">{u.BuiltBy.Name}</div>;
             var requires = u.Prerequisite === undefined ? null : <div className="requires">{u.Prerequisite.Name}</div>;
-			units.push(<div className="unit" key={i} onMouseOver={this.props.onMouseOver} onMouseOut={this.props.onMouseOut}>
+            units.push(<div className="unit" data-symbol={u.Symbol} key={i} onMouseOver={this.props.onMouseOver} onMouseOut={this.props.onMouseOut}>
 				<TreeStats entity={u} extra1={builtAt} extra2={requires} onMouseOver={this.onMouseOver} onMouseOut={this.onMouseOut} />
 			</div>);
 		}
 
-		return <div className="building" data-symbol={b.Symbol} onMouseOver={this.props.onMouseOver} onMouseOut={this.props.onMouseOut}>
+		return <div className="building" data-symbol={b.Symbol} onMouseOver={this.props.onMouseOver} onMouseOut={this.props.onMouseOut} style={this.props.style}>
 			<TreeStats entity={b} extra1={upgrades} extra2={requires} onMouseOver={this.onMouseOver} onMouseOut={this.onMouseOut} />
 			<div className="unlocks">
 				{units}

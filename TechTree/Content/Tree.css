@@ -8,6 +8,8 @@
     border: 1px solid black;
     border-radius: 1em;
     padding: 0.5em;
+
+    overflow: auto;
 }
 
 .techTree {
@@ -45,7 +47,7 @@
     border-bottom-right-radius: 0;
 }
 
-.techTree .unit:last-of-type { /* "type" isn't quite correct here. Does this matter? */
+.techTree .unit:last-child {
     border-bottom-width: 2px;
     border-bottom-left-radius: 0.3em;
     border-bottom-right-radius: 0.3em;
@@ -60,9 +62,6 @@
     display: block;
     width: 100%;
     color: black;
-}
-
-.techTree .unlocks > .unit {
     border-style: solid;
     border-radius: 0;
     border-width: 2px 2px 0 2px;
@@ -223,7 +222,7 @@
 }
 
 .techTree .info .feature::before {
-    content: attr(symbol);
+    content: attr(data-symbol);
 }
 
 .techTree .feature > .info {
@@ -248,7 +247,7 @@
 }
 
 
-.techTree .hover {
+.techTree .unit.hover, .techTree .building.hover, .techTree .feature.hover {
     color: #f90;
     border-color: #f90;
 }

@@ -26,36 +26,7 @@
         if (r.PerformedAt !== undefined)
             r.PerformedAt = Tree.Buildings[r.PerformedAt];
     }
-
     /*
-    GRAH, these are not actual physical elements ... yet.
-
-    // then arrange the building elements
-    var marginSize = 30, row = 0, maxY = 0, maxX = 0, num;
-    do {
-        var rowHeight = 0;
-
-        for (var i = 0; i < Tree.Buildings.length; i++) {
-            var b = Tree.Buildings[i];
-            if (b.Row != row)
-                continue;
-            
-            rowHeight = Math.max(rowHeight, b.offsetHeight);
-            var left = (b.offsetWidth + marginSize) * b.Column;
-
-            item.setAttribute('style', 'top: ' + maxY + 'px; left: ' + left + 'px');
-            maxX = Math.max(maxX, left + e.offsetWidth + marginSize);
-        }
-
-        // find the tallest item in this set, increase maxY by that plus some border amount
-        maxY += rowHeight + marginSize;
-
-        num = items.length;
-        row++;
-    } while (num > 0);
-
-    var tree = $('techtree').css('width', (maxX - marginSize) + 'px').css('height', (maxY - marginSize - marginSize) + 'px');
-
     // lastly, render links between buildings to show prerequisites
     var branchHeight = marginSize / 2;
 
