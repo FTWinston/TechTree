@@ -11,7 +11,7 @@
 			var buildings = [];
 			for (var i=0; i<this.props.tree.Buildings.length; i++) {
 				var b = this.props.tree.Buildings[i];
-				buildings.push(<TreeBuilding building={b} allUnits={this.props.tree.Units} key={i} onMouseOver={this.onMouseOver} onMouseOut = {this.onMouseOut} />);
+				buildings.push(<TreeBuilding building={b} allUnits={this.props.tree.Units} key={i} onMouseOver={this.onMouseOver} onMouseOut={this.onMouseOut} />);
 			}
 
 			return <div className="treePopup" onClick={this.hideTree}>
@@ -31,16 +31,16 @@
 		this.setState({expanded: false});
 	},
 	onMouseOver: function(e) {
-		var element = e.target;
+		var element = e.currentTarget;
+
 		this.clearHover(element == this.lastHover ? null : this.lastHover);
 		if (element == this.lastHover)
 			return;
 
-		// TODO: implement this not-using-jquery
-		if (element.getAttribute('class').indexOf('feature') != -1)
-			;//$(element).closest('unit, building').addClass('hover');
+		if (element.classList.contains('feature'))
+			element.parentNode.classList.add('hover');
 
-		element.setAttribute('class', element.getAttribute('class') + ' hover');
+		element.classList.add('hover');
 		this.lastHover = element;
 
 		e.stopPropagation();
@@ -53,15 +53,14 @@
 	mouseOutTimer: null,
 	lastHover: null,
 	delayMouseOut: function(e) {
-		var element = e.target;
+		var element = e.currentTarget;
 		if (this.lastHover != element)
 	        return;
 
-		element.setAttribute('class', element.getAttribute('class').replace('hover', '').trim());
+		element.classList.remove('hover');
 		
-		// TODO: implement this not-using-jquery
-		if (element.getAttribute('class').indexOf('feature') != -1)
-			;//$(element).closest('unit, building').removeClass('hover');
+		if (element.classList.contains('feature'))
+			element.parentNode.classList.remove('hover');
 
 		this.lastHover = null;
 		this.mouseOutTimer = null;
@@ -74,11 +73,10 @@
 		if (element == null)
 			return;
 
-		this.lastHover.setAttribute('class', this.lastHover.getAttribute('class').replace('hover', '').trim());
+		this.lastHover.classList.remove('hover');
 		
-		// TODO: implement this not-using-jquery
-		if (element.getAttribute('class').indexOf('feature') != -1)
-			;//$(element).closest('unit, building').removeClass('hover');
+		if (element.classList.contains('feature'))
+			element.parentNode.classList.remove('hover');
 	}
 });
 
@@ -98,12 +96,12 @@ var TreeBuilding = React.createClass({
 			var builtAt = <div className="builtat">{u.BuiltBy.Name}</div>;
             var requires = u.Prerequisite === undefined ? null : <div className="requires">{u.Prerequisite.Name}</div>;
 			units.push(<div className="unit" key={i} onMouseOver={this.props.onMouseOver} onMouseOut={this.props.onMouseOut}>
-				<TreeStats entity={u} extra1={builtAt} extra2={requires} onMouseOver={this.onMouseOver} onMouseOut = {this.onMouseOut} />
+				<TreeStats entity={u} extra1={builtAt} extra2={requires} onMouseOver={this.onMouseOver} onMouseOut={this.onMouseOut} />
 			</div>);
 		}
 
 		return <div className="building" data-symbol={b.Symbol} onMouseOver={this.props.onMouseOver} onMouseOut={this.props.onMouseOut}>
-			<TreeStats entity={b} extra1={upgrades} extra2={requires} onMouseOver={this.onMouseOver} onMouseOut = {this.onMouseOut} />
+			<TreeStats entity={b} extra1={upgrades} extra2={requires} onMouseOver={this.onMouseOver} onMouseOut={this.onMouseOut} />
 			<div className="unlocks">
 				{units}
 			</div>
@@ -126,7 +124,7 @@ var TreeStats = React.createClass({
 
 		var features = [];
 		for (var i=0; i<e.Features.length; i++)
-			features.push(<TreeFeature feature={e.Features[i]} key={i} onMouseOver={this.onMouseOver} onMouseOut = {this.onMouseOut} />);
+			features.push(<TreeFeature feature={e.Features[i]} key={i} onMouseOver={this.onMouseOver} onMouseOut={this.onMouseOut} />);
 
 		return <div className="info">
 			<div className="name">{e.Name}</div>
