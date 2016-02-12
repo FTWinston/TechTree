@@ -8,7 +8,6 @@
     border: 1px solid black;
     border-radius: 1em;
     padding: 0.5em;
-
     overflow: auto;
 }
 
@@ -16,6 +15,7 @@
     font-size: 200%;
     position: relative;
     text-align:center;
+    margin: 0 auto;
 }
 
 .techTree .building::before, .techTree .unit::before {
@@ -256,24 +256,24 @@
     border-top-color: #f90;
 }
 
-.techTree .techtree .link {
+.techTree .link {
     display: block;
     position: absolute;
     z-index: -1;
 }
 
-.techTree .techtree .link.left, .techtree .link.right {
+.techTree .link.left, .techTree .link.right {
     border-top: 2px solid green;
 }
 
-.techtree .link.left, .techtree .link.straight {
+.techTree .link.left, .techTree .link.straight {
     border-left: 2px solid green;
 }
 
-.techtree .link.right {
+.techTree .link.right {
     border-right: 2px solid green;
 }
 
-.techtree .link.straight {
+.techTree .link.straight {
     width: 5px;
 }

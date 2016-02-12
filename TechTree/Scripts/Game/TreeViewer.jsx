@@ -1,14 +1,11 @@
 ﻿var TreeViewer = React.createClass({
-	getInitialState: function() {
-		return {expanded: false};
-	},
-	componentDidMount: function() {
-		
-	},
-	render: function() {
+    getInitialState: function() {
+        return {expanded: false};
+    },
+    render: function() {
 		if (this.state.expanded)
 		{
-			var buildings = [], styles = new Array(this.props.tree.Buildings.length);
+			var buildings = [], positions = new Array(this.props.tree.Buildings.length);
 
 			var marginSize = 30, buildingWidth = 70, buildingHeight = 50, row = 0, maxY = 0, maxX = 0, numOnThisRow;
 			do {
@@ -22,10 +19,10 @@
             
 					numOnThisRow++;
 					rowHeight = Math.max(rowHeight, buildingHeight * (this.countUnlockedUnits(b) + 1));
-					var left = (buildingWidth + marginSize) * b.DisplayColumn;
+					var x = (buildingWidth + marginSize) * b.DisplayColumn;
 
-					styles[i] = {top: maxY + 'px', left: left + 'px'};
-					maxX = Math.max(maxX, left + buildingWidth + marginSize);
+					positions[i] = {x: x, y: maxY};
+					maxX = Math.max(maxX, x + buildingWidth + marginSize);
 				}
 
 				// find the tallest item in this set, increase maxY by that plus some border amount
@@ -33,17 +30,35 @@
 				row++;
 			} while (numOnThisRow > 0);
 
+			var links = [], branchHeight = marginSize / 2;
 			for (var i=0; i<this.props.tree.Buildings.length; i++) {
 				var b = this.props.tree.Buildings[i];
-				buildings.push(<TreeBuilding building={b} allUnits={this.props.tree.Units} key={i} onMouseOver={this.onMouseOver} onMouseOut={this.onMouseOut} style={styles[i]} />);
-			}
+				buildings.push(<TreeBuilding building={b} allUnits={this.props.tree.Units} key={i} onMouseOver={this.onMouseOver} onMouseOut={this.onMouseOut} position={positions[i]} />);
 
-		    var treeStyle = {width: (maxX - marginSize) + 'px', height: (maxY - marginSize - marginSize) + 'px'};
+				if (b.Prerequisite === undefined)
+				    continue;
+                
+				var childPos = positions[i], parentPos = positions[b.Prerequisite.BuildingNumber]; // BuildingNumber is not a thing!
+                
+                var childX = childPos.x + buildingWidth / 2;
+                var childY = childPos.y;
+                var parentX = parentPos.x + buildingWidth / 2;
+                var parentY = parentPos.y + 3 * buildingHeight / 4;
+
+                if (parentX == childX)
+                    links.push(<TreeLink x1={parentX} y1={parentY} x2={childX} y2={childY} key={'ls' + i} />);
+                else {
+                    links.push(<TreeLink x1={parentX} y1={parentY} x2={parentX} y2={childY - branchHeight} key={'ls' + i} />);
+                    links.push(<TreeLink x1={parentX} y1={childY - branchHeight} x2={childX} y2={childY} key={'lc' + i} />);
+                }
+		    }
+
+            var treeStyle = {width: (maxX - marginSize) + 'px', height: (maxY - marginSize - marginSize) + 'px'};
 
 			return <div className="treePopup" onClick={this.hideTree}>
-				yo, this is the tree. It has {this.props.tree.Buildings.length} buildings & {this.props.tree.Units.length} units.
 				<div className="techTree" style={treeStyle}>
 					{buildings}
+				    {links}
 				</div>
 			</div>;
 		}
@@ -133,7 +148,9 @@ var TreeBuilding = React.createClass({
 			</div>);
 		}
 
-		return <div className="building" data-symbol={b.Symbol} onMouseOver={this.props.onMouseOver} onMouseOut={this.props.onMouseOut} style={this.props.style}>
+		var style = {top: this.props.position.y + 'px', left: this.props.position.x + 'px'};
+
+		return <div className="building" data-symbol={b.Symbol} onMouseOver={this.props.onMouseOver} onMouseOut={this.props.onMouseOut} style={style}>
 			<TreeStats entity={b} extra1={upgrades} extra2={requires} onMouseOver={this.onMouseOver} onMouseOut={this.onMouseOut} />
 			<div className="unlocks">
 				{units}
@@ -224,4 +241,31 @@ var TreeFeature = React.createClass({
 			</div>
 		</div>;
 	}
+});
+
+var TreeLink = React.createClass({
+    render: function() {
+        var className = "link", style = {
+            top: this.props.y1 + 'px',
+            height: (this.props.y2 - this.props.y1) + 'px'
+        };
+
+        if (this.props.x1 == this.props.x2) {
+            className += ' straight';
+            style.left = this.props.x1 + 'px';
+        }
+        else if (this.props.x2 < this.props.x1) {
+            className += ' left';
+            style.left = this.props.x2 + 'px';
+            style.width = this.props.x1 - this.props.x2;
+        }
+        else {
+            className += ' right';
+            style.left = this.props.x1 + 'px';
+            style.width = this.props.x2 - this.props.x1;
+        }
+
+        return <div className={className} style={style} />;
+    }
+
 });
