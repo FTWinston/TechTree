@@ -8,6 +8,12 @@
 
         if (b.UpgradesFrom !== undefined)
             b.UpgradesFrom = Tree.Buildings[b.UpgradesFrom];
+
+        for (var j = 0; j < b.Features.length; j++) {
+            var f = b.Features[j];
+            if (f.UnlockedBy !== undefined)
+                f.UnlockedBy = Tree.Research[f.UnlockedBy];
+        }
     }
 
     for (var i = 0; i < Tree.Units.length; i++) {
@@ -19,6 +25,12 @@
 
         if (u.BuiltBy !== undefined)
             u.BuiltBy = Tree.Buildings[u.BuiltBy];
+
+        for (var j = 0; j < u.Features.length; j++) {
+            var f = u.Features[j];
+            if (f.UnlockedBy !== undefined)
+                f.UnlockedBy = Tree.Research[f.UnlockedBy];
+        }
     }
 
     for (var i = 0; i < Tree.Research.length; i++) {

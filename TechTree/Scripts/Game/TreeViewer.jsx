@@ -80,35 +80,33 @@
 	},
 	onMouseOver: function(e) {
 		var element = e.currentTarget;
+		e.stopPropagation();
 
 		this.clearHover(element == this.lastHover ? null : this.lastHover);
 		if (element == this.lastHover)
 			return;
 
 		if (element.classList.contains('feature'))
-			element.parentNode.classList.add('hover');
+			element.parentNode.parentNode.classList.add('hover');
 
 		element.classList.add('hover');
 		this.lastHover = element;
-
-		e.stopPropagation();
 	},
 	onMouseOut: function(e) {
-		var self = this;
-        this.mouseOutTimer = setTimeout(function () { self.delayMouseOut(e) }, 750);
+		var self = this, target = e.currentTarget;
+        this.mouseOutTimer = setTimeout(function () { self.delayMouseOut(target) }, 750);
 		e.stopPropagation();
 	},
 	mouseOutTimer: null,
 	lastHover: null,
-	delayMouseOut: function(e) {
-		var element = e.currentTarget;
+	delayMouseOut: function(element) {
 		if (this.lastHover != element)
 	        return;
 
 		element.classList.remove('hover');
 		
 		if (element.classList.contains('feature'))
-			element.parentNode.classList.remove('hover');
+			element.parentNode.parentNode.classList.remove('hover');
 
 		this.lastHover = null;
 		this.mouseOutTimer = null;
@@ -124,7 +122,7 @@
 		this.lastHover.classList.remove('hover');
 		
 		if (element.classList.contains('feature'))
-			element.parentNode.classList.remove('hover');
+			element.parentNode.parentNode.classList.remove('hover');
 	}
 });
 
@@ -142,16 +140,16 @@ var TreeBuilding = React.createClass({
 				continue;
 
 			var builtAt = <div className="builtat">{u.BuiltBy.Name}</div>;
-            var requires = u.Prerequisite === undefined ? null : <div className="requires">{u.Prerequisite.Name}</div>;
+            var requires = u.Prerequisite === undefined || u.Prerequisite == u.BuiltBy ? null : <div className="requires">{u.Prerequisite.Name}</div>;
             units.push(<div className="unit" data-symbol={u.Symbol} key={i} onMouseOver={this.props.onMouseOver} onMouseOut={this.props.onMouseOut}>
-				<TreeStats entity={u} extra1={builtAt} extra2={requires} onMouseOver={this.onMouseOver} onMouseOut={this.onMouseOut} />
+				<TreeStats entity={u} extra1={builtAt} extra2={requires} onMouseOver={this.props.onMouseOver} onMouseOut={this.props.onMouseOut} />
 			</div>);
 		}
 
 		var style = {top: this.props.position.y + 'px', left: this.props.position.x + 'px'};
 
 		return <div className="building" data-symbol={b.Symbol} onMouseOver={this.props.onMouseOver} onMouseOut={this.props.onMouseOut} style={style}>
-			<TreeStats entity={b} extra1={upgrades} extra2={requires} onMouseOver={this.onMouseOver} onMouseOut={this.onMouseOut} />
+			<TreeStats entity={b} extra1={upgrades} extra2={requires} onMouseOver={this.props.onMouseOver} onMouseOut={this.props.onMouseOut} />
 			<div className="unlocks">
 				{units}
 			</div>
@@ -163,18 +161,18 @@ var TreeStats = React.createClass({
 	render: function() {
 		var e = this.props.entity;
 
-		var minerals = e.MineralCost == 0 ? null : <div className="minerals">{e.MineralCost}</div>;
-		var vespine = e.VespineCost == 0 ? null : <div className="vespine">{e.VespineCost}</div>;
-		var supply = e.SupplyCost == 0 ? null : <div className={e.SupplyCost < 0 ? "supply positive" : "supply"}>{Math.abs(e.SupplyCost)}</div>;
+		var minerals = e.MineralCost == 0 ? null : <span className="minerals">{e.MineralCost}</span>;
+		var vespine = e.VespineCost == 0 ? null : <span className="vespine">{e.VespineCost}</span>;
+		var supply = e.SupplyCost == 0 ? null : <span className={e.SupplyCost < 0 ? "supply positive" : "supply"}>{Math.abs(e.SupplyCost)}</span>;
 
-		var mana = e.Mana == 0 ? null : <div className="mana">{e.Mana}</div>;
-		var action = e.ActionPoints == 0 ? null : <div className="actionpoints">{e.ActionPoints}</div>;
+		var mana = e.Mana == 0 ? null : <span className="mana">{e.Mana}</span>;
+		var action = e.ActionPoints == 0 ? null : <span className="actionpoints">{e.ActionPoints}</span>;
 
 		var detector = e.IsDetector ? <div className="detector" /> : null;
 
 		var features = [];
 		for (var i=0; i<e.Features.length; i++)
-			features.push(<TreeFeature feature={e.Features[i]} key={i} onMouseOver={this.onMouseOver} onMouseOut={this.onMouseOut} />);
+			features.push(<TreeFeature feature={e.Features[i]} key={i} onMouseOver={this.props.onMouseOver} onMouseOut={this.props.onMouseOut} />);
 
 		return <div className="info">
 			<div className="name">{e.Name}</div>
@@ -182,14 +180,14 @@ var TreeStats = React.createClass({
 				{minerals}
 				{vespine}
 				{supply}
-				<div className="time">{e.BuildTime}</div>
+				<span className="time">{e.BuildTime}</span>
 			</div>
 			<div className="stats">
-				<div className="health">{e.Health}</div>
-				<div className="armor">{e.Armor}</div>
+				<span className="health">{e.Health}</span>
+				<span className="armor">{e.Armor}</span>
 				{mana}
 				{action}
-				<div className="vision">{e.VisionRange}</div>
+				<span className="vision">{e.VisionRange}</span>
 			</div>
 			{detector}
 			{this.props.extra1}
@@ -203,7 +201,7 @@ var TreeFeature = React.createClass({
 	render: function() {
 		var f = this.props.feature;
 
-		var unlocked = f.UnlockedBy === undefined ? null : <div className="unlocked">f.UnlockedBy.PerformedAt.Name</div>;
+		var unlocked = f.UnlockedBy === undefined || f.UnlockedBy.PerformedAt === undefined ? null : <div className="unlocked">{f.UnlockedBy.PerformedAt.Name}</div>;
 
 		var stats = null, cost = null;
 		if (f.UsesMana || f.LimitedUses > 0 || f.CooldownTurns > 0) {
@@ -219,10 +217,10 @@ var TreeFeature = React.createClass({
 		}
 
 		if (f.MineralCost > 0 || f.VespineCost > 0 || f.SupplyCost > 0 || f.SupplyCost < 0 || f.BuildTime > 0) {
-			var minerals = f.MineralCost == 0 ? null : <div className="minerals">{f.MineralCost}</div>;
-			var vespine = f.VespineCost == 0 ? null : <div className="vespine">{f.VespineCost}</div>;
-			var supply = f.SupplyCost == 0 ? null : <div className={f.SupplyCost < 0 ? "supply positive" : "supply"}>{Math.abs(f.SupplyCost)}</div>;
-			var time = f.BuildTime == 0 ? null : <div className="time">{f.BuildTime}</div>;
+			var minerals = f.MineralCost == 0 ? null : <span className="minerals">{f.MineralCost}</span>;
+			var vespine = f.VespineCost == 0 ? null : <span className="vespine">{f.VespineCost}</span>;
+			var supply = f.SupplyCost == 0 ? null : <span className={f.SupplyCost < 0 ? "supply positive" : "supply"}>{Math.abs(f.SupplyCost)}</span>;
+			var time = f.BuildTime == 0 ? null : <span className="time">{f.BuildTime}</span>;
 			cost = <div className="cost">
 				{minerals}
 				{vespine}
@@ -230,14 +228,14 @@ var TreeFeature = React.createClass({
 				{time}
 			</div>;
 		}
-
+		
 		return <div className="feature" data-symbol={f.Symbol} data-mode={f.Mode} onMouseOver={this.props.onMouseOver} onMouseOut={this.props.onMouseOut}>
 			<div className="info">
 				<div className="name">{f.Name}</div>
 				{stats}
 				{cost}
 				{unlocked}
-				<div className="description">f.Description</div>
+				<div className="description">{f.Description}</div>
 			</div>
 		</div>;
 	}
