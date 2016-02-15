@@ -23,12 +23,13 @@ namespace TechTree.Controllers
         public ActionResult Test()
         {
             var tree = TreeGenerator.Generate(TreeGenerator.Complexity.Normal);
-            var map = new Map(16, 16);
+            var map = new Map(15, 15);
             var model = new GameModel() { Tree = tree, Map = map };
-
+            
             for (var x = 0; x < map.Width; x++)
                 for (var y = 0; y < map.Height; y++)
-                    map.Cells[x + y * map.Width] = new GameModels.Instances.Cell();
+                    if (x + y > 6 && x + y <= map.Width + map.Height - 9)
+                        map.Cells[x + y * map.Width] = new GameModels.Instances.Cell(y, x, GameModels.Instances.Cell.CellType.Flat);
 
             return View("Play", model);
         }

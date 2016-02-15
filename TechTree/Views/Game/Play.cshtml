@@ -10,7 +10,7 @@
     <script type="text/javascript">
         var tree = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.Tree));
         var map = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.Map));
-        init(tree, map);
+        setupGame(tree, map);
     </script>
 }
 

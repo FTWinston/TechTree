@@ -13,13 +13,12 @@
         ctx.clearRect(0, 0, this.props.width, this.props.height);
 
         var map = this.props.map, radius = this._determineCellRadiusToFit(this.props.width, this.props.height, map.Width, map.Height);
-        var row, col, center;
-
+        
         for (var i=0; i<map.Cells.length; i++) {
             if (map.Cells[i] == null)
                 continue;
-            center = this._getPixelCoordinates(i, radius);
-            this._drawHex(ctx, center, radius);
+            var cell = map.Cells[i]
+            this._drawHex(ctx, cell, radius);
         }
     },
     _determineCellRadiusToFit: function(widthPixels, heightPixels, mapWidth, mapHeight) {
@@ -33,17 +32,16 @@
     },
     _packedWidthRatio: 1.7320508075688772,
     _packedHeightRatio: 1.5,
-    _getPixelCoordinates: function(cellIndex, radius) {
-        var row = Math.floor(cellIndex / map.Width);
-        var col = cellIndex % map.Width;
-
-		return {
-		    x: radius * this._packedWidthRatio * (col + row/2) + radius,
-		    y: radius * this._packedHeightRatio * row + radius
+    _getPixelCoordinates: function(cell, radius) {
+        return {
+		    x: radius * this._packedWidthRatio * (cell.Col + cell.Row/2) + radius,
+		    y: radius * this._packedHeightRatio * cell.Row + radius
         };
     },
-    _drawHex: function(ctx, center, radius) {
+    _drawHex: function(ctx, cell, radius) {
+        var center = this._getPixelCoordinates(cell, radius);
         ctx.beginPath();
+        radius -= 0.4; // ensure there's always a 1px border drawn between cells
 
         var angle, x, y;
         for (var point = 0; point < 6; point++) {
@@ -57,7 +55,19 @@
                 ctx.lineTo(x, y);
         }
 
-        ctx.fillStyle = '#888';
+        switch (cell.Type) {
+            case map.CellType.OutOfBounds:
+                ctx.fillStyle = '#000'; break;
+            case map.CellType.Flat:
+                ctx.fillStyle = '#ccc'; break;
+            case map.CellType.Difficult:
+                ctx.fillStyle = '#888'; break;
+            case map.CellType.Unpassable:
+                ctx.fillStyle = '#333'; break;
+            default:
+                ctx.fillStyle = '#a88'; break;
+        }
+        
         ctx.fill();
     }
 });

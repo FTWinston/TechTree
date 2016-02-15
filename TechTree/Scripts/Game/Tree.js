@@ -1,48 +1,68 @@
-﻿function init(tree, map) {
+﻿function setupGame(tree, map) {
     processTree(tree);
+    processMap(map);
     ReactDOM.render(React.createElement(GameClient, { tree: tree, map: map }), document.getElementById('gameRoot'));
-}
 
-function processTree(tree) {
-    for (var i = 0; i < tree.Buildings.length; i++) {
-        var b = tree.Buildings[i];
-        b.BuildingNumber = i;
-        
-        if (b.Prerequisite !== undefined)
-            b.Prerequisite = tree.Buildings[b.Prerequisite];
+    function processTree(tree) {
+        for (var i = 0; i < tree.Buildings.length; i++) {
+            var b = tree.Buildings[i];
+            b.BuildingNumber = i;
 
-        if (b.UpgradesFrom !== undefined)
-            b.UpgradesFrom = tree.Buildings[b.UpgradesFrom];
+            if (b.Prerequisite !== undefined)
+                b.Prerequisite = tree.Buildings[b.Prerequisite];
 
-        for (var j = 0; j < b.Features.length; j++) {
-            var f = b.Features[j];
-            if (f.UnlockedBy !== undefined)
-                f.UnlockedBy = tree.Research[f.UnlockedBy];
+            if (b.UpgradesFrom !== undefined)
+                b.UpgradesFrom = tree.Buildings[b.UpgradesFrom];
+
+            for (var j = 0; j < b.Features.length; j++) {
+                var f = b.Features[j];
+                if (f.UnlockedBy !== undefined)
+                    f.UnlockedBy = tree.Research[f.UnlockedBy];
+            }
+        }
+
+        for (var i = 0; i < tree.Units.length; i++) {
+            var u = tree.Units[i];
+            u.UnitNumber = i;
+
+            if (u.Prerequisite !== undefined)
+                u.Prerequisite = tree.Buildings[u.Prerequisite];
+
+            if (u.BuiltBy !== undefined)
+                u.BuiltBy = tree.Buildings[u.BuiltBy];
+
+            for (var j = 0; j < u.Features.length; j++) {
+                var f = u.Features[j];
+                if (f.UnlockedBy !== undefined)
+                    f.UnlockedBy = tree.Research[f.UnlockedBy];
+            }
+        }
+
+        for (var i = 0; i < tree.Research.length; i++) {
+            var r = tree.Research[i];
+            r.ResearchNumber = i;
+
+            if (r.PerformedAt !== undefined)
+                r.PerformedAt = tree.Buildings[r.PerformedAt];
         }
     }
 
-    for (var i = 0; i < tree.Units.length; i++) {
-        var u = tree.Units[i];
-        u.UnitNumber = i;
-        
-        if (u.Prerequisite !== undefined)
-            u.Prerequisite = tree.Buildings[u.Prerequisite];
-
-        if (u.BuiltBy !== undefined)
-            u.BuiltBy = tree.Buildings[u.BuiltBy];
-
-        for (var j = 0; j < u.Features.length; j++) {
-            var f = u.Features[j];
-            if (f.UnlockedBy !== undefined)
-                f.UnlockedBy = tree.Research[f.UnlockedBy];
+    function processMap(map) {
+        map.CellType = {
+            OutOfBounds: 0,
+            Flat: 1,
+            Difficult: 2,
+            Unpassable: 3,
+            LowBarrier: 4,
+            Barrier: 5,
         }
-    }
 
-    for (var i = 0; i < tree.Research.length; i++) {
-        var r = tree.Research[i];
-        r.ResearchNumber = i;
-
-        if (r.PerformedAt !== undefined)
-            r.PerformedAt = tree.Buildings[r.PerformedAt];
+        for (var i = 0; i < map.Cells.length; i++) {
+            var cell = map.Cells[i];
+            if (cell == null)
+                continue;
+            cell.Row = Math.floor(i / map.Width);
+            cell.Col = i % map.Width;
+        }
     }
 }

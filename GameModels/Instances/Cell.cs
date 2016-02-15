@@ -17,6 +17,13 @@ namespace GameModels.Instances
         public int Row { get; set; }
         public CellType Type { get; set; }
 
+        public Cell(int row, int col, CellType type)
+        {
+            Row = row;
+            Col = col;
+            Type = type;
+        }
+
         public enum CellType
         {
             OutOfBounds = 0,
