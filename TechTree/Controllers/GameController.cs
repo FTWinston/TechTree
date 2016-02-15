@@ -1,4 +1,5 @@
-﻿using GameModels.Generation;
+﻿using GameModels;
+using GameModels.Generation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,7 +23,12 @@ namespace TechTree.Controllers
         public ActionResult Test()
         {
             var tree = TreeGenerator.Generate(TreeGenerator.Complexity.Normal);
-            var model = new GameModel() { Tree = tree };
+            var map = new Map(16, 16);
+            var model = new GameModel() { Tree = tree, Map = map };
+
+            for (var x = 0; x < map.Width; x++)
+                for (var y = 0; y < map.Height; y++)
+                    map.Cells[x + y * map.Width] = new GameModels.Instances.Cell();
 
             return View("Play", model);
         }

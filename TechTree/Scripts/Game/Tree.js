@@ -1,43 +1,43 @@
-﻿function processTree() {
-    for (var i = 0; i < Tree.Buildings.length; i++) {
-        var b = Tree.Buildings[i];
+﻿function processTree(tree) {
+    for (var i = 0; i < tree.Buildings.length; i++) {
+        var b = tree.Buildings[i];
         b.BuildingNumber = i;
         
         if (b.Prerequisite !== undefined)
-            b.Prerequisite = Tree.Buildings[b.Prerequisite];
+            b.Prerequisite = tree.Buildings[b.Prerequisite];
 
         if (b.UpgradesFrom !== undefined)
-            b.UpgradesFrom = Tree.Buildings[b.UpgradesFrom];
+            b.UpgradesFrom = tree.Buildings[b.UpgradesFrom];
 
         for (var j = 0; j < b.Features.length; j++) {
             var f = b.Features[j];
             if (f.UnlockedBy !== undefined)
-                f.UnlockedBy = Tree.Research[f.UnlockedBy];
+                f.UnlockedBy = tree.Research[f.UnlockedBy];
         }
     }
 
-    for (var i = 0; i < Tree.Units.length; i++) {
-        var u = Tree.Units[i];
+    for (var i = 0; i < tree.Units.length; i++) {
+        var u = tree.Units[i];
         u.UnitNumber = i;
         
         if (u.Prerequisite !== undefined)
-            u.Prerequisite = Tree.Buildings[u.Prerequisite];
+            u.Prerequisite = tree.Buildings[u.Prerequisite];
 
         if (u.BuiltBy !== undefined)
-            u.BuiltBy = Tree.Buildings[u.BuiltBy];
+            u.BuiltBy = tree.Buildings[u.BuiltBy];
 
         for (var j = 0; j < u.Features.length; j++) {
             var f = u.Features[j];
             if (f.UnlockedBy !== undefined)
-                f.UnlockedBy = Tree.Research[f.UnlockedBy];
+                f.UnlockedBy = tree.Research[f.UnlockedBy];
         }
     }
 
-    for (var i = 0; i < Tree.Research.length; i++) {
-        var r = Tree.Research[i];
+    for (var i = 0; i < tree.Research.length; i++) {
+        var r = tree.Research[i];
         r.ResearchNumber = i;
 
         if (r.PerformedAt !== undefined)
-            r.PerformedAt = Tree.Buildings[r.PerformedAt];
+            r.PerformedAt = tree.Buildings[r.PerformedAt];
     }
 }

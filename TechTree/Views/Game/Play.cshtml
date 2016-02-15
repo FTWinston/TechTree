@@ -8,9 +8,10 @@
     @Scripts.Render("~/bundles/game")
 
     <script type="text/javascript">
-        var Tree = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.Tree));
-        processTree(Tree);
-        ReactDOM.render(React.createElement(GameClient, {tree: Tree}), document.getElementById('gameRoot'));
+        var tree = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.Tree));
+        processTree(tree);
+        var map = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.Map));
+        ReactDOM.render(React.createElement(GameClient, {tree: tree, map: map}), document.getElementById('gameRoot'));
     </script>
 }
 

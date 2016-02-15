@@ -111,6 +111,7 @@
     <Compile Include="Instances\Building.cs" />
     <Compile Include="Instances\Entity.cs" />
     <Compile Include="Instances\Unit.cs" />
+    <Compile Include="Map.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Definitions\Research.cs" />

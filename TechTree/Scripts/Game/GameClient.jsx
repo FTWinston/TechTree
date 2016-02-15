@@ -17,10 +17,10 @@
 	},
     render: function() {
         return <div ref="self" className="game">
-            <MainView ref="main" width={this.state.mainWidth} height={this.state.mainHeight} />
+            <MainView ref="main" map={this.props.map} width={this.state.mainWidth} height={this.state.mainHeight} />
 			<div ref="side" className="sideBar">
 				<TreeViewer ref="tree" tree={this.props.tree} />
-				<MiniMap ref="map" />
+				<MiniMap ref="map" map={this.props.map} />
 			</div>
 			<div ref="bottom" className="bottomBar">
 				buttons and stuff go here

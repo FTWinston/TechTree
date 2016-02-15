@@ -8,5 +8,6 @@ namespace TechTree.Models
     public class GameModel
     {
         public GameModels.TechTree Tree { get; set; }
+        public GameModels.Map Map { get; set; }
     }
 }
