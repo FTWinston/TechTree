@@ -9,9 +9,8 @@
 
     <script type="text/javascript">
         var tree = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.Tree));
-        processTree(tree);
         var map = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.Map));
-        ReactDOM.render(React.createElement(GameClient, {tree: tree, map: map}), document.getElementById('gameRoot'));
+        init(tree, map);
     </script>
 }
 

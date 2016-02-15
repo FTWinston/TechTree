@@ -1,4 +1,9 @@
-﻿function processTree(tree) {
+﻿function init(tree, map) {
+    processTree(tree);
+    ReactDOM.render(React.createElement(GameClient, { tree: tree, map: map }), document.getElementById('gameRoot'));
+}
+
+function processTree(tree) {
     for (var i = 0; i < tree.Buildings.length; i++) {
         var b = tree.Buildings[i];
         b.BuildingNumber = i;

@@ -15,13 +15,48 @@ namespace GameModels.Instances
         public int Col { get; set; }
         [JsonIgnore]
         public int Row { get; set; }
-
         public CellType Type { get; set; }
 
         public enum CellType
         {
-            Passable,
-            Blocked,
+            OutOfBounds = 0,
+            Flat = 1,
+            Difficult = 2,
+            Unpassable = 3,
+            LowBarrier = 4,
+            Barrier = 5,
+        }
+
+        [JsonIgnore]
+        public bool IsPassable
+        {
+            get
+            {
+                switch(Type)
+                {
+                    case CellType.Flat:
+                    case CellType.Difficult:
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+        }
+
+        [JsonIgnore]
+        public bool BlocksVision
+        {
+            get
+            {
+                switch (Type)
+                {
+                    case CellType.OutOfBounds:
+                    case CellType.Barrier:
+                        return true;
+                    default:
+                        return false;
+                }
+            }
         }
     }
 }

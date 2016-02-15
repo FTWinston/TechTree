@@ -13,7 +13,6 @@
         ctx.clearRect(0, 0, this.props.width, this.props.height);
 
         var map = this.props.map, radius = this._determineCellRadiusToFit(this.props.width, this.props.height, map.Width, map.Height);
-        console.log('cell radius is ' + radius);
         var row, col, center;
 
         for (var i=0; i<map.Cells.length; i++) {
@@ -35,12 +34,12 @@
     _packedWidthRatio: 1.7320508075688772,
     _packedHeightRatio: 1.5,
     _getPixelCoordinates: function(cellIndex, radius) {
-        var row = Math.floor(i / map.Width);
-        var col = i % map.Width;
+        var row = Math.floor(cellIndex / map.Width);
+        var col = cellIndex % map.Width;
 
 		return {
-		    x: radius * this._packedWidthRatio * (col + row/2),
-            y: radius * this._packedHeightRatio * row
+		    x: radius * this._packedWidthRatio * (col + row/2) + radius,
+		    y: radius * this._packedHeightRatio * row + radius
         };
     },
     _drawHex: function(ctx, center, radius) {
