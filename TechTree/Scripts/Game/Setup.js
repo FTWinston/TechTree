@@ -67,12 +67,40 @@
             Barrier: 5,
         }
 
+        var packedWidthRatio = 1.7320508075688772, packedHeightRatio = 1.5;
+        var minX = Number.MAX_VALUE, minY = Number.MAX_VALUE;
+        var maxX = Number.MIN_VALUE, maxY = Number.MIN_VALUE;
+
         for (var i = 0; i < map.Cells.length; i++) {
             var cell = map.Cells[i];
             if (cell == null)
                 continue;
+
             cell.Row = Math.floor(i / map.Width);
             cell.Col = i % map.Width;
+            cell.xPos = packedWidthRatio * (cell.Col + cell.Row/2);
+            cell.yPos = packedHeightRatio * cell.Row;
+
+            if (cell.xPos < minX)
+                minX = cell.xPos;
+            else if (cell.xPos > maxX)
+                maxX = cell.xPos;
+
+            if (cell.yPos < minY)
+                minY = cell.yPos;
+            else if (cell.yPos > maxY)
+                maxY = cell.yPos;
+        }
+
+        map.maxX = maxX - minX + 2; map.maxY = maxY - minY + 2;
+
+        for (var i = 0; i < map.Cells.length; i++) {
+            var cell = map.Cells[i];
+            if (cell == null)
+                continue;
+
+            cell.xPos -= minX;
+            cell.yPos -= minY;
         }
     }
 

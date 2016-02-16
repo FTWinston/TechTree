@@ -227,7 +227,7 @@
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\Game\MainView.jsx" />
     <Content Include="Scripts\Game\MiniMap.jsx" />
-    <Content Include="Scripts\Game\Tree.js" />
+    <Content Include="Scripts\Game\Setup.js" />
     <Content Include="Scripts\Game\TreeViewer.jsx" />
     <None Include="Scripts\Game\GameClient.jsx" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
