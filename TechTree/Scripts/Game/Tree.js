@@ -1,7 +1,17 @@
 ﻿function setupGame(tree, map) {
     processTree(tree);
     processMap(map);
-    ReactDOM.render(React.createElement(GameClient, { tree: tree, map: map }), document.getElementById('gameRoot'));
+
+    var scrollbarSize = getScrollbarSize();
+    
+    var props = {
+        tree: tree,
+        map: map,
+        scrollbarWidth: scrollbarSize.width,
+        scrollbarHeight: scrollbarSize.height
+    };
+
+    ReactDOM.render(React.createElement(GameClient, props), document.getElementById('gameRoot'));
 
     function processTree(tree) {
         for (var i = 0; i < tree.Buildings.length; i++) {
@@ -63,6 +73,39 @@
                 continue;
             cell.Row = Math.floor(i / map.Width);
             cell.Col = i % map.Width;
+        }
+    }
+
+    function getScrollbarSize() {
+        var outer = document.createElement("div");
+        outer.style.visibility = "hidden";
+        outer.style.width = "100px";
+        outer.style.height = "100px";
+        outer.style.msOverflowStyle = "scrollbar"; // needed for WinJS apps
+
+        document.body.appendChild(outer);
+
+        var widthNoScroll = outer.offsetWidth;
+        var heightNoScroll = outer.offsetHeight;
+
+        // force scrollbars
+        outer.style.overflow = "scroll";
+
+        // add innerdiv
+        var inner = document.createElement("div");
+        inner.style.width = "100%";
+        inner.style.height = "100%";
+        outer.appendChild(inner);
+
+        var widthWithScroll = inner.offsetWidth;
+        var heightWithScroll = inner.offsetHeight;
+
+        // remove divs
+        outer.parentNode.removeChild(outer);
+
+        return {
+            width: widthNoScroll - widthWithScroll,
+            height: heightNoScroll - heightWithScroll
         }
     }
 }

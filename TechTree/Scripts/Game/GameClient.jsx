@@ -17,7 +17,7 @@
 	},
     render: function() {
         return <div ref="self" className="game">
-            <MainView ref="main" map={this.props.map} width={this.state.mainWidth} height={this.state.mainHeight} />
+            <MainView ref="main" map={this.props.map} width={this.state.mainWidth} height={this.state.mainHeight} scrollbarWidth={this.props.scrollbarWidth} scrollbarHeight={this.props.scrollbarHeight} />
 			<div ref="side" className="sideBar">
 				<TreeViewer ref="tree" tree={this.props.tree} />
 				<MiniMap ref="map" map={this.props.map} />

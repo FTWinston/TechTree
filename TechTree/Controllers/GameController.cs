@@ -1,5 +1,6 @@
 ﻿using GameModels;
 using GameModels.Generation;
+using GameModels.Instances;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,14 +23,31 @@ namespace TechTree.Controllers
         // GET: /Game/Test
         public ActionResult Test()
         {
+            var r = new Random();
             var tree = TreeGenerator.Generate(TreeGenerator.Complexity.Normal);
-            var map = new Map(15, 15);
+            var map = new Map(37, 37);
             var model = new GameModel() { Tree = tree, Map = map };
-            
+
+            var halfSize = Math.Max(map.Width, map.Height) / 2.0f;
+            var halfLower = (int)halfSize;
+            var halfUpper = (int)(halfSize + 0.5f);
+
             for (var x = 0; x < map.Width; x++)
                 for (var y = 0; y < map.Height; y++)
-                    if (x + y > 6 && x + y <= map.Width + map.Height - 9)
-                        map.Cells[x + y * map.Width] = new GameModels.Instances.Cell(y, x, GameModels.Instances.Cell.CellType.Flat);
+                    if (x + y >= halfLower && x + y < map.Width + map.Height - halfUpper)
+                    {
+                        Cell.CellType type;
+                        switch (r.Next(5))
+                        {
+                            case 1:
+                                type = Cell.CellType.Difficult; break;
+                            case 2:
+                                type = Cell.CellType.Unpassable; break;
+                            default:
+                                type = Cell.CellType.Flat; break;
+                        }
+                        map.Cells[x + y * map.Width] = new GameModels.Instances.Cell(y, x, type);
+                    }
 
             return View("Play", model);
         }

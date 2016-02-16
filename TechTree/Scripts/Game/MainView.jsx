@@ -1,4 +1,7 @@
 ﻿var MainView = React.createClass({
+    getDefaultProps: function() {
+        return { cellRadius: 30 };
+    },
     componentDidMount: function() {
         this.draw();
     },
@@ -6,29 +9,29 @@
         this.draw();
     },
     render: function() {
-        return <canvas ref="canvas" width={this.props.width} height={this.props.height}>Enable javascript to play</canvas>;
+        var overallWidth = this.props.cellRadius * 2 * (this.props.map.Width + 0.5);
+        var overallHeight = this.props.cellRadius * 2 * (this.props.map.Height - 0.25);
+
+        return <div ref="outer" className="mainView" style={{width: this.props.width + 'px', height: this.props.height + 'px'}} onScroll={this.draw}>
+            <canvas ref="canvas" width={this.props.width - this.props.scrollbarWidth} height={this.props.height - this.props.scrollbarHeight}>Enable javascript to play</canvas>
+            <div className="scrollSize" style={{width: overallWidth + 'px', height: overallHeight + 'px'}} />
+        </div>
     },
     draw: function() {
         var ctx = this.refs.canvas.getContext('2d');
         ctx.clearRect(0, 0, this.props.width, this.props.height);
+        ctx.translate(-this.refs.outer.scrollLeft, -this.refs.outer.scrollTop);
 
-        var map = this.props.map, radius = this._determineCellRadiusToFit(this.props.width, this.props.height, map.Width, map.Height);
+        var map = this.props.map;
         
         for (var i=0; i<map.Cells.length; i++) {
             if (map.Cells[i] == null)
                 continue;
             var cell = map.Cells[i]
-            this._drawHex(ctx, cell, radius);
+            this._drawHex(ctx, cell, this.props.cellRadius);
         }
-    },
-    _determineCellRadiusToFit: function(widthPixels, heightPixels, mapWidth, mapHeight) {
-		// add extra amounts for offset rows and bottom points of hexes on last row
-        var packedHexWidth = widthPixels / (mapWidth + 0.5);
-        var adjustedGridHeight = (heightPixels * this._packedHeightRatio) / (mapHeight + 0.5);
-        var packedHexHeight =  adjustedGridHeight / this._packedHeightRatio;
 
-        var ratio1 = packedHexWidth / this._packedWidthRatio, ratio2 = packedHexHeight / this._packedHeightRatio;
-        return Math.min(ratio1, ratio2);
+        ctx.translate(this.refs.outer.scrollLeft, this.refs.outer.scrollTop);
     },
     _packedWidthRatio: 1.7320508075688772,
     _packedHeightRatio: 1.5,
