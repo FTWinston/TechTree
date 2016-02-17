@@ -92,7 +92,8 @@
                 maxY = cell.yPos;
         }
 
-        map.maxX = maxX - minX + 2; map.maxY = maxY - minY + 2;
+        map.minX = minX - 1; map.minY = minY - 1;
+        map.maxX = maxX + 1; map.maxY = maxY + 1;
 
         for (var i = 0; i < map.Cells.length; i++) {
             var cell = map.Cells[i];

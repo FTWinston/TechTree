@@ -9,12 +9,12 @@
         this.draw();
     },
     render: function() {
-        var overallWidth = this.props.cellRadius * 2 * (this.props.map.Width + 0.5);
-        var overallHeight = this.props.cellRadius * 2 * (this.props.map.Height - 0.25);
+        var overallWidth = (this.props.map.maxX - this.props.map.minX) * this.props.cellRadius;
+        var overallHeight = (this.props.map.maxY - this.props.map.minY) * this.props.cellRadius;
 
         return <div ref="outer" className="mainView" style={{width: this.props.width + 'px', height: this.props.height + 'px'}} onScroll={this.draw}>
-            <canvas ref="canvas" width={this.props.width - this.props.scrollbarWidth} height={this.props.height - this.props.scrollbarHeight}>Enable javascript to play</canvas>
-            <div className="scrollSize" style={{width: this.props.map.maxX * this.props.cellRadius + 'px', height: this.props.map.maxY * this.props.cellRadius + 'px'}} />
+            <canvas ref="canvas" width={this.props.width - this.props.scrollbarWidth} height={this.props.height - this.props.scrollbarHeight} onClick={this.clicked}>Enable javascript to play</canvas>
+            <div className="scrollSize" style={{width: overallWidth + 'px', height: overallHeight + 'px'}} />
         </div>
     },
     draw: function() {
@@ -64,6 +64,48 @@
                 ctx.fillStyle = '#a88'; break;
         }
         
+        if (cell.selected)
+            ctx.fillStyle = '#fcc';
+
         ctx.fill();
+    },
+    clicked: function(e) {
+        var cellIndex = this._getCellIndexAtPoint(e.clientX, e.clientY);
+
+        var cell = this.props.map.Cells[cellIndex];
+        if (cell === undefined || cell == null)
+            return;
+
+        if (cell.selected === true)
+            cell.selected = undefined;
+        else
+            cell.selected = true;
+
+        this.draw();
+    },
+    _getCellIndexAtPoint: function(screenX, screenY) {
+        var mapX = screenX - this.refs.canvas.offsetLeft + this.refs.outer.scrollLeft + this.props.map.minX * this.props.cellRadius;
+        var mapY = screenY - this.refs.canvas.offsetTop + this.refs.outer.scrollTop + this.props.map.minY * this.props.cellRadius;
+
+        var fCol = (mapX * Math.sqrt(3) - mapY) / 3 / this.props.cellRadius;
+        var fRow = mapY * 2 / 3 / this.props.cellRadius;
+        var fThirdCoord = - fCol - fRow;
+
+        var rCol = Math.round(fCol);
+        var rRow = Math.round(fRow);
+        var rThird = Math.round(fThirdCoord);
+
+        var colDiff = Math.abs(rCol - fCol);
+        var rowDiff = Math.abs(rRow - fRow);
+        var thirdDiff = Math.abs(rThird - fThirdCoord);
+
+        if (colDiff >= rowDiff) {
+            if (colDiff >= thirdDiff)
+                rCol = - rRow - rThird;
+        }
+        else if (rowDiff >= colDiff && rowDiff >= thirdDiff)
+            rRow = - rCol - rThird;
+
+        return rCol + rRow * this.props.map.Width;
     }
 });
