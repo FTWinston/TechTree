@@ -13,8 +13,8 @@
         var overallHeight = (this.props.map.maxY - this.props.map.minY) * this.props.cellRadius;
 
         return <div ref="outer" className="mainView" style={{width: this.props.width + 'px', height: this.props.height + 'px'}} onScroll={this.draw}>
-            <canvas ref="canvas" width={this.props.width - this.props.scrollbarWidth} height={this.props.height - this.props.scrollbarHeight} onClick={this.clicked}>Enable javascript to play</canvas>
-            <div className="scrollSize" style={{width: overallWidth + 'px', height: overallHeight + 'px'}} />
+            <canvas ref="canvas" width={this.props.width - this.props.scrollbarWidth} height={this.props.height - this.props.scrollbarHeight}>Enable javascript to play</canvas>
+            <div className="scrollSize" style={{width: overallWidth + 'px', height: overallHeight + 'px'}} onClick={this.clicked} />
         </div>
     },
     draw: function() {

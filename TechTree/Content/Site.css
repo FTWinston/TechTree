@@ -73,8 +73,5 @@ input[type="checkbox"].input-validation-error {
 .game .mainView canvas {
     position: fixed;
     top: 4em; left: 0;
-}
-
-.game .mainView .scrollSize {
-    visibility: hidden;
+    pointer-events: none;
 }
