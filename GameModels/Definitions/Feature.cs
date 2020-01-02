@@ -2,10 +2,6 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GameModels.Definitions
 {
@@ -16,13 +12,9 @@ namespace GameModels.Definitions
         protected abstract string GetDescription();
         public abstract string Symbol { get; }
 
-        [JsonIgnore]
         public EntityType EntityDefinition { get; internal set; }
-        [JsonIgnore]
-        public virtual Research UnlockedBy { get; internal set; }
 
-        [JsonProperty("UnlockedBy", NullValueHandling = NullValueHandling.Ignore)]
-        public int? UnlockedByNumber { get { if (UnlockedBy == null) return null; return UnlockedBy.ResearchNumber; } }
+        public virtual Research UnlockedBy { get; internal set; }
 
         public abstract bool UsesMana { get; }
 
@@ -44,7 +36,7 @@ namespace GameModels.Definitions
 
     public abstract class PassiveFeature : Feature
     {
-        public override Feature.InteractionMode Mode { get { return InteractionMode.Passive; } }
+        public override InteractionMode Mode { get { return InteractionMode.Passive; } }
         public override bool UsesMana { get { return false; } }
 
         public override bool Clicked(Entity entity)
@@ -55,7 +47,7 @@ namespace GameModels.Definitions
 
     public abstract class ActivatedFeature : Feature
     {
-        public override Feature.InteractionMode Mode { get { return InteractionMode.Triggered; } }
+        public override InteractionMode Mode { get { return InteractionMode.Triggered; } }
         public override bool UsesMana { get { return ManaCost > 0; } }
         public virtual int LimitedUses { get { return 0; } }
 
@@ -99,7 +91,7 @@ namespace GameModels.Definitions
 
     public abstract class ToggleFeature : Feature
     {
-        public override Feature.InteractionMode Mode { get { return InteractionMode.Toggled; } }
+        public override InteractionMode Mode { get { return InteractionMode.Toggled; } }
         public override bool UsesMana { get { return ActivateManaCost > 0 || ManaCostPerTurn > 0; } }
 
         public abstract void Enable(Entity entity);
