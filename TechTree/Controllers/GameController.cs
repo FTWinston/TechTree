@@ -1,10 +1,7 @@
 ﻿using GameModels;
-using GameModels.Generation;
+using GameModels.Definitions.Builders;
 using GameModels.Instances;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using TechTree.Models;
 
@@ -23,10 +20,21 @@ namespace TechTree.Controllers
         // GET: /Game/Test
         public ActionResult Test()
         {
+            var treeGenerator = new TreeGenerator();
+            
+            var model = new GameModel()
+            {
+                Tree = treeGenerator.Generate(),
+                Map = GenerateRandomMap(),
+            };
+
+            return View("Play", model);
+        }
+
+        private static Map GenerateRandomMap()
+        {
             var r = new Random();
-            var tree = TreeGenerator.Generate(TreeGenerator.Complexity.Normal);
             var map = new Map(37, 37);
-            var model = new GameModel() { Tree = tree, Map = map };
 
             var halfSize = Math.Max(map.Width, map.Height) / 2.0f;
             var halfLower = (int)halfSize;
@@ -46,19 +54,19 @@ namespace TechTree.Controllers
                             default:
                                 type = Cell.CellType.Flat; break;
                         }
-                        map.Cells[x + y * map.Width] = new GameModels.Instances.Cell(y, x, type);
+                        map.Cells[x + y * map.Width] = new Cell(y, x, type);
                     }
 
-            return View("Play", model);
+            return map;
         }
 
         //
         // GET: /Game/Tree/123
         public JsonResult Tree(int id)
         {
-            var tree = TreeGenerator.Generate(TreeGenerator.Complexity.Normal);
+            var treeGenerator = new TreeGenerator(id, TreeGenerator.TreeComplexity.Normal);
 
-            object data = tree;
+            object data = treeGenerator.Generate();
 
             return Json(data, JsonRequestBehavior.AllowGet);
         }

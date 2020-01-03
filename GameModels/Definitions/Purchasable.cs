@@ -21,7 +21,7 @@ namespace GameModels.Definitions
 
         public int BuildTime { get; internal set; }
 
-        public Dictionary<ResourceType, int> Cost { get; internal set; }
+        public Dictionary<ResourceType, int> Cost { get; } = new Dictionary<ResourceType, int>();
 
         public uint? Prerequisite { get; internal set; }
     }

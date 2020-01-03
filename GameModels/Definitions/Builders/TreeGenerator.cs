@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace GameModels.Definitions.Builders
 {
-    public partial class TreeGenerator : ITechTree
+    public partial class TreeGenerator : BaseTechTree<BuildingBuilder, UnitBuilder>
     {
         public enum TreeComplexity
         {
@@ -24,7 +23,6 @@ namespace GameModels.Definitions.Builders
             Complexity = complexity;
         }
 
-
         public int Seed { get; }
 
         private Random Random { get; set; }
@@ -36,16 +34,6 @@ namespace GameModels.Definitions.Builders
         private int BuildingVisionRange { get; set; }
 
         private List<ResourceType> Resources { get; } = new List<ResourceType>();
-
-        private Dictionary<uint, BuildingBuilder> Buildings { get; } = new Dictionary<uint, BuildingBuilder>();
-
-        private Dictionary<uint, UnitBuilder> Units { get; } = new Dictionary<uint, UnitBuilder>();
-
-        public Dictionary<uint, Research> Research { get; } = new Dictionary<uint, Research>();
-
-        Dictionary<uint, IBuildingType> ITechTree.Buildings => Buildings.ToDictionary<KeyValuePair<uint, BuildingBuilder>, uint, IBuildingType>(b => b.Key, b => b.Value);
-
-        Dictionary<uint, IUnitType> ITechTree.Units => Units.ToDictionary<KeyValuePair<uint, UnitBuilder>, uint, IUnitType>(u => u.Key, u => u.Value);
 
         private const string buildingSymbols = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         private const string unitSymbols = "αβγδεζηθιλμνξπρσςφχψωυτκοϐϑϕϖϗϙϝϞϡϣϥϧϩϫϭϯϰϱϲϳ϶ϸϻ";

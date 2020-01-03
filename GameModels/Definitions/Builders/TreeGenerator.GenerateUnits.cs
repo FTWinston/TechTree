@@ -75,7 +75,7 @@ namespace GameModels.Definitions.Builders
             unit.Tier = tier;
             unit.VisionRange = UnitVisionRange;
 
-            throw new NotImplementedException();
+            // TODO: implement this for each unit role
         }
     }
 }

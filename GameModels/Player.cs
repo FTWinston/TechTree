@@ -29,30 +29,30 @@ namespace GameModels
 
         public void BuildingCompleted(Building b)
         {
-            foreach (var type in b.Definition.Unlocks)
+            foreach (var typeID in b.Definition.Unlocks)
             {
-                if (type is BuildingType)
+                if (TechTree.Buildings.TryGetValue(typeID, out var buildingType))
                 {
-                    var building = type as BuildingType;
-                    if (!AvailableBuildings.Contains(building))
-                        AvailableBuildings.Add(building);
+                    if (!AvailableBuildings.Contains(buildingType))
+                        AvailableBuildings.Add(buildingType);
                 }
 
-                if (type is UnitType)
+                else if (TechTree.Units.TryGetValue(typeID, out var unitType))
                 {
-                    var unit = type as UnitType;
-                    if (!AvailableUnits.Contains(unit))
-                        AvailableUnits.Add(unit);
+                    if (!AvailableUnits.Contains(unitType))
+                        AvailableUnits.Add(unitType);
                 }
             }
         }
 
         public void BuildingDestroyed(Building b)
         {
-            if (b.Definition.Prerequisite == null)
+            if (!b.Definition.Prerequisite.HasValue)
                 return;
 
-            if (Buildings.Find(x => x.Definition == b.Definition.Prerequisite) == null)
+            var prerequisite = TechTree.Buildings[b.Definition.Prerequisite.Value];
+
+            if (!Buildings.Any(other => other.Definition == prerequisite))
                 AvailableBuildings.Remove(b.Definition);
         }
 

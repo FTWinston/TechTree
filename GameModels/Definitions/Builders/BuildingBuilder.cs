@@ -16,14 +16,14 @@ namespace GameModels.Definitions.Builders
 
         public List<uint> Unlocks { get; } = new List<uint>();
 
-        public List<uint> UpgradesTo { get; set; }
+        public List<uint> UpgradesTo { get; } = new List<uint>();
 
         public uint UpgradesFrom { get; set; }
 
 
-        public List<uint> Builds { get; set; }
+        public List<uint> Builds { get; } = new List<uint>();
 
-        public List<uint> Researches { get; set; }
+        public List<uint> Researches { get; } = new List<uint>();
 
 
         public int DisplayRow { get; set; }

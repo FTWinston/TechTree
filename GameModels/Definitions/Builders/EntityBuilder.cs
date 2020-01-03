@@ -29,7 +29,7 @@ namespace GameModels.Definitions.Builders
 
         public int BuildTime { get; set; } = 1;
 
-        public Dictionary<ResourceType, int> Cost { get; set; }
+        public Dictionary<ResourceType, int> Cost { get; set; } = new Dictionary<ResourceType, int>();
 
         public uint? Prerequisite { get; set; }
 

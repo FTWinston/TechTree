@@ -61,7 +61,7 @@ namespace GameModels.Definitions.Features
 
         public override double Initialize(EntityType type)
         {
-            type.ActionPoints += ExtraPoints;
+            // type.MoveRange += ExtraPoints;
             return 1.0 + ExtraPoints * 0.15;
         }
         
@@ -147,6 +147,7 @@ namespace GameModels.Definitions.Features
 
         public override double Initialize(EntityType type)
         {
+            /*
             int before = type.SupplyCost;
 
             if (type.SupplyCost >= 0)
@@ -156,6 +157,8 @@ namespace GameModels.Definitions.Features
 
             int diff = before - type.SupplyCost;
             return 1.0 + diff * 0.1;
+            */
+            return 1;
         }
     }
 

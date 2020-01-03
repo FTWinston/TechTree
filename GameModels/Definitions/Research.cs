@@ -16,22 +16,28 @@ namespace GameModels.Definitions
         public List<Feature> Unlocks { get; private set; }
 
         public Research(params Feature[] features)
+            : base(null) // TODO: this is screwed up
         {
+            /*
             Name = features.First().Name;
             Symbol = features.First().Symbol;
+            */
             Unlocks = new List<Feature>(features);
         }
 
         internal static Research CreateForFeature(OldTreeGenerator gen, BuildingType researchedBy, Feature feature, int tier)
         {
-            var research = new Research(feature) {
+            var research = new Research(feature)
+            {
+                /*
                 BuildTime = gen.Random.Next(Math.Min(3, tier), tier + 3),
                 MineralCost = (gen.Random.Next(80, 185) + gen.Random.Next(20, 40) * tier).RoundNearest(25),
                 GasCost = (gen.Random.Next(35, 80) + gen.Random.Next(32, 55) * tier).RoundNearest(25),
                 PerformedAt = feature.EntityDefinition.Prerequisite,
+                */
             };
 
-            researchedBy.AddFeature(new PerformResearch(research));
+            // researchedBy.AddFeature(new PerformResearch(research));
             return research;
         }
     }
