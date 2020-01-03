@@ -16,6 +16,11 @@ namespace GameModels.Definitions
         bool IsDetector { get; }
 
 
+        List<uint> UpgradesTo { get; }
+
+        uint? UpgradesFrom { get; }
+
+
         List<Feature> Features { get; }
     }
 }

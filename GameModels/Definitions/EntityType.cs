@@ -14,6 +14,9 @@ namespace GameModels.Definitions
             VisionRange = copyFrom.VisionRange;
             IsDetector = copyFrom.IsDetector;
 
+            UpgradesTo = new List<uint>(copyFrom.UpgradesTo);
+            UpgradesFrom = copyFrom.UpgradesFrom;
+
             Features = new List<Feature>(copyFrom.Features);
         }
 
@@ -27,6 +30,11 @@ namespace GameModels.Definitions
         public int VisionRange { get; internal set; }
 
         public bool IsDetector { get; internal set; }
+
+
+        public List<uint> UpgradesTo { get; }
+
+        public uint? UpgradesFrom { get; }
 
 
         public List<Feature> Features { get; }

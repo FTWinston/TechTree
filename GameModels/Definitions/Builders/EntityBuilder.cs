@@ -34,6 +34,11 @@ namespace GameModels.Definitions.Builders
         public uint? Prerequisite { get; set; }
 
 
+        public List<uint> UpgradesTo { get; } = new List<uint>();
+
+        public uint? UpgradesFrom { get; set; }
+
+
         public int VisionRange { get; set; } = 4;
 
         public bool IsDetector { get; set; }

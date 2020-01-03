@@ -9,9 +9,6 @@ namespace GameModels.Definitions
         {
             Unlocks = new List<uint>(copyFrom.Unlocks);
 
-            UpgradesTo = new List<uint>(copyFrom.UpgradesTo);
-            UpgradesFrom = copyFrom.UpgradesFrom;
-
             Builds = new List<uint>(copyFrom.Builds);
             Researches = new List<uint>(copyFrom.Researches);
 
@@ -20,10 +17,6 @@ namespace GameModels.Definitions
         }
 
         public List<uint> Unlocks { get; }
-
-        public List<uint> UpgradesTo { get; }
-
-        public uint UpgradesFrom { get; }
 
         public List<uint> Builds { get; }
 

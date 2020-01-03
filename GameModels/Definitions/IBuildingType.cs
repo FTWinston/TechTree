@@ -6,10 +6,6 @@ namespace GameModels.Definitions
     {
         List<uint> Unlocks { get; }
 
-        List<uint> UpgradesTo { get; }
-
-        uint UpgradesFrom { get; }
-
         List<uint> Builds { get; }
 
         List<uint> Researches { get; }
