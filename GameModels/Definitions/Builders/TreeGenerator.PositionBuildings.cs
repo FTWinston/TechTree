@@ -7,13 +7,13 @@ namespace GameModels.Definitions.Builders
     {
         protected void PositionBuildings()
         {
-            int maxRow = Buildings.Values.Max(b => b.DisplayRow);
-
             int mostChildren = Buildings.Values
                 .Max(b => OnlyBuildings(b.Unlocks).Count());
 
             BuildingBuilder root = Buildings.Values.First(b => b.Prerequisite == null);
             SetRowRecursive(0, root);
+
+            int maxRow = Buildings.Values.Max(b => b.DisplayRow);
 
             SpreadColumnsRecursive(root, maxRow, mostChildren);
 

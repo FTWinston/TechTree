@@ -22,13 +22,20 @@ namespace GameModels.Definitions.Builders
 
             GenerateSupplyBuilding(primaryResourceBuildingID);
 
-            List<uint> factoryIDs = GenerateFactoryBuildings();
+            List<uint> factoryIDs = GenerateFactoryBuildings(primaryResourceBuildingID);
 
             AllocateUnitsToFactories(factoryIDs);
 
             GenerateTechBuildings(factoryIDs);
 
             // TODO: defense and possibly utility buildings
+        }
+
+        private void AddUnlock(uint requiredBuildingID, uint unlockedItemID, EntityBuilder unlockedItem)
+        {
+            var requiredBuilding = Buildings[requiredBuildingID];
+            unlockedItem.Prerequisite = requiredBuildingID;
+            requiredBuilding.Unlocks.Add(unlockedItemID);
         }
 
         private uint GenerateResourceBuildings()
@@ -59,8 +66,9 @@ namespace GameModels.Definitions.Builders
 
                 if (primaryBuildingID.HasValue)
                 {
-                    // TODO: primary building must be this building's prerequisite, or at least an ancestor
-                    building.Prerequisite = primaryBuildingID;
+                    // Given that resource buildings are the only ones in the tree, this can only cause branching
+                    // if there are at least 3 resource buildings.
+                    AddToSubtree(primaryBuildingID.Value, identifier, building);
                 }
                 else
                 {
@@ -71,16 +79,28 @@ namespace GameModels.Definitions.Builders
             return primaryBuildingID.Value;
         }
 
-        private List<uint> GenerateFactoryBuildings()
+        private List<uint> GenerateFactoryBuildings(uint primaryResourceBuildingID)
         {
+            uint prerequisiteID = primaryResourceBuildingID;
+
             var factoryIDs = new List<uint>();
 
-            for (int i = (int)Complexity; i >= 0; i--)
+            int complexity = (int)Complexity;
+
+            for (int i = 0; i < complexity; i++)
             {
                 var factory = GenerateFactoryBuilding();
                 uint identifier = nextIdentifier++;
                 Buildings.Add(identifier, factory);
                 factoryIDs.Add(identifier);
+
+                // Factories shouldn't always be a linear chain. Bigger trees should branch more.
+                if (Random.Next(10) < complexity)
+                    AddToSubtree(prerequisiteID, identifier, factory);
+                else
+                    AddUnlock(prerequisiteID, identifier, factory);
+
+                prerequisiteID = identifier;
             }
 
             return factoryIDs;
@@ -111,9 +131,9 @@ namespace GameModels.Definitions.Builders
                     }
 
                     // give this unit type a 1 in 3 chance of sharing a prerequisite with its predecessor
-                    if (prevPrerequisite != null & Random.Next(3) == 0)
+                    if (prevPrerequisite.HasValue & Random.Next(3) == 0)
                     {
-                        unit.Prerequisite = prevPrerequisite;
+                        AddUnlock(prevPrerequisite.Value, unitID, unit);
                         continue;
                     }
 
@@ -121,10 +141,11 @@ namespace GameModels.Definitions.Builders
                     BuildingBuilder techBuilding = GenerateTechBuilding();
                     uint identifier = nextIdentifier++;
                     Buildings.Add(identifier, techBuilding);
-                    prevPrerequisite = unit.Prerequisite = identifier;
+                    prevPrerequisite = identifier;
+                    AddUnlock(identifier, unitID, unit);
 
                     // insert that into the tech tree somewhere in the factory's subtree
-                    AddToSubtree(factoryID, techBuilding, identifier);
+                    AddToSubtree(factoryID, identifier, techBuilding);
                 }
             }
         }
@@ -134,7 +155,9 @@ namespace GameModels.Definitions.Builders
             Resources.Add(ResourceType.Supply);
 
             var building = GenerateResourceBuilding(ResourceType.Supply, false);
-            Buildings.Add(nextIdentifier++, building);
+            var identifier = nextIdentifier++;
+            Buildings.Add(identifier, building);
+            AddUnlock(prerequisiteID, identifier, building);
         }
 
         private BuildingBuilder GenerateResourceBuilding(ResourceType resource, bool isPrimary)
@@ -167,7 +190,7 @@ namespace GameModels.Definitions.Builders
             return building;
         }
 
-        private void AddToSubtree(uint rootID, BuildingBuilder newDescendent, uint newDescendentID)
+        private void AddToSubtree(uint rootID, uint newDescendentID, BuildingBuilder newDescendent)
         {
             BuildingBuilder root = Buildings[rootID];
 
@@ -205,7 +228,7 @@ namespace GameModels.Definitions.Builders
                         root = Buildings[rootID];
                     }
 
-                    newDescendent.Prerequisite = rootID;
+                    AddUnlock(rootID, newDescendentID, newDescendent);
                     return;
                 }
             }
@@ -214,7 +237,7 @@ namespace GameModels.Definitions.Builders
             // For a node with 1 child, the chances of "falling on" to the next row are 1/3. For one with 2, it's 2/4, for one with 3, it's 3/5,for one with 4, it's 4/6, etc.
             if (numChildren == 0 || Random.Next(numChildren + 2) >= numChildren)
             {
-                newDescendent.Prerequisite = rootID;
+                AddUnlock(rootID, newDescendentID, newDescendent);
                 return;
             }
 
@@ -224,12 +247,12 @@ namespace GameModels.Definitions.Builders
             if (Random.Next(3) == 0)
             {// On a 1/3 chance, insert as a prerequisite of this other child building.
                 BuildingBuilder child = Buildings[childID];
-                child.Prerequisite = newDescendentID;
-                newDescendent.Prerequisite = rootID;
+                AddUnlock(newDescendentID, childID, child);
+                AddUnlock(rootID, newDescendentID, newDescendent);
             }
             else
             {// otherwise, add as a descendent of this other building
-                AddToSubtree(childID, newDescendent, newDescendentID);
+                AddToSubtree(childID, newDescendentID, newDescendent);
             }
         }
 
