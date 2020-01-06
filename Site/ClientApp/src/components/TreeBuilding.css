@@ -1,0 +1,33 @@
+.treeBuilding {
+    display: grid;
+    grid-template-columns: 5em 1fr;
+    grid-template-rows: 1em 5em 1fr;
+
+    min-width: 12em;
+    min-height: 5em;
+
+    grid-template-areas: 
+        "incoming incoming"
+        "icon builds"
+        "outgoing builds";
+}
+
+.treeBuilding__icon {
+    grid-area: icon;
+    font-size: 1.5em;
+    justify-self: end;
+}
+
+.treeBuilding__incoming {
+    grid-area: incoming;
+    width: 5.5em;
+}
+
+.treeBuilding__outgoing {
+    grid-area: outgoing;
+    width: 5.5em;
+}
+
+.treeBuilding__builds {
+    grid-area: builds;
+}
