@@ -15,9 +15,10 @@ namespace GameModels.Definitions.Builders
 
             int maxRow = Buildings.Values.Max(b => b.DisplayRow);
 
+            // First, spread everything sufficiently far apart that all children will fit even if every building has mostChildren children.
             SpreadColumnsRecursive(root, maxRow, mostChildren);
 
-            // contract the columns as far as possible. If any node jumps over a neighbour, we MAY be left with un-contracted spaces, so contract everything again.
+            // Contract the columns as far as possible. If any node jumps over a neighbour, we MAY be left with un-contracted spaces, so contract everything again.
             while (ContractColumns())
                 ;
         }

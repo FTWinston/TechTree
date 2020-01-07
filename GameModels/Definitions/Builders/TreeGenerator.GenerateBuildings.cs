@@ -33,6 +33,12 @@ namespace GameModels.Definitions.Builders
 
         private void AddUnlock(uint requiredBuildingID, uint unlockedItemID, EntityBuilder unlockedItem)
         {
+            if (unlockedItem.Prerequisite.HasValue)
+            {
+                var prevPrerequisite = Buildings[unlockedItem.Prerequisite.Value];
+                prevPrerequisite.Unlocks.Remove(unlockedItemID);
+            }
+
             var requiredBuilding = Buildings[requiredBuildingID];
             unlockedItem.Prerequisite = requiredBuildingID;
             requiredBuilding.Unlocks.Add(unlockedItemID);
