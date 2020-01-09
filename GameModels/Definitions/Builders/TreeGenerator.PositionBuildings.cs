@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace GameModels.Definitions.Builders
@@ -61,24 +62,6 @@ namespace GameModels.Definitions.Builders
                     ShiftSubtreeLeft(building, shift);
             }
 
-            bool anyJumped = false;
-            foreach (var building in nonRootBuildings)
-            {
-                bool unlocksAnyBuilding = GetBuildings(building.Unlocks)
-                    .Any();
-
-                if (unlocksAnyBuilding)
-                    continue;
-
-                // it might be possible for a childless building to "jump" past a building that is blocking it
-                int shift = DetermineJumpLeftShift(building);
-                if (shift > 0)
-                {
-                    anyJumped = true;
-                    ShiftSubtreeLeft(building, shift);
-                }
-            }
-
             // now shift ALL buildings so that the left-most one is in column 0
             var minCol = Buildings.Values.Min(b => b.DisplayColumn);
             if (minCol != 0)
@@ -86,6 +69,18 @@ namespace GameModels.Definitions.Builders
                 foreach (var b in Buildings.Values)
                 {
                     b.DisplayColumn -= minCol;
+                }
+            }
+
+            bool anyJumped = false;
+            foreach (var building in nonRootBuildings)
+            {
+                // it might be possible for a childless building to "jump" past a building that is blocking it
+                int shift = DetermineJumpLeftShift(building);
+                if (shift > 0)
+                {
+                    anyJumped = true;
+                    ShiftSubtreeLeft(building, shift);
                 }
             }
 
@@ -132,25 +127,55 @@ namespace GameModels.Definitions.Builders
 
         private int DetermineJumpLeftShift(BuildingBuilder building)
         {
-            int maxShift = building.Prerequisite.HasValue && Buildings.TryGetValue(building.Prerequisite.Value, out var prerequisite)
-                ? building.DisplayColumn - prerequisite.DisplayColumn
-                : building.DisplayColumn;
+            var movers = new HashSet<BuildingBuilder> { building };
 
-            if (maxShift >= 2)
+            int targetShift = 1;
+
+            while (building.DisplayColumn - targetShift >= 0)
             {
-                var collision = CheckForBuilding(building.DisplayRow, building.DisplayColumn - 2);
-                if (collision == null)
-                {
-                    int dist = 2;
+                if (CanBuildingMove(building, targetShift, movers))
+                    break;
+                else if (targetShift <= 0)
+                    return 0;
 
-                    // could now possibly keep moving further left
-                    dist = DetermineAvailableLeftShift(building, maxShift, dist);
-
-                    return dist;
-                }
+                targetShift--;
             }
 
-            return 0;
+            return CanChildrenCanMove(building, targetShift, movers)
+                ? targetShift
+                : 0;
+        }
+
+        private bool CanBuildingMove(BuildingBuilder building, int targetShift, HashSet<BuildingBuilder> movers)
+        {
+            int targetColumn = building.DisplayColumn - targetShift;
+
+            if (targetColumn < 0)
+                return false;
+
+            var existing = CheckForBuilding(building.DisplayRow, targetColumn);
+            return existing == null || movers.Contains(existing);
+        }
+
+        private bool CanChildrenCanMove(BuildingBuilder building, int targetShift, HashSet<BuildingBuilder> movers)
+        {
+            var childBuildings = GetBuildings(building.Unlocks)
+                .OrderByDescending(b => b.DisplayColumn);
+
+            foreach (var childBuilding in childBuildings)
+            {
+                if (!CanBuildingMove(childBuilding, targetShift, movers))
+                    return false;
+
+                // TODO: should a space be invalid if the building on its right isn't a sibling.
+
+                movers.Add(childBuilding);
+
+                if (!CanChildrenCanMove(childBuilding, targetShift, movers))
+                    return false;
+            }
+
+            return true;
         }
 
         private BuildingBuilder CheckForBuilding(int row, int column)
