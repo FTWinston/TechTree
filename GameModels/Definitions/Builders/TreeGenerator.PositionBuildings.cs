@@ -19,9 +19,8 @@ namespace GameModels.Definitions.Builders
             // First, spread everything sufficiently far apart that all children will fit even if every building has mostChildren children.
             SpreadColumnsRecursive(root, maxRow, mostChildren);
 
-            // Contract the columns as far as possible. If any node jumps over a neighbour, we MAY be left with un-contracted spaces, so contract everything again.
-            while (ContractColumns())
-                ;
+            // Contract the columns as far as possible.
+            ContractColumns();
         }
 
         private void SetRowRecursive(int row, BuildingBuilder building)
@@ -44,7 +43,7 @@ namespace GameModels.Definitions.Builders
             }
         }
 
-        private bool ContractColumns()
+        private void ContractColumns()
         {
             var nonRootBuildings = Buildings.Values
                 .Where(b => b.Prerequisite.HasValue)
@@ -53,7 +52,7 @@ namespace GameModels.Definitions.Builders
 
             foreach (var building in nonRootBuildings)
             {
-                // shift this building (and its subtree) as far left as we can, until it is in-line with its parent, or is blocked
+                // Shift this building (and its subtree) as far left as we can, until it is in-line with its parent, or is blocked.
                 int shift = building.Prerequisite.HasValue && Buildings.TryGetValue(building.Prerequisite.Value, out var prerequisite)
                     ? DetermineMaxSubtreeLeftShift(building, building.DisplayColumn - prerequisite.DisplayColumn)
                     : building.DisplayColumn;
@@ -62,7 +61,7 @@ namespace GameModels.Definitions.Builders
                     ShiftSubtreeLeft(building, shift);
             }
 
-            // now shift ALL buildings so that the left-most one is in column 0
+            // Now shift ALL buildings so that the left-most one is in column 0.
             var minCol = Buildings.Values.Min(b => b.DisplayColumn);
             if (minCol != 0)
             {
@@ -72,19 +71,16 @@ namespace GameModels.Definitions.Builders
                 }
             }
 
-            bool anyJumped = false;
+            // It might be possible for a building to "jump" past siblings on its left.
             foreach (var building in nonRootBuildings)
             {
-                // it might be possible for a childless building to "jump" past a building that is blocking it
                 int shift = DetermineJumpLeftShift(building);
+
                 if (shift > 0)
                 {
-                    anyJumped = true;
                     ShiftSubtreeLeft(building, shift);
                 }
             }
-
-            return anyJumped;
         }
 
         private int DetermineMaxSubtreeLeftShift(BuildingBuilder building, int maxShift)
@@ -127,19 +123,24 @@ namespace GameModels.Definitions.Builders
 
         private int DetermineJumpLeftShift(BuildingBuilder building)
         {
+            // Find the first free space for this building, then check its descendants.
             var movers = new HashSet<BuildingBuilder> { building };
+            int targetShift = 2;
 
-            int targetShift = 1;
-
-            while (building.DisplayColumn - targetShift >= 0)
+            while (true)
             {
                 if (CanBuildingMove(building, targetShift, movers))
                     break;
-                else if (targetShift <= 0)
+                else if (building.DisplayColumn - targetShift <= 0)
                     return 0;
-
-                targetShift--;
+                else
+                    targetShift++;
             }
+
+            // A move is invalid if the space on its right isn't a sibling.
+            var onRight = CheckForBuilding(building.DisplayRow, building.DisplayColumn - targetShift + 1);
+            if (onRight == null || onRight.Prerequisite != building.Prerequisite)
+                return 0;
 
             return CanChildrenCanMove(building, targetShift, movers)
                 ? targetShift
@@ -166,8 +167,6 @@ namespace GameModels.Definitions.Builders
             {
                 if (!CanBuildingMove(childBuilding, targetShift, movers))
                     return false;
-
-                // TODO: should a space be invalid if the building on its right isn't a sibling.
 
                 movers.Add(childBuilding);
 
