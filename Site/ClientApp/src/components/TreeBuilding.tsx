@@ -1,7 +1,9 @@
-import React, { FunctionComponent, useMemo } from 'react';
+import React, { FunctionComponent, useMemo, useContext } from 'react';
 import './TreeBuilding.css';
-import { Icon } from './Icon';
+import { Icon, IconStyle } from './Icon';
 import { TreeLink } from './TreeLink';
+import { TreeContext } from './TechTree';
+import { TreeUnit } from './TreeUnit';
 
 export enum Connection {
     None = 0,
@@ -12,28 +14,51 @@ export enum Connection {
 
 interface Props {
     id: number;
-    symbol: string;
-    name: string;
-    row: number;
-    column: number;
     incomingConnections: Connection;
     outgoingConnections: Connection;
 }
 
 export const TreeBuilding: FunctionComponent<Props> = props => {
-    const style: React.CSSProperties = useMemo(
-        () => ({
-            gridColumnStart: props.column,
-            gridColumnEnd: props.column + 1,
-            gridRowStart: props.row,
-            gridRowEnd: props.row + 1,
-        }),
-        [props.row, props.column]
+    const treeContext = useContext(TreeContext);
+
+    const building = useMemo(
+        () => treeContext.buildings[props.id],
+        [props.id, treeContext]
     );
 
-    const builds = props.children === undefined
+    if (building === undefined) {
+        return <div className="techTree__building" />;
+    }
+
+    const style: React.CSSProperties = useMemo(
+        () => ({
+            gridColumnStart: building.displayColumn,
+            gridColumnEnd: building.displayColumn + 1,
+            gridRowStart: building.displayRow,
+            gridRowEnd: building.displayRow + 1,
+        }),
+        [building.displayRow, building.displayColumn]
+    );
+
+    const units = useMemo(
+        () => {
+            if (building.builds === undefined || building.builds.length === 0) {
+                return undefined;
+            }
+
+            return building.builds.map(id => (
+                <TreeUnit
+                    key={id}
+                    id={id}
+                />
+            ));
+        },
+        [building.builds, treeContext]
+    );
+
+    const builds = units === undefined
         ? undefined
-        : <div className="treeBuilding__builds">{props.children}</div>
+        : <div className="treeBuilding__builds">{units}</div>
 
     const incoming = props.incomingConnections === Connection.None
         ? undefined
@@ -55,12 +80,19 @@ export const TreeBuilding: FunctionComponent<Props> = props => {
             bottom={false}
         />
 
+    let iconStyle = IconStyle.Normal
+        
+    if (false) {
+        iconStyle |= IconStyle.Disabled;
+    }
+
     return (
         <div className="techTree__building treeBuilding" style={style} data-id={props.id}>
             <Icon
                 className="treeBuilding__icon"
-                symbol={props.symbol}
-                name={props.name}
+                symbol={building.symbol}
+                name={building.name}
+                style={iconStyle}
             />
             {incoming}
             {outgoing}

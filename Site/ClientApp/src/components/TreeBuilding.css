@@ -30,4 +30,14 @@
 
 .treeBuilding__builds {
     grid-area: builds;
+    margin-left: 0.5em;
+    padding: 0.5em;
+    background-color: #ccc;
+    border-radius: 0.25em;
+    justify-self: flex-start;
+    align-self: flex-start;
+}
+
+.treeBuilding__builds > * + * {
+    margin-top: 0.5em;
 }

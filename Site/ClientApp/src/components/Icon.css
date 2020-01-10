@@ -2,12 +2,21 @@
     width: 3em;
     height: 3em;
     box-sizing: border-box;
-    border-width: 0.2em;
     border-radius: 0.2em;
-    border-color: yellow;
+    border: solid yellow 0.2em;
     background-color: #333;
     color: white;
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.icon--prerequisite {
+    border-color: #f90;
+}
+
+.icon--disabled {
+    border-color: grey;
+    color: #ccc;
+    background-color: black;
 }

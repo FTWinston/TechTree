@@ -9,6 +9,11 @@ interface Props {
     data: ITechTree;
 }
 
+export const TreeContext = React.createContext<ITechTree>({
+    buildings: {},
+    units: {},
+});
+
 export const TechTree: FunctionComponent<Props> = props => {
     const buildings = useMemo(
         () => {
@@ -29,10 +34,6 @@ export const TechTree: FunctionComponent<Props> = props => {
                     <TreeBuilding
                         key={id}
                         id={id as unknown as number}
-                        symbol={building.symbol}
-                        name={building.name}
-                        row={building.displayRow}
-                        column={building.displayColumn}
                         incomingConnections={incomingConnections}
                         outgoingConnections={outgoingConnections}
                     />
@@ -45,9 +46,11 @@ export const TechTree: FunctionComponent<Props> = props => {
     )
 
     return (
-        <div className="techTree">
-            {buildings}
-        </div>
+        <TreeContext.Provider value={props.data}>
+            <div className="techTree">
+                {buildings}
+            </div>
+        </TreeContext.Provider>
     );
 }
 
