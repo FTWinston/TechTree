@@ -11,13 +11,17 @@ namespace GameModels.Definitions.Builders
             int mostChildren = Buildings.Values
                 .Max(b => OnlyBuildings(b.Unlocks).Count());
 
-            BuildingBuilder root = Buildings.Values.First(b => b.Prerequisite == null);
-            SetRowRecursive(0, root);
+            var roots = Buildings.Values
+                .Where(b => b.Prerequisite == null)
+                .ToArray();
+
+            foreach (var root in roots)
+                SetRowRecursive(0, root);
 
             int maxRow = Buildings.Values.Max(b => b.DisplayRow);
 
             // First, spread everything sufficiently far apart that all children will fit even if every building has mostChildren children.
-            SpreadColumnsRecursive(root, maxRow, mostChildren);
+            SpreadColumnsRecursive(roots, maxRow, mostChildren, -1, 0);
 
             // Contract the columns as far as possible.
             ContractColumns();
@@ -30,32 +34,34 @@ namespace GameModels.Definitions.Builders
                 SetRowRecursive(row + 1, child);
         }
 
-        private void SpreadColumnsRecursive(BuildingBuilder building, int maxRows, int maxChildren)
+        private void SpreadColumnsRecursive(IEnumerable<BuildingBuilder> buildings, int maxRows, int maxChildren, int parentRow, int parentColumn)
         {
-            int childSpacing = (int)Math.Pow(maxChildren, maxRows - building.DisplayRow - 1);
+            int spacing = (int)Math.Pow(maxChildren, maxRows - parentRow - 1);
 
             int childNum = 0;
 
-            foreach (var child in GetBuildings(building.Unlocks))
+            foreach (var building in buildings)
             {
-                child.DisplayColumn = building.DisplayColumn + (childNum++ * childSpacing);
-                SpreadColumnsRecursive(child, maxRows, maxChildren);
+                building.DisplayColumn = parentColumn + (childNum++ * spacing);
+
+                SpreadColumnsRecursive(GetBuildings(building.Unlocks), maxRows, maxChildren, building.DisplayRow, building.DisplayColumn);
             }
         }
 
         private void ContractColumns()
         {
-            var nonRootBuildings = Buildings.Values
-                .Where(b => b.Prerequisite.HasValue)
+            var buildingsFromBottomLeft = Buildings.Values
                 .OrderByDescending(b => b.DisplayRow)
                 .ThenBy(b => b.DisplayColumn);
 
-            foreach (var building in nonRootBuildings)
+            foreach (var building in buildingsFromBottomLeft)
             {
-                // Shift this building (and its subtree) as far left as we can, until it is in-line with its parent, or is blocked.
-                int shift = building.Prerequisite.HasValue && Buildings.TryGetValue(building.Prerequisite.Value, out var prerequisite)
-                    ? DetermineMaxSubtreeLeftShift(building, building.DisplayColumn - prerequisite.DisplayColumn)
+                int maxShift = building.Prerequisite.HasValue && Buildings.TryGetValue(building.Prerequisite.Value, out var prerequisite)
+                    ? building.DisplayColumn - prerequisite.DisplayColumn
                     : building.DisplayColumn;
+
+                // Shift this building (and its subtree) as far left as we can, until it is in-line with its parent, or is blocked.
+                int shift = DetermineMaxSubtreeLeftShift(building, maxShift);
 
                 if (shift > 0)
                     ShiftSubtreeLeft(building, shift);
@@ -66,20 +72,16 @@ namespace GameModels.Definitions.Builders
             if (minCol != 0)
             {
                 foreach (var b in Buildings.Values)
-                {
                     b.DisplayColumn -= minCol;
-                }
             }
 
             // It might be possible for a building to "jump" past siblings on its left.
-            foreach (var building in nonRootBuildings)
+            foreach (var building in buildingsFromBottomLeft)
             {
                 int shift = DetermineJumpLeftShift(building);
 
                 if (shift > 0)
-                {
                     ShiftSubtreeLeft(building, shift);
-                }
             }
         }
 
@@ -115,6 +117,7 @@ namespace GameModels.Definitions.Builders
                 var collision = CheckForBuilding(building.DisplayRow, building.DisplayColumn - dist - 1);
                 if (collision != null)
                     break;
+
                 dist++;
             } while (dist < maxShift);
 

@@ -20,9 +20,17 @@ namespace GameModels.Definitions.Builders
         {
             var primaryResourceBuildingID = GenerateResourceBuildings();
 
-            GenerateSupplyBuilding(primaryResourceBuildingID);
+            var supplyBuildingID = GenerateSupplyBuilding(primaryResourceBuildingID);
 
-            List<uint> factoryIDs = GenerateFactoryBuildings(primaryResourceBuildingID);
+            int supplyIsFactoryPrequisiteOdds = Buildings[supplyBuildingID].Prerequisite.HasValue
+                ? 4
+                : 2;
+
+            var factoryPrequisiteID = Random.Next(supplyIsFactoryPrequisiteOdds) == 0
+                ? primaryResourceBuildingID
+                : supplyBuildingID;
+
+            List<uint> factoryIDs = GenerateFactoryBuildings(factoryPrequisiteID);
 
             AllocateUnitsToFactories(factoryIDs);
 
@@ -72,9 +80,10 @@ namespace GameModels.Definitions.Builders
 
                 if (primaryBuildingID.HasValue)
                 {
-                    // Given that resource buildings are the only ones in the tree, this can only cause branching
-                    // if there are at least 3 resource buildings.
-                    AddToSubtree(primaryBuildingID.Value, identifier, building);
+                    // Resource buildings are currently the only ones in the tree, so it takes a few for this to actually cause branching.
+                    // We might also not give it a prerequisite at all.
+                    if (Random.Next(3) != 0)
+                        AddToSubtree(primaryBuildingID.Value, identifier, building);
                 }
                 else
                 {
@@ -85,10 +94,8 @@ namespace GameModels.Definitions.Builders
             return primaryBuildingID.Value;
         }
 
-        private List<uint> GenerateFactoryBuildings(uint primaryResourceBuildingID)
+        private List<uint> GenerateFactoryBuildings(uint prerequisiteID)
         {
-            uint prerequisiteID = primaryResourceBuildingID;
-
             var factoryIDs = new List<uint>();
 
             int complexity = (int)Complexity;
@@ -156,7 +163,7 @@ namespace GameModels.Definitions.Builders
             }
         }
 
-        private void GenerateSupplyBuilding(uint prerequisiteID)
+        private uint GenerateSupplyBuilding(uint primaryResourceBuilding)
         {
             Resources.Add(ResourceType.Supply);
 
@@ -164,7 +171,11 @@ namespace GameModels.Definitions.Builders
 
             var identifier = nextIdentifier++;
             Buildings.Add(identifier, building);
-            AddUnlock(prerequisiteID, identifier, building);
+
+            if (Random.Next(3) == 0) // 1 in 3 chance of this requiring the "root" building
+                AddUnlock(primaryResourceBuilding, identifier, building);
+
+            return identifier;
         }
 
         private BuildingBuilder GenerateResourceBuilding(ResourceType resource, bool isPrimary)
