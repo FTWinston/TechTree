@@ -245,6 +245,9 @@ namespace GameModels.Definitions.Builders
 
                     for (int i = 0; i < stepsUp; i++)
                     {
+                        if (!root.Prerequisite.HasValue)
+                            break;
+
                         rootID = root.Prerequisite.Value;
                         root = Buildings[rootID];
                     }

@@ -75,14 +75,27 @@ namespace GameModels.Definitions.Builders
                     b.DisplayColumn -= minCol;
             }
 
-            // It might be possible for a building to "jump" past siblings on its left.
-            foreach (var building in buildingsFromBottomLeft)
-            {
-                int shift = DetermineJumpLeftShift(building);
+            var buildingsFromBottomRight = Buildings.Values
+                .OrderByDescending(b => b.DisplayRow)
+                .ThenByDescending(b => b.DisplayColumn);
 
-                if (shift > 0)
-                    ShiftSubtreeLeft(building, shift);
-            }
+            // It might be possible for a building to "jump" past siblings on its left.
+            bool anyJumped;
+            do
+            {
+                anyJumped = false;
+
+                foreach (var building in buildingsFromBottomLeft)
+                {
+                    int shift = DetermineJumpLeftShift(building);
+
+                    if (shift > 0)
+                    {
+                        ShiftSubtreeLeft(building, shift);
+                        anyJumped = true;
+                    }
+                }
+            } while (anyJumped);
         }
 
         private int DetermineMaxSubtreeLeftShift(BuildingBuilder building, int maxShift)
@@ -128,7 +141,7 @@ namespace GameModels.Definitions.Builders
         {
             // Find the first free space for this building, then check its descendants.
             var movers = new HashSet<BuildingBuilder> { building };
-            int targetShift = 2;
+            int targetShift = 1;
 
             while (true)
             {
@@ -140,9 +153,16 @@ namespace GameModels.Definitions.Builders
                     targetShift++;
             }
 
-            // A move is invalid if the space on its right isn't a sibling.
-            var onRight = CheckForBuilding(building.DisplayRow, building.DisplayColumn - targetShift + 1);
-            if (onRight == null || onRight.Prerequisite != building.Prerequisite)
+            // A move is invalid if the space on its right isn't a sibling. If it finds nothing, check again one further away. If it still finds nothing, check on the left instead.
+            var siblingCheck = CheckForBuilding(building.DisplayRow, building.DisplayColumn - targetShift + 1);
+
+            if (siblingCheck == building)
+                siblingCheck = CheckForBuilding(building.DisplayRow, building.DisplayColumn - targetShift + 2);
+
+            if (siblingCheck == null)
+                siblingCheck = CheckForBuilding(building.DisplayRow, building.DisplayColumn - targetShift - 1);
+
+            if (siblingCheck == null || siblingCheck.Prerequisite != building.Prerequisite)
                 return 0;
 
             return CanChildrenCanMove(building, targetShift, movers)
