@@ -62,6 +62,7 @@ namespace GameModels
                 queue.Enqueue(value);
             }
 
+            queue.Enqueue(list[0]);
             return queue;
         }
 
