@@ -74,6 +74,7 @@ namespace GameModels.Definitions.Builders
             int tier = DetermineTier(unit);
             unit.Tier = tier;
             unit.VisionRange = UnitVisionRange;
+            unit.AllocateName(UsedNames);
 
             // TODO: implement this for each unit role
         }

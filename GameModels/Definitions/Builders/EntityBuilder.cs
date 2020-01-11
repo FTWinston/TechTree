@@ -44,5 +44,20 @@ namespace GameModels.Definitions.Builders
         public bool IsDetector { get; set; }
 
         public List<Feature> Features { get; } = new List<Feature>();
+
+        public abstract void AllocateName(ICollection<string> usedNames);
+
+        protected static string DetermineUniqueName(ICollection<string> usedNames, string baseName)
+        {
+            var number = 1;
+            string name;
+            do
+            {
+                name = $"{baseName} #{number++}";
+            } while (usedNames.Contains(name));
+
+            usedNames.Add(name);
+            return name;
+        }
     }
 }

@@ -35,6 +35,8 @@ namespace GameModels.Definitions.Builders
 
         private List<ResourceType> Resources { get; } = new List<ResourceType>();
 
+        private HashSet<string> UsedNames { get; } = new HashSet<string>();
+
         private const string buildingSymbols = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         private const string unitSymbols = "αβγδεζηθιλμνξπρσςφχψωυτκοϐϑϕϖϗϙϝϞϡϣϥϧϩϫϭϯϰϱϲϳ϶ϸϻ";
         private uint nextIdentifier = 0;
@@ -42,6 +44,8 @@ namespace GameModels.Definitions.Builders
         public TechTree Generate()
         {
             Random = new Random(Seed);
+
+            UsedNames.Clear();
 
             nextBuildingSymbol = 0;
             nextUnitSymbol = 0;

@@ -3,8 +3,8 @@
     grid-template-columns: 5em 1fr;
     grid-template-rows: 1em 5em 1fr;
 
-    min-width: 10em;
-    min-height: 5em;
+    min-width: 8em;
+    min-height: 7em;
 
     grid-template-areas: 
         "incoming incoming"

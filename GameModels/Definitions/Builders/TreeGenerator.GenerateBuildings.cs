@@ -161,6 +161,7 @@ namespace GameModels.Definitions.Builders
             Resources.Add(ResourceType.Supply);
 
             var building = GenerateResourceBuilding(ResourceType.Supply, false);
+
             var identifier = nextIdentifier++;
             Buildings.Add(identifier, building);
             AddUnlock(prerequisiteID, identifier, building);
@@ -169,6 +170,7 @@ namespace GameModels.Definitions.Builders
         private BuildingBuilder GenerateResourceBuilding(ResourceType resource, bool isPrimary)
         {
             var building = new BuildingBuilder(Random, AllocateBuildingSymbol(), BuildingRole.Resource);
+            building.AllocateName(UsedNames);
             building.VisionRange = BuildingVisionRange;
 
             // TODO: populate this
@@ -179,6 +181,7 @@ namespace GameModels.Definitions.Builders
         private BuildingBuilder GenerateFactoryBuilding()
         {
             var building = new BuildingBuilder(Random, AllocateBuildingSymbol(), BuildingRole.Factory);
+            building.AllocateName(UsedNames);
             building.VisionRange = BuildingVisionRange;
 
             // TODO: populate this
@@ -189,6 +192,7 @@ namespace GameModels.Definitions.Builders
         private BuildingBuilder GenerateTechBuilding()
         {
             var building = new BuildingBuilder(Random, AllocateBuildingSymbol(), BuildingRole.Research);
+            building.AllocateName(UsedNames);
             building.VisionRange = BuildingVisionRange;
 
             // TODO: populate this?

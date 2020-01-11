@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace GameModels.Definitions.Builders
 {
@@ -17,6 +18,11 @@ namespace GameModels.Definitions.Builders
         public uint BuiltBy { get; set; }
 
         public int MoveRange { get; set; } = 3;
+
+        public override void AllocateName(ICollection<string> usedNames)
+        {
+            Name = DetermineUniqueName(usedNames, "Unit");
+        }
 
         public UnitType Build()
         {

@@ -26,6 +26,27 @@ namespace GameModels.Definitions.Builders
 
         public int DisplayColumn { get; set; }
 
+        public override void AllocateName(ICollection<string> usedNames)
+        {
+            switch (Role)
+            {
+                case BuildingRole.Resource:
+                    Name = DetermineUniqueName(usedNames, "Resource Building");
+                    break;
+                case BuildingRole.Factory:
+                    Name = DetermineUniqueName(usedNames, "Factory");
+                    break;
+                case BuildingRole.Research:
+                    Name = DetermineUniqueName(usedNames, "Tech Building");
+                    break;
+                case BuildingRole.Defense:
+                    Name = DetermineUniqueName(usedNames, "Defense Building");
+                    break;
+                case BuildingRole.Utility:
+                    Name = DetermineUniqueName(usedNames, "Utility Building");
+                    break;
+            }
+        }
 
         public BuildingType Build()
         {
