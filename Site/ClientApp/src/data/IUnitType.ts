@@ -1,5 +1,5 @@
-import { IPurchasable } from './IPurchaseable';
+import { IEntityType } from './IEntityType';
 
-export interface IUnitType extends IPurchasable {
+export interface IUnitType extends IEntityType {
     builtBy: number;
 }

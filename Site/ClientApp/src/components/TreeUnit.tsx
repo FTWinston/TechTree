@@ -1,6 +1,7 @@
 import React, { FunctionComponent, useMemo, useContext } from 'react';
 import { Icon, IconStyle } from './Icon';
 import { TreeContext } from './TechTree';
+import { EntityDetails } from './EntityDetails';
 
 interface Props {
     id: number;
@@ -29,11 +30,13 @@ export const TreeUnit: FunctionComponent<Props> = props => {
     return (
         <div className="techTree__unit treeUnit" data-id={props.id}>
             <Icon
-                className="treeUnit__icon"
+                className="treeUnit__icon techTree__icon"
                 symbol={unit.symbol}
                 name={unit.name}
                 style={iconStyle}
-            />
+            >
+                <EntityDetails entity={unit} />
+            </Icon>
         </div>
     );
 }

@@ -4,6 +4,7 @@ import { Icon, IconStyle } from './Icon';
 import { TreeLink } from './TreeLink';
 import { TreeContext } from './TechTree';
 import { TreeUnit } from './TreeUnit';
+import { EntityDetails } from './EntityDetails';
 
 export enum Connection {
     None = 0,
@@ -89,11 +90,13 @@ export const TreeBuilding: FunctionComponent<Props> = props => {
     return (
         <div className="techTree__building treeBuilding" style={style} data-id={props.id}>
             <Icon
-                className="treeBuilding__icon"
+                className="treeBuilding__icon techTree__icon"
                 symbol={building.symbol}
                 name={building.name}
                 style={iconStyle}
-            />
+            >
+                <EntityDetails entity={building} />
+            </Icon>
             {incoming}
             {outgoing}
             {builds}

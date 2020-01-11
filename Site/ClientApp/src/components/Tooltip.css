@@ -1,0 +1,26 @@
+.tooltip {
+    position: absolute;
+    font-size: 1rem;
+    color: #ccc;
+    display: flex;
+    z-index: 1;
+}
+
+.tooltip__connector {
+    width: 1em;
+    height: 0.65em;
+    background-color: #333;
+    border: solid black 1px;
+    border-right-width: 0;
+    border-bottom-left-radius: 100%;
+    position: relative;
+    left: 1px;
+}
+
+.tooltip__content {
+    border: solid black 1px;
+    padding: 0.5em;
+    background-color: #333;
+    border-radius: 0.5em;
+    border-top-left-radius: 0;
+}

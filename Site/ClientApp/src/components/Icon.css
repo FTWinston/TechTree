@@ -1,9 +1,13 @@
 .icon {
+    position: relative;
+}
+
+.icon__icon {
     width: 3em;
     height: 3em;
     box-sizing: border-box;
-    border-radius: 0.2em;
-    border: solid yellow 0.2em;
+    border-radius: 0.2rem;
+    border: solid yellow 0.2rem;
     background-color: #333;
     color: white;
     display: flex;
@@ -11,12 +15,21 @@
     justify-content: center;
 }
 
-.icon--prerequisite {
+.icon__icon--prerequisite {
     border-color: #f90;
 }
 
-.icon--disabled {
+.icon__icon--disabled {
     border-color: grey;
     color: #ccc;
     background-color: black;
+}
+
+.icon__tooltip {
+    top: 0.2rem;
+    left: 100%;
+}
+
+.icon:not(:hover) .icon__tooltip {
+    display: none;
 }

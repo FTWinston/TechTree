@@ -1,6 +1,6 @@
-import { IPurchasable } from './IPurchaseable';
+import { IEntityType } from './IEntityType';
 
-export interface IBuildingType extends IPurchasable {
+export interface IBuildingType extends IEntityType {
     displayRow: number;
     displayColumn: number;
     builds?: number[];

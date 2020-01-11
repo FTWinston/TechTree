@@ -9,6 +9,7 @@ namespace GameModels.Definitions.Builders
             : base(random, symbol)
         {
             Role = role;
+            Name = "Unnamed building";
         }
 
         public BuildingRole Role { get; }

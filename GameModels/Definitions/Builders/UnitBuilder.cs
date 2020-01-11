@@ -6,7 +6,9 @@ namespace GameModels.Definitions.Builders
     {
         public UnitBuilder(Random random, string symbol)
             : base(random, symbol)
-        { }
+        {
+            Name = "Unnamed unit";
+        }
 
         public UnitFlags Flags { get; set; }
 
