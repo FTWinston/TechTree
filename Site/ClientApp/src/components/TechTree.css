@@ -1,4 +1,11 @@
 .techTree {
     display: grid;
     grid-gap: 0.5em;
+
+
+    justify-content: center;
+    align-content: center;
+
+    justify-items: flex-start;
+    align-items: flex-start;
 }
