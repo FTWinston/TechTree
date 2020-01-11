@@ -75,10 +75,6 @@ namespace GameModels.Definitions.Builders
                     b.DisplayColumn -= minCol;
             }
 
-            var buildingsFromBottomRight = Buildings.Values
-                .OrderByDescending(b => b.DisplayRow)
-                .ThenByDescending(b => b.DisplayColumn);
-
             // It might be possible for a building to "jump" past siblings on its left.
             bool anyJumped;
             do
@@ -139,31 +135,36 @@ namespace GameModels.Definitions.Builders
 
         private int DetermineJumpLeftShift(BuildingBuilder building)
         {
+            var allSiblings = Buildings.Values
+                .Where(test => test.Prerequisite == building.Prerequisite)
+                .ToArray();
+            var minSibling = allSiblings.Min(sibling => sibling.DisplayColumn);
+            var maxSibling = allSiblings.Max(sibling => sibling.DisplayColumn);
+
             // Find the first free space for this building, then check its descendants.
             var movers = new HashSet<BuildingBuilder> { building };
-            int targetShift = 1;
+            int targetShift = 0;
 
             while (true)
             {
-                if (CanBuildingMove(building, targetShift, movers))
+                if (CanBuildingMove(building, ++targetShift, movers))
                     break;
                 else if (building.DisplayColumn - targetShift <= 0)
                     return 0;
-                else
-                    targetShift++;
             }
 
-            // A move is invalid if the space on its right isn't a sibling. If it finds nothing, check again one further away. If it still finds nothing, check on the left instead.
-            var siblingCheck = CheckForBuilding(building.DisplayRow, building.DisplayColumn - targetShift + 1);
-
-            if (siblingCheck == building)
-                siblingCheck = CheckForBuilding(building.DisplayRow, building.DisplayColumn - targetShift + 2);
-
-            if (siblingCheck == null)
-                siblingCheck = CheckForBuilding(building.DisplayRow, building.DisplayColumn - targetShift - 1);
-
-            if (siblingCheck == null || siblingCheck.Prerequisite != building.Prerequisite)
+            if ((building.DisplayColumn - targetShift) < (minSibling - 1))
                 return 0;
+
+            if (building.Prerequisite.HasValue)
+            {
+                var prerequisite = Buildings[building.Prerequisite.Value];
+                int parentCol = prerequisite.DisplayColumn;
+
+                // Don't let the rightmost sibling end up left of the parent
+                if (building.DisplayColumn == maxSibling && (building.DisplayColumn - targetShift) < parentCol)
+                    return 0;
+            }
 
             return CanChildrenCanMove(building, targetShift, movers)
                 ? targetShift
