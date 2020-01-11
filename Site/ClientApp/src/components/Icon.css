@@ -19,6 +19,10 @@
     border-color: #f90;
 }
 
+.icon__icon--highlight {
+    border-color: white;
+}
+
 .icon__icon--disabled {
     border-color: grey;
     color: #ccc;

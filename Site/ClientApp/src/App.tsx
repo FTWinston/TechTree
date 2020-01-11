@@ -13,7 +13,7 @@ const App: React.FC = () => {
         : <TechTree data={data} />
 
     return (
-        <div className="App">
+        <div className="App" onClick={() => loadData(setData)}>
             {treeOrMessage}
         </div>
     );

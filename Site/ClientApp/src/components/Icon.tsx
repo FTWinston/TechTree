@@ -5,7 +5,8 @@ import './Icon.css';
 export enum IconStyle {
     Normal = 0,
     Disabled = 1,
-    Prerequisite = 2,
+    Highlight = 2,
+    Prerequisite = 4,
 }
 
 interface Props {
@@ -26,6 +27,9 @@ export const Icon: FunctionComponent<Props> = props => {
             if (props.style !== undefined) {
                 if (props.style & IconStyle.Disabled) {
                     className += ' icon__icon--disabled';
+                }
+                if (props.style & IconStyle.Highlight) {
+                    className += ' icon__icon--highlight';
                 }
                 if (props.style & IconStyle.Prerequisite) {
                     className += ' icon__icon--prerequisite';
