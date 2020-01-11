@@ -92,7 +92,6 @@ export const TreeBuilding: FunctionComponent<Props> = props => {
             <Icon
                 className="treeBuilding__icon techTree__icon"
                 symbol={building.symbol}
-                name={building.name}
                 style={iconStyle}
             >
                 <EntityDetails entity={building} />

@@ -32,7 +32,6 @@ export const TreeUnit: FunctionComponent<Props> = props => {
             <Icon
                 className="treeUnit__icon techTree__icon"
                 symbol={unit.symbol}
-                name={unit.name}
                 style={iconStyle}
             >
                 <EntityDetails entity={unit} />

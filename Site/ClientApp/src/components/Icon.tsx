@@ -10,7 +10,6 @@ export enum IconStyle {
 
 interface Props {
     symbol: string;
-    name: string;
     className?: string;
     style?: IconStyle;
 }
@@ -44,7 +43,7 @@ export const Icon: FunctionComponent<Props> = props => {
 
     return (
         <div className={rootClasses}>
-            <div className={iconClasses} title={props.name}>
+            <div className={iconClasses}>
                 {props.symbol}
             </div>
             {tooltip}
