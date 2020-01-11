@@ -10,8 +10,14 @@ interface Props {
 export const TreeUnit: FunctionComponent<Props> = props => {
     const treeContext = useContext(TreeContext);
 
-    const unit = useMemo(
-        () => treeContext.units[props.id],
+    const [unit, prerequisite] = useMemo(
+        () => {
+            const unit = treeContext.units[props.id];
+            const prerequisite = unit?.prerequisite
+                ? treeContext.buildings[unit.prerequisite]
+                : undefined;
+            return [unit, prerequisite];
+        },
         [props.id, treeContext]
     );
 
@@ -34,7 +40,10 @@ export const TreeUnit: FunctionComponent<Props> = props => {
                 symbol={unit.symbol}
                 style={iconStyle}
             >
-                <EntityDetails entity={unit} />
+                <EntityDetails
+                    entity={unit}
+                    prerequisite={prerequisite}
+                />
             </Icon>
         </div>
     );

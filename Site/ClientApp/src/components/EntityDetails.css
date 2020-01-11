@@ -1,3 +1,13 @@
 .entityDetails {
-    
+    min-width: 10em;
+}
+
+.entityDetails__name {
+    font-weight: bold;
+    color: white;
+}
+
+.entityDetails__value {
+    color: white;
+    font-weight: 400;
 }
