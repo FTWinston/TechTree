@@ -23,8 +23,6 @@ namespace GameModels.Definitions.Builders
             Complexity = complexity;
         }
 
-        public int Seed { get; }
-
         private Random Random { get; set; }
 
         public TreeComplexity Complexity { get; set; }

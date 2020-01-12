@@ -114,9 +114,7 @@ namespace GameModels.Definitions.Builders
                 return 0;
 
             // return which of the above two is the smallest
-            dist = Math.Min(dist, DetermineMaxSubtreeLeftShift(leftChild, dist));
-
-            return dist;
+            return Math.Min(dist, DetermineMaxSubtreeLeftShift(leftChild, dist));
         }
 
         private int DetermineAvailableLeftShift(BuildingBuilder building, int maxShift, int dist)
