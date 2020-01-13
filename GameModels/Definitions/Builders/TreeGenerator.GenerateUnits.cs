@@ -26,7 +26,7 @@ namespace GameModels.Definitions.Builders
             }
         }
 
-        protected void GenerateUnits()
+        protected void GenerateUnits(List<UnitBuilder> unitsTreeOrder)
         {
             // get a queue of all units, in a random order
             var units = Units.Values
@@ -48,35 +48,82 @@ namespace GameModels.Definitions.Builders
                         return;
 
                     UnitBuilder unit = units.Dequeue();
-                    GenerateUnit(unit, role);
+
+                    var techProgressionFraction = (float)unitsTreeOrder.IndexOf(unit) / unitsTreeOrder.Count;
+                    var unitValue = BaseUnitValue + (MaxUnitValue - BaseUnitValue) * techProgressionFraction;
+
+                    GenerateUnit(unit, role, unitValue);
                 }
             }
         }
 
-        private int DetermineTier(UnitBuilder unit)
+        private void GenerateUnit(UnitBuilder unit, UnitRole role, double value)
         {
-            int tier = 0;
-            var building = Buildings[unit.Prerequisite ?? unit.BuiltBy];
+            unit.AllocateName(UsedNames);
 
-            while (true)
+            unit.VisionRange = UnitVisionRange;
+
+            unit.MoveRange = BaseUnitMoveRange;
+
+            unit.BuildTime = Math.Max(1, Random.Next(value * 0.5, value * 1.25));
+
+            unit.Health = Random.Next(value * 5, value * 8)
+                .RoundNearest(5);
+
+            unit.Armor = 0;
+
+            switch (role)
             {
-                tier++;
-
-                if (!building.Prerequisite.HasValue)
-                    return tier;
-
-                building = Buildings[building.Prerequisite.Value];
+                case UnitRole.AllRounder:
+                default:
+                    GenerateAllRounder(unit, value);
+                    break;
+                case UnitRole.DamageDealer:
+                    GenerateDamageDealer(unit, value);
+                    break;
+                case UnitRole.Scout:
+                    GenerateScout(unit, value);
+                    break;
+                case UnitRole.MeatShield:
+                    GenerateMeatShield(unit, value);
+                    break;
+                case UnitRole.SupportCaster:
+                    GenerateSupportCaster(unit, value);
+                    break;
+                case UnitRole.OffensiveCaster:
+                    GenerateOffensiveCaster(unit, value);
+                    break;
             }
         }
 
-        private void GenerateUnit(UnitBuilder unit, UnitRole role)
+        private void GenerateAllRounder(UnitBuilder unit, double value)
         {
-            int tier = DetermineTier(unit);
-            unit.Tier = tier;
-            unit.VisionRange = UnitVisionRange;
-            unit.AllocateName(UsedNames);
+            // TODO: give it an attack, two minor stat boosts, and a random ability
+        }
 
-            // TODO: implement this for each unit role
+        private void GenerateDamageDealer(UnitBuilder unit, double value)
+        {
+            // TODO: give it a powerful attack, a damaging ability, and a minor stat reduction
+        }
+
+        private void GenerateScout(UnitBuilder unit, double value)
+        {
+            // TODO: give it a weak attack, a health reduction and a big speed boost, plus a utility ability
+        }
+
+        private void GenerateMeatShield(UnitBuilder unit, double value)
+        {
+            // TODO: give it a health boost, an armor boost, an attack, plus a random ability
+        }
+
+        private void GenerateSupportCaster(UnitBuilder unit, double value)
+        {
+            // TODO: give it reduced health, mana, either three support abilities or two support plus one offensive, plus either make it a detector or give it an attack.
+        }
+
+        private void GenerateOffensiveCaster(UnitBuilder unit, double value)
+        {
+            // TODO: give it mana, two offensive abilities plus one support or utility, and possibly give it a weak attack
         }
     }
 }

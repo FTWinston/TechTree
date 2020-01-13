@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace GameModels.Definitions.Builders
 {
@@ -27,9 +28,15 @@ namespace GameModels.Definitions.Builders
 
         public TreeComplexity Complexity { get; set; }
 
+        private double BaseUnitValue { get; set; }
+
+        private double MaxUnitValue { get; set; }
+
         private int UnitVisionRange { get; set; }
 
         private int BuildingVisionRange { get; set; }
+
+        private int BaseUnitMoveRange { get; set; }
 
         private List<ResourceType> Resources { get; } = new List<ResourceType>();
 
@@ -47,10 +54,14 @@ namespace GameModels.Definitions.Builders
 
             nextBuildingSymbol = 0;
             nextUnitSymbol = 0;
+            
+            BaseUnitValue = Random.NextDouble(1, 2);
+            MaxUnitValue = Random.NextDouble(3, 5);
 
             UnitVisionRange = Random.Next(2.3, 4.7);
-
             BuildingVisionRange = Random.Next(UnitVisionRange - 0.7, UnitVisionRange + 0.7);
+
+            BaseUnitMoveRange = Random.Next(2.3, 5.2);
 
             CreateUnits();
 
@@ -58,11 +69,32 @@ namespace GameModels.Definitions.Builders
 
             PositionBuildings();
 
-            GenerateUnits();
+            var buildingTreeOrder = SortBuildingsByAccessiblity();
+
+            var unitTreeOrder = SortUnitsByAccessiblity(buildingTreeOrder);
+
+            GenerateUnits(unitTreeOrder);
 
             // TODO: generate research?
 
+            // TODO: determine building costs
+
             return new TechTree(this);
+        }
+
+        private List<BuildingBuilder> SortBuildingsByAccessiblity()
+        {
+            return Buildings.Values
+                .OrderBy(b => b.DisplayRow)
+                .ThenBy(b => b.DisplayColumn)
+                .ToList();
+        }
+
+        private List<UnitBuilder> SortUnitsByAccessiblity(List<BuildingBuilder> buildingOrder)
+        {
+            return Units.Values
+                .OrderBy(u => buildingOrder.IndexOf(Buildings[u.Prerequisite ?? u.BuiltBy]))
+                .ToList();
         }
     }
 }

@@ -17,8 +17,6 @@ namespace GameModels.Definitions.Builders
 
         public string Symbol { get; }
 
-        public int Tier { get; set; } = 1;
-
 
         public int Health { get; set; }
 

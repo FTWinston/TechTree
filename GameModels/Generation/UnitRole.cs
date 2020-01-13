@@ -7,7 +7,7 @@
         DamageDealer,
         Scout,
         MeatShield,
-        Infiltrator,
+        //Infiltrator,
         SupportCaster,
         OffensiveCaster,
         // Transport,
