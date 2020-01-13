@@ -33,10 +33,8 @@ export const TreeBuilding: FunctionComponent<Props> = props => {
 
     const style: React.CSSProperties = useMemo(
         () => ({
-            gridColumnStart: building.displayColumn,
-            gridColumnEnd: building.displayColumn + 1,
-            gridRowStart: building.displayRow,
-            gridRowEnd: building.displayRow + 1,
+            gridRow: building.displayRow,
+            gridColumn: building.displayColumn,
         }),
         [building.displayRow, building.displayColumn]
     );

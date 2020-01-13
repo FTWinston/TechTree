@@ -16,12 +16,12 @@ namespace GameModels.Definitions.Builders
                 .ToArray();
 
             foreach (var root in roots)
-                SetRowRecursive(0, root);
+                SetRowRecursive(1, root);
 
             int maxRow = Buildings.Values.Max(b => b.DisplayRow);
 
             // First, spread everything sufficiently far apart that all children will fit even if every building has mostChildren children.
-            SpreadColumnsRecursive(roots, maxRow, mostChildren, -1, 0);
+            SpreadColumnsRecursive(roots, maxRow, mostChildren, 0, 1);
 
             // Contract the columns as far as possible.
             ContractColumns();
@@ -58,7 +58,7 @@ namespace GameModels.Definitions.Builders
             {
                 int maxShift = building.Prerequisite.HasValue && Buildings.TryGetValue(building.Prerequisite.Value, out var prerequisite)
                     ? building.DisplayColumn - prerequisite.DisplayColumn
-                    : building.DisplayColumn;
+                    : building.DisplayColumn - 1;
 
                 // Shift this building (and its subtree) as far left as we can, until it is in-line with its parent, or is blocked.
                 int shift = DetermineMaxSubtreeLeftShift(building, maxShift);
@@ -67,9 +67,9 @@ namespace GameModels.Definitions.Builders
                     ShiftSubtreeLeft(building, shift);
             }
 
-            // Now shift ALL buildings so that the left-most one is in column 0.
+            // Now shift ALL buildings so that the left-most one is in column 1.
             var minCol = Buildings.Values.Min(b => b.DisplayColumn);
-            if (minCol != 0)
+            if (minCol != 1)
             {
                 foreach (var b in Buildings.Values)
                     b.DisplayColumn -= minCol;
@@ -100,7 +100,7 @@ namespace GameModels.Definitions.Builders
                 return 0;
 
             // first, see how far left this building can go
-            int dist = DetermineAvailableLeftShift(building, maxShift, 0);
+            int dist = DetermineAvailableLeftShift(building, maxShift);
 
             // then, see how far left its leftmost child can go
             BuildingBuilder leftChild = GetBuildings(building.Unlocks)
@@ -117,8 +117,10 @@ namespace GameModels.Definitions.Builders
             return Math.Min(dist, DetermineMaxSubtreeLeftShift(leftChild, dist));
         }
 
-        private int DetermineAvailableLeftShift(BuildingBuilder building, int maxShift, int dist)
+        private int DetermineAvailableLeftShift(BuildingBuilder building, int maxShift)
         {
+            int dist = 0;
+
             do
             {
                 var collision = CheckForBuilding(building.DisplayRow, building.DisplayColumn - dist - 1);
@@ -147,7 +149,7 @@ namespace GameModels.Definitions.Builders
             {
                 if (CanBuildingMove(building, ++targetShift, movers))
                     break;
-                else if (building.DisplayColumn - targetShift <= 0)
+                else if (building.DisplayColumn - targetShift <= 1)
                     return 0;
             }
 
@@ -173,7 +175,7 @@ namespace GameModels.Definitions.Builders
         {
             int targetColumn = building.DisplayColumn - targetShift;
 
-            if (targetColumn < 0)
+            if (targetColumn < 1)
                 return false;
 
             var existing = CheckForBuilding(building.DisplayRow, targetColumn);
