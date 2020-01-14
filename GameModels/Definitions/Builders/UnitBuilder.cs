@@ -26,15 +26,15 @@ namespace GameModels.Definitions.Builders
 
         public UnitType Build()
         {
+            /*
             // 10-15, plus 13-20 per tier
             int health = Random.Next(10, 16) + Random.Next(13, 21) * Tier
                 .RoundNearest(5);
 
             // ~1/3 chance of 1, plus 0.5 to 0.8 per tier
-            int armor = ((Random.NextDouble(0.3, 0.6) + Random.NextDouble(0.5, 0.9) * Tier)/* * ArmorMultiplier*/)
+            int armor = ((Random.NextDouble(0.3, 0.6) + Random.NextDouble(0.5, 0.9) * Tier))
                 .RoundNearest(1);
 
-            /*
             unit.VisionRange = UnitVisionRange;
             MoveType = Standard, Cumbersome or Versatile
             unit.BuildTime = Random.Next(Math.Max(1, tier - 2), Tier + 2);
