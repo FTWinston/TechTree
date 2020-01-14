@@ -1,9 +1,10 @@
-﻿using System;
+﻿using GameModels.Definitions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using static GameModels.Definitions.Builders.BuildingBuilder;
+using static TreeGeneration.BuildingBuilder;
 
-namespace GameModels.Definitions.Builders
+namespace TreeGeneration
 {
     public partial class TreeGenerator
     {

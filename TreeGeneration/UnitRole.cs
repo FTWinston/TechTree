@@ -1,4 +1,4 @@
-﻿namespace GameModels.Generation
+﻿namespace TreeGeneration
 {
     public enum UnitRole
     {

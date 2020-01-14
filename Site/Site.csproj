@@ -30,6 +30,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\GameModels\GameModels.csproj" />
+    <ProjectReference Include="..\TreeGeneration\TreeGeneration.csproj" />
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">

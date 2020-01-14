@@ -1,7 +1,8 @@
-﻿using System;
+﻿using GameModels.Definitions;
+using System;
 using System.Collections.Generic;
 
-namespace GameModels.Definitions.Builders
+namespace TreeGeneration
 {
     public class BuildingBuilder : EntityBuilder, IBuildingType
     {

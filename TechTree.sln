@@ -5,7 +5,9 @@ VisualStudioVersion = 16.0.29209.62
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameModels", "GameModels\GameModels.csproj", "{90A07E61-68E7-46B7-A9B2-C9CC3B6FE681}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Site", "Site\Site.csproj", "{C1E5E7F7-3D3A-4C94-B2AE-AE280F11BACC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Site", "Site\Site.csproj", "{C1E5E7F7-3D3A-4C94-B2AE-AE280F11BACC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TreeGeneration", "TreeGeneration\TreeGeneration.csproj", "{A3BFFC69-9473-45FD-8267-D19676FCBBD8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{C1E5E7F7-3D3A-4C94-B2AE-AE280F11BACC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C1E5E7F7-3D3A-4C94-B2AE-AE280F11BACC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C1E5E7F7-3D3A-4C94-B2AE-AE280F11BACC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A3BFFC69-9473-45FD-8267-D19676FCBBD8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A3BFFC69-9473-45FD-8267-D19676FCBBD8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A3BFFC69-9473-45FD-8267-D19676FCBBD8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A3BFFC69-9473-45FD-8267-D19676FCBBD8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

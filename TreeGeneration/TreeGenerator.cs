@@ -1,8 +1,10 @@
-﻿using System;
+﻿using GameModels;
+using GameModels.Definitions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace GameModels.Definitions.Builders
+namespace TreeGeneration
 {
     public partial class TreeGenerator : BaseTechTree<BuildingBuilder, UnitBuilder>
     {
