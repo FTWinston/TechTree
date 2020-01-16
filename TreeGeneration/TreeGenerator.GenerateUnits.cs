@@ -96,32 +96,61 @@ namespace TreeGeneration
             }
         }
 
-        private void GenerateAllRounder(UnitBuilder unit, double value)
+        private void GenerateAllRounder(UnitBuilder unit, double remainingValue)
         {
-            // TODO: give it an attack, two minor stat boosts, and a random ability
+            // Spend roughly half its value on an attack
+            remainingValue -= AddFeature(unit, SelectAttack, remainingValue * Random.NextDouble(0.35, 0.55));
+
+            // Spend roughly half of the remainder on a utility ability.
+            remainingValue -= AddFeature(unit, SelectUtility, remainingValue * Random.NextDouble(0.25, 0.65));
+
+            // Spend the remainder on 2-3 stat boosts ... health, armor, speed, reduced cost, reduced build time
+            remainingValue -= AdjustOneStat(unit, remainingValue * Random.NextDouble(0.3, 0.6));
+
+            if (Random.Next(3) == 0)
+                remainingValue -= AdjustOneStat(unit, remainingValue * Random.NextDouble(0.3, 0.6));
+
+            remainingValue -= AdjustOneStat(unit, remainingValue);
+
+            AdjustForRemainingValue(unit, remainingValue);
         }
 
-        private void GenerateDamageDealer(UnitBuilder unit, double value)
+        private void GenerateDamageDealer(UnitBuilder unit, double remainingValue)
         {
-            // TODO: give it a powerful attack, a damaging ability, and a minor stat reduction
+            // spend most of its value on an attack
+            remainingValue -= AddFeature(unit, SelectAttack, remainingValue * Random.NextDouble(0.65, 0.85));
+
+            // buy back value by reducing health
+            remainingValue -= AdjustHealthStat(unit, -remainingValue * Random.NextDouble(0.7, 1.5));
+
+            // spend remaining value on an offensive ability, or a utility (less likely)
+            if (Random.Next(4) == 0)
+                remainingValue -= AddFeature(unit, SelectUtility, remainingValue);
+            else
+                remainingValue -= AddFeature(unit, SelectOffensiveAbility, remainingValue);
+
+            // any leftover value can go on a stat boost
+            remainingValue -= AdjustOneStat(unit, remainingValue);
+
+            AdjustForRemainingValue(unit, remainingValue);
         }
 
-        private void GenerateScout(UnitBuilder unit, double value)
+        private void GenerateScout(UnitBuilder unit, double remainingValue)
         {
             // TODO: give it a weak attack, a health reduction and a big speed boost, plus a utility ability
         }
 
-        private void GenerateMeatShield(UnitBuilder unit, double value)
+        private void GenerateMeatShield(UnitBuilder unit, double remainingValue)
         {
             // TODO: give it a health boost, an armor boost, an attack, plus a random ability
         }
 
-        private void GenerateSupportCaster(UnitBuilder unit, double value)
+        private void GenerateSupportCaster(UnitBuilder unit, double remainingValue)
         {
             // TODO: give it reduced health, mana, either three support abilities or two support plus one offensive, plus either make it a detector or give it an attack.
         }
 
-        private void GenerateOffensiveCaster(UnitBuilder unit, double value)
+        private void GenerateOffensiveCaster(UnitBuilder unit, double remainingValue)
         {
             // TODO: give it mana, two offensive abilities plus one support or utility, and possibly give it a weak attack
         }
