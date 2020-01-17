@@ -65,6 +65,8 @@ namespace TreeGeneration
 
             BaseUnitMoveRange = Random.Next(2.3, 5.2);
 
+            PrepareFeatureSelection();
+
             CreateUnits();
 
             GenerateBuildings();
