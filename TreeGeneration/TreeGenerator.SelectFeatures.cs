@@ -110,5 +110,10 @@ namespace TreeGeneration
         {
             throw new NotImplementedException();
         }
+
+        private Feature SelectDefensiveAbility(ref double valueBudget)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

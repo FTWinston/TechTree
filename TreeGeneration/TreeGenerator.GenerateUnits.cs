@@ -65,9 +65,14 @@ namespace TreeGeneration
 
             unit.MoveRange = BaseUnitMoveRange;
 
+            // TODO: standard health, armor, (mana?) cost, supply and build time values for its value
+
             unit.BuildTime = Math.Max(1, Random.Next(value * 0.5, value * 1.25));
 
             unit.Health = Random.Next(value * 5, value * 8)
+                .RoundNearest(5);
+
+            unit.Mana = Random.Next(value * 40, value * 60)
                 .RoundNearest(5);
 
             unit.Armor = 0;
@@ -76,15 +81,19 @@ namespace TreeGeneration
             {
                 case UnitRole.AllRounder:
                 default:
+                    unit.Mana = 0;
                     GenerateAllRounder(unit, value);
                     break;
                 case UnitRole.DamageDealer:
+                    unit.Mana = 0;
                     GenerateDamageDealer(unit, value);
                     break;
                 case UnitRole.Scout:
+                    unit.Mana = 0;
                     GenerateScout(unit, value);
                     break;
                 case UnitRole.MeatShield:
+                    unit.Mana = 0;
                     GenerateMeatShield(unit, value);
                     break;
                 case UnitRole.SupportCaster:
@@ -137,22 +146,92 @@ namespace TreeGeneration
 
         private void GenerateScout(UnitBuilder unit, double remainingValue)
         {
-            // TODO: give it a weak attack, a health reduction and a big speed boost, plus a utility ability
+            // give it a fairly weak attack
+            remainingValue -= AddFeature(unit, SelectAttack, remainingValue * Random.NextDouble(0.15, 0.25));
+
+            // buy back value by reducing health
+            remainingValue -= AdjustHealthStat(unit, -remainingValue * Random.NextDouble(0.1, 0.35));
+
+            // a big speed boost
+            remainingValue -= AdjustMoveRangeStat(unit, remainingValue * Random.NextDouble(0.35, 0.7));
+
+            // and a utility ability
+            remainingValue -= AddFeature(unit, SelectUtility, remainingValue * Random.NextDouble(0.75, 1));
+
+            // any leftover value can go on a stat boost
+            remainingValue -= AdjustOneStat(unit, remainingValue);
+
+            AdjustForRemainingValue(unit, remainingValue);
         }
 
         private void GenerateMeatShield(UnitBuilder unit, double remainingValue)
         {
-            // TODO: give it a health boost, an armor boost, an attack, plus a random ability
+            // give it an attack
+            remainingValue -= AddFeature(unit, SelectAttack, remainingValue * Random.NextDouble(0.2, 0.45));
+
+            // boost its health and armor
+            remainingValue -= AdjustHealthStat(unit, remainingValue * Random.NextDouble(0.35, 0.65));
+            remainingValue -= AdjustArmorStat(unit, remainingValue * Random.NextDouble(0.4, 0.6));
+
+            // plus a random ability
+            if (Random.Next(2) == 0)
+                remainingValue -= AddFeature(unit, SelectUtility, remainingValue);
+            else
+                remainingValue -= AddFeature(unit, SelectOffensiveAbility, remainingValue);
+
+            // any leftover value can go on a stat boost
+            remainingValue -= AdjustOneStat(unit, remainingValue);
+
+            AdjustForRemainingValue(unit, remainingValue);
         }
 
         private void GenerateSupportCaster(UnitBuilder unit, double remainingValue)
         {
-            // TODO: give it reduced health, mana, either three support abilities or two support plus one offensive, plus either make it a detector or give it an attack.
+            // buy back value by reducing health
+            remainingValue -= AdjustHealthStat(unit, -remainingValue * Random.NextDouble(0.15, 0.55));
+
+            // either three support abilities or two support plus one offensive
+            remainingValue -= AddFeature(unit, SelectDefensiveAbility, remainingValue * Random.NextDouble(0.2, 0.5));
+
+            remainingValue -= AddFeature(unit, SelectDefensiveAbility, remainingValue * Random.NextDouble(0.3, 0.7));
+
+            if (Random.Next(2) == 0)
+                remainingValue -= AddFeature(unit, SelectOffensiveAbility, remainingValue * Random.NextDouble(0.5, 0.8));
+            else
+                remainingValue -= AddFeature(unit, SelectDefensiveAbility, remainingValue * Random.NextDouble(0.5, 0.8));
+
+            // plus either make it a detector or give it an attack.
+            if (Random.Next(2) == 0)
+                unit.IsDetector = true;
+            else
+                remainingValue -= AddFeature(unit, SelectAttack, remainingValue * Random.NextDouble(0.75, 1));
+
+            // any leftover value can go on a stat boost
+            remainingValue -= AdjustOneStat(unit, remainingValue);
+
+            AdjustForRemainingValue(unit, remainingValue);
         }
 
         private void GenerateOffensiveCaster(UnitBuilder unit, double remainingValue)
         {
-            // TODO: give it mana, two offensive abilities plus one support or utility, and possibly give it a weak attack
+            // two offensive abilities plus one support or utility
+            remainingValue -= AddFeature(unit, SelectOffensiveAbility, remainingValue * Random.NextDouble(0.2, 0.5));
+
+            remainingValue -= AddFeature(unit, SelectOffensiveAbility, remainingValue * Random.NextDouble(0.3, 0.7));
+
+            if (Random.Next(2) == 0)
+                remainingValue -= AddFeature(unit, SelectUtility, remainingValue * Random.NextDouble(0.7, 0.9));
+            else
+                remainingValue -= AddFeature(unit, SelectDefensiveAbility, remainingValue * Random.NextDouble(0.7, 0.9));
+
+            // and possibly give it a weak attack
+            if (Random.Next(3) == 0)
+                remainingValue -= AddFeature(unit, SelectAttack, remainingValue * Random.NextDouble(0.85, 1));
+
+            // any leftover value can go on a stat boost
+            remainingValue -= AdjustOneStat(unit, remainingValue);
+
+            AdjustForRemainingValue(unit, remainingValue);
         }
     }
 }
