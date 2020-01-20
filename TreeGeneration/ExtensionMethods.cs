@@ -27,6 +27,11 @@ namespace TreeGeneration
 
         public static int RoundNearest(this double value, int multiple)
         {
+            return (int)Math.Round(value / multiple * multiple);
+        }
+
+        public static int RoundNearestDown(this double value, int multiple)
+        {
             return (int)(value / multiple * multiple);
         }
 

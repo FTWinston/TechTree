@@ -87,34 +87,99 @@ namespace TreeGeneration
             }
         }
 
+        double ValuePerHealth = 0.01;
+
         private double AdjustHealthStat(UnitBuilder unit, double valueBudget)
         {
-            throw new NotImplementedException();
+            var fullConversionGain = valueBudget / ValuePerHealth;
+            var actualGain = fullConversionGain.RoundNearestDown(5);
+            var actualSpend = actualGain * ValuePerHealth;
+
+            unit.Health += actualGain;
+
+            return actualSpend;
         }
+
+        double ValuePerArmor = 0.2;
 
         private double AdjustArmorStat(UnitBuilder unit, double valueBudget)
         {
-            throw new NotImplementedException();
+            var fullConversionGain = valueBudget / ValuePerArmor;
+            var actualGain = fullConversionGain.RoundNearestDown(1);
+            var actualSpend = actualGain * ValuePerArmor;
+
+            unit.Armor += actualGain;
+
+            return actualSpend;
         }
+
+        double ValuePerCostMultiplierIncrement = 0.1;
 
         private double AdjustCostStat(UnitBuilder unit, double valueBudget)
         {
-            throw new NotImplementedException();
+            var fullConversionGain = valueBudget / ValuePerCostMultiplierIncrement;
+            var actualGain = fullConversionGain.RoundNearestDown(1);
+            var actualSpend = actualGain * ValuePerCostMultiplierIncrement;
+
+            foreach (var cost in unit.Cost)
+                if (cost.Key != ResourceType.Supply)
+                    unit.Cost[cost.Key] = cost.Value * -actualGain;
+
+            return actualSpend;
         }
+
+        double ValuePerBuildTimeReduction = 0.3;
 
         private double AdjustBuildTimeStat(UnitBuilder unit, double valueBudget)
         {
-            throw new NotImplementedException();
+            var fullConversionGain = valueBudget / ValuePerBuildTimeReduction;
+            var actualGain = fullConversionGain.RoundNearestDown(1);
+            
+            if (actualGain >= unit.BuildTime)
+                actualGain = unit.BuildTime - 1;
+
+            if (actualGain <= 0)
+                return 0;
+
+            var actualSpend = actualGain * ValuePerBuildTimeReduction;
+
+            unit.BuildTime -= actualGain;
+
+            return actualSpend;
         }
+
+        double ValuePerSupplyCostReduction = 0.2;
 
         private double AdjustSupplyCostStat(UnitBuilder unit, double valueBudget)
         {
-            throw new NotImplementedException();
+            var fullConversionGain = valueBudget / ValuePerSupplyCostReduction;
+            var actualGain = fullConversionGain.RoundNearestDown(1);
+
+            if (actualGain >= unit.Cost[ResourceType.Supply])
+                actualGain = unit.Cost[ResourceType.Supply] - 1;
+
+            if (actualGain <= 0)
+                return 0;
+
+            var actualSpend = actualGain * ValuePerSupplyCostReduction;
+
+            unit.Cost[ResourceType.Supply] -= actualGain;
+
+            return actualSpend;
         }
+
+        double ValuePerMoveRange = 0.4;
 
         private double AdjustMoveRangeStat(UnitBuilder unit, double valueBudget)
         {
-            throw new NotImplementedException();
+            var fullConversionGain = valueBudget / ValuePerMoveRange;
+            var actualGain = fullConversionGain.RoundNearestDown(1);
+
+            var actualSpend = actualGain * ValuePerMoveRange;
+
+            unit.MoveRange += actualGain;
+
+            return actualSpend;
         }
 
         private void AdjustForRemainingValue(UnitBuilder unit, double remainingValue)
