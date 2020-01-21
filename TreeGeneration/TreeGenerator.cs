@@ -140,12 +140,13 @@ namespace TreeGeneration
 
         private Dictionary<ResourceType, int> SplitResourceCosts(int overallCost, double progressionFraction)
         {
-            var iSubsequent = (int)Math.Ceiling(progressionFraction * ResourceCostRatioKeyframes.Count);
+            var scaledProgression = progressionFraction * (ResourceCostRatioKeyframes.Count - 1.00000000001);
+            var iPrevious = (int)Math.Floor(scaledProgression);
 
-            var previousFrame = ResourceCostRatioKeyframes[iSubsequent - 1];
-            var subsequentFrame = ResourceCostRatioKeyframes[iSubsequent];
-            var subsequentFraction = iSubsequent - progressionFraction;
-            var previousFraction = 1 - subsequentFraction;
+            var previousFrame = ResourceCostRatioKeyframes[iPrevious];
+            var subsequentFrame = ResourceCostRatioKeyframes[iPrevious + 1];
+            var previousFraction = scaledProgression - iPrevious;
+            var subsequentFraction = 1 - previousFraction;
 
             var result = new Dictionary<ResourceType, int>();
 

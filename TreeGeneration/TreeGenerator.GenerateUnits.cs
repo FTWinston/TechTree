@@ -119,14 +119,12 @@ namespace TreeGeneration
             remainingValue -= AddFeature(unit, SelectUtility, remainingValue * Random.NextDouble(0.25, 0.65));
 
             // Spend the remainder on 2-3 stat boosts ... health, armor, speed, reduced cost, reduced build time
-            remainingValue -= AdjustOneStat(unit, remainingValue * Random.NextDouble(0.3, 0.6));
+            remainingValue -= AdjustRandomStat(unit, remainingValue * Random.NextDouble(0.3, 0.6));
 
             if (Random.Next(3) == 0)
-                remainingValue -= AdjustOneStat(unit, remainingValue * Random.NextDouble(0.3, 0.6));
-
-            remainingValue -= AdjustOneStat(unit, remainingValue);
-
-            AdjustForRemainingValue(unit, remainingValue);
+                remainingValue -= AdjustRandomStat(unit, remainingValue * Random.NextDouble(0.3, 0.6));
+            
+            AdjustStats(unit, remainingValue);
         }
 
         private void GenerateDamageDealer(UnitBuilder unit, double remainingValue)
@@ -143,10 +141,7 @@ namespace TreeGeneration
             else
                 remainingValue -= AddFeature(unit, SelectOffensiveAbility, remainingValue);
 
-            // any leftover value can go on a stat boost
-            remainingValue -= AdjustOneStat(unit, remainingValue);
-
-            AdjustForRemainingValue(unit, remainingValue);
+            AdjustStats(unit, remainingValue);
         }
 
         private void GenerateScout(UnitBuilder unit, double remainingValue)
@@ -163,10 +158,7 @@ namespace TreeGeneration
             // and a utility ability
             remainingValue -= AddFeature(unit, SelectUtility, remainingValue * Random.NextDouble(0.75, 1));
 
-            // any leftover value can go on a stat boost
-            remainingValue -= AdjustOneStat(unit, remainingValue);
-
-            AdjustForRemainingValue(unit, remainingValue);
+            AdjustStats(unit, remainingValue);
         }
 
         private void GenerateMeatShield(UnitBuilder unit, double remainingValue)
@@ -184,10 +176,7 @@ namespace TreeGeneration
             else
                 remainingValue -= AddFeature(unit, SelectOffensiveAbility, remainingValue);
 
-            // any leftover value can go on a stat boost
-            remainingValue -= AdjustOneStat(unit, remainingValue);
-
-            AdjustForRemainingValue(unit, remainingValue);
+            AdjustStats(unit, remainingValue);
         }
 
         private void GenerateSupportCaster(UnitBuilder unit, double remainingValue)
@@ -211,10 +200,7 @@ namespace TreeGeneration
             else
                 remainingValue -= AddFeature(unit, SelectAttack, remainingValue * Random.NextDouble(0.75, 1));
 
-            // any leftover value can go on a stat boost
-            remainingValue -= AdjustOneStat(unit, remainingValue);
-
-            AdjustForRemainingValue(unit, remainingValue);
+            AdjustStats(unit, remainingValue);
         }
 
         private void GenerateOffensiveCaster(UnitBuilder unit, double remainingValue)
@@ -233,10 +219,7 @@ namespace TreeGeneration
             if (Random.Next(3) == 0)
                 remainingValue -= AddFeature(unit, SelectAttack, remainingValue * Random.NextDouble(0.85, 1));
 
-            // any leftover value can go on a stat boost
-            remainingValue -= AdjustOneStat(unit, remainingValue);
-
-            AdjustForRemainingValue(unit, remainingValue);
+            AdjustStats(unit, remainingValue);
         }
     }
 }
