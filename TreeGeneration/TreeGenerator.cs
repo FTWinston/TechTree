@@ -56,7 +56,7 @@ namespace TreeGeneration
 
             nextBuildingSymbol = 0;
             nextUnitSymbol = 0;
-            
+
             BaseUnitValue = Random.NextDouble(1, 2);
             MaxUnitValue = Random.NextDouble(3, 5);
 
@@ -99,6 +99,66 @@ namespace TreeGeneration
             return Units.Values
                 .OrderBy(u => buildingOrder.IndexOf(Buildings[u.Prerequisite ?? u.BuiltBy]))
                 .ToList();
+        }
+
+        List<Dictionary<ResourceType, double>> ResourceCostRatioKeyframes = new List<Dictionary<ResourceType, double>>();
+
+        private void DetermineResourceCostRatios()
+        {
+            ResourceCostRatioKeyframes.Clear();
+
+            switch (Resources.Count)
+            {
+                case 1:
+                    ResourceCostRatioKeyframes.Add(CreateResourceCostKeyframe(100));
+                    break;
+                case 2:
+                    var scale = Random.NextDouble(0.25, 0.5);
+                    ResourceCostRatioKeyframes.Add(CreateResourceCostKeyframe(100, scale));
+                    ResourceCostRatioKeyframes.Add(CreateResourceCostKeyframe(0, 1 - scale));
+                    break;
+                case 3:
+                default:
+                    var frame1Scale = Random.NextDouble(0.25, 0.5);
+                    var frame2Scale = Random.NextDouble(0.25, 0.75);
+                    ResourceCostRatioKeyframes.Add(CreateResourceCostKeyframe(100, frame1Scale, 0));
+                    ResourceCostRatioKeyframes.Add(CreateResourceCostKeyframe(0, 1 - frame1Scale, frame2Scale));
+                    ResourceCostRatioKeyframes.Add(CreateResourceCostKeyframe(0, 0, 1 - frame2Scale));
+                    break;
+            }
+        }
+
+        private Dictionary<ResourceType, double> CreateResourceCostKeyframe(params double[] values)
+        {
+            var keyframe = new Dictionary<ResourceType, double>();
+
+            for (int iValue = 0; iValue < values.Length; iValue++)
+                keyframe[Resources[iValue]] = values[iValue];
+
+            return keyframe;
+        }
+
+        private Dictionary<ResourceType, int> SplitResourceCosts(int overallCost, double progressionFraction)
+        {
+            var iSubsequent = (int)Math.Ceiling(progressionFraction * ResourceCostRatioKeyframes.Count);
+
+            var previousFrame = ResourceCostRatioKeyframes[iSubsequent - 1];
+            var subsequentFrame = ResourceCostRatioKeyframes[iSubsequent];
+            var subsequentFraction = iSubsequent - progressionFraction;
+            var previousFraction = 1 - subsequentFraction;
+
+            var result = new Dictionary<ResourceType, int>();
+
+            foreach (var resource in previousFrame.Keys)
+            {
+                double resourceScale = previousFrame[resource] * previousFraction
+                    + subsequentFrame[resource] * subsequentFraction;
+
+                result[resource] = (resourceScale * overallCost)
+                    .RoundNearest(10);
+            }
+
+            return result;
         }
     }
 }

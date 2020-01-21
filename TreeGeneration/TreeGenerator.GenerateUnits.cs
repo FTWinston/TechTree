@@ -52,12 +52,12 @@ namespace TreeGeneration
                     var techProgressionFraction = (float)unitsTreeOrder.IndexOf(unit) / unitsTreeOrder.Count;
                     var unitValue = BaseUnitValue + (MaxUnitValue - BaseUnitValue) * techProgressionFraction;
 
-                    GenerateUnit(unit, role, unitValue);
+                    GenerateUnit(unit, role, unitValue, techProgressionFraction);
                 }
             }
         }
 
-        private void GenerateUnit(UnitBuilder unit, UnitRole role, double value)
+        private void GenerateUnit(UnitBuilder unit, UnitRole role, double value, double techProgressionFraction)
         {
             unit.AllocateName(UsedNames);
 
@@ -65,17 +65,22 @@ namespace TreeGeneration
 
             unit.MoveRange = BaseUnitMoveRange;
 
-            // TODO: standard health, armor, (mana?) cost, supply and build time values for its value
+            // standard health, armor, mana, cost, supply cost and build time values for its value
 
-            unit.BuildTime = Math.Max(1, Random.Next(value * 0.5, value * 1.25));
+            unit.BuildTime = Math.Max(1, Random.Next(value * 0.75, value * 0.95));
 
-            unit.Health = Random.Next(value * 5, value * 8)
+            var overallCost = (int)value * Random.Next(25, 40);
+            unit.Cost = SplitResourceCosts(overallCost, techProgressionFraction);
+
+            unit.Cost[GameModels.Definitions.ResourceType.Supply] = Math.Max(1, Random.Next(value * 0.75, value * 0.95));
+
+            unit.Health = Random.Next(value * 20, value * 35)
                 .RoundNearest(5);
 
             unit.Mana = Random.Next(value * 40, value * 60)
                 .RoundNearest(5);
 
-            unit.Armor = 0;
+            unit.Armor = Random.Next(value * 0.25, value * 0.9);
 
             switch (role)
             {

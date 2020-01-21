@@ -92,6 +92,8 @@ namespace TreeGeneration
                 }
             }
 
+            DetermineResourceCostRatios();
+
             return primaryBuildingID.Value;
         }
 
