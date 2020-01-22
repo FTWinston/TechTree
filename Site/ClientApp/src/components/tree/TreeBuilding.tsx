@@ -1,10 +1,10 @@
 import React, { FunctionComponent, useMemo, useContext } from 'react';
 import './TreeBuilding.css';
-import { Icon, IconStyle } from './Icon';
+import { Icon, IconStyle } from '../common/Icon';
 import { TreeLink } from './TreeLink';
 import { TreeContext } from './TechTree';
 import { TreeUnit } from './TreeUnit';
-import { EntityDetails } from './EntityDetails';
+import { EntityDetails } from '../common/EntityDetails';
 
 export enum Connection {
     None = 0,

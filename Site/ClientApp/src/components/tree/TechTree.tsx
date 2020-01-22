@@ -1,9 +1,9 @@
 import React, { FunctionComponent, useMemo } from 'react';
-import { ITechTree } from '../data/ITechTree';
+import { ITechTree } from '../../data/definitions/ITechTree';
 import { TreeBuilding, Connection } from './TreeBuilding';
 import './TechTree.css';
-import { IBuildingType } from '../data/IBuildingType';
-import { ReadonlyDictionary } from '../data/Dictionary';
+import { IBuildingType } from '../../data/definitions/IBuildingType';
+import { ReadonlyDictionary } from '../../data/Dictionary';
 
 interface Props {
     data: ITechTree;

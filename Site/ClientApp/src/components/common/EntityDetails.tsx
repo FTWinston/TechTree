@@ -1,5 +1,5 @@
-import React, { FunctionComponent, useMemo, useContext } from 'react';
-import { IEntityType } from '../data/IEntityType';
+import React, { FunctionComponent } from 'react';
+import { IEntityType } from '../../data/definitions/IEntityType';
 import './EntityDetails.css';
 
 interface Props {

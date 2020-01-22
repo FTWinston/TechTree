@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
-import { ITechTree } from './data/ITechTree';
-import { TechTree } from './components/TechTree';
+import { ITechTree } from './data/definitions/ITechTree';
+import { TechTree } from './components/tree';
 
 const App: React.FC = () => {
     const [data, setData] = useState<ITechTree>();

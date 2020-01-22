@@ -1,7 +1,7 @@
 import React, { FunctionComponent, useMemo, useContext } from 'react';
-import { Icon, IconStyle } from './Icon';
+import { Icon, IconStyle } from '../common/Icon';
 import { TreeContext } from './TechTree';
-import { EntityDetails } from './EntityDetails';
+import { EntityDetails } from '../common/EntityDetails';
 
 interface Props {
     id: number;

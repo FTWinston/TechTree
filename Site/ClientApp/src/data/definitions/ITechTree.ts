@@ -1,4 +1,4 @@
-import { ReadonlyDictionary } from './Dictionary';
+import { ReadonlyDictionary } from '../Dictionary';
 import { IBuildingType } from './IBuildingType';
 import { IUnitType } from './IUnitType';
 
