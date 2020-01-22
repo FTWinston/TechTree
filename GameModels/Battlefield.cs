@@ -1,15 +1,12 @@
 ﻿using GameModels.Instances;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GameModels
 {
-    public class Map
+    public class Battlefield
     {
-        public Map(int width, int height)
+        public Battlefield(int width, int height)
         {
             Width = width;
             Height = height;
