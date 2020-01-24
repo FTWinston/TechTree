@@ -1,0 +1,19 @@
+.entityField__label {
+    min-width: 5em;
+}
+
+.entityField__value {
+    font-weight: bold;
+}
+
+.entityField--health .entityField__value {
+    color: salmon;
+}
+
+.entityField--armor .entityField__value {
+    color: goldenrod;
+}
+
+.entityField--mana .entityField__value {
+    color: cornflowerblue;
+}
