@@ -55,7 +55,7 @@ export const Battlefield: FunctionComponent<Props> = props => {
     );
 
     const clicked = (x: number, y: number) => {
-        const cellIndex = getCellIndexAtPoint(x, y);
+        const cellIndex = getCellIndexAtPoint(x, y, cellRadius, props.data.width);
         const cell = props.data.cells[cellIndex];
 
         if (!cell) {
@@ -63,7 +63,7 @@ export const Battlefield: FunctionComponent<Props> = props => {
             return;
         }
 
-        console.log(`clicked cell ${cellIndex} at ${x}, ${y}`);
+        console.log(`clicked cell ${cellIndex} type ${cell.type} at ${x}, ${y}`);
         // cell.selected = !cell.selected;
         redraw();
     }
@@ -194,31 +194,30 @@ function drawHex(ctx: CanvasRenderingContext2D, cell: ICell, radius: number) {
     ctx.fill();
 }
 
-function getCellIndexAtPoint(screenX: number, screenY: number) {
-    /*
-    var mapX = screenX - this.refs.canvas.offsetLeft + this.refs.outer.scrollLeft + this.props.map.minX * this.props.cellRadius;
-    var mapY = screenY - this.refs.canvas.offsetTop + this.refs.outer.scrollTop + this.props.map.minY * this.props.cellRadius;
+function getCellIndexAtPoint(x: number, y: number, cellRadius: number, mapWidth: number) {
+    x -= cellRadius;
+    y -= cellRadius;
 
-    var fCol = (mapX * Math.sqrt(3) - mapY) / 3 / this.props.cellRadius;
-    var fRow = mapY * 2 / 3 / this.props.cellRadius;
-    var fThirdCoord = - fCol - fRow;
+    const fCol = (x * Math.sqrt(3) - y) / 3 / cellRadius;
+    const fRow = y * 2 / 3 / cellRadius;
+    const fThirdCoord = -fCol - fRow;
 
-    var rCol = Math.round(fCol);
-    var rRow = Math.round(fRow);
-    var rThird = Math.round(fThirdCoord);
+    let iCol = Math.round(fCol);
+    let iRow = Math.round(fRow);
+    const iThird = Math.round(fThirdCoord);
 
-    var colDiff = Math.abs(rCol - fCol);
-    var rowDiff = Math.abs(rRow - fRow);
-    var thirdDiff = Math.abs(rThird - fThirdCoord);
+    const colDiff = Math.abs(iCol - fCol);
+    const rowDiff = Math.abs(iRow - fRow);
+    const thirdDiff = Math.abs(iThird - fThirdCoord);
 
     if (colDiff >= rowDiff) {
-        if (colDiff >= thirdDiff)
-            rCol = - rRow - rThird;
+        if (colDiff >= thirdDiff) {
+            iCol = -iRow - iThird;
+        }
     }
-    else if (rowDiff >= colDiff && rowDiff >= thirdDiff)
-        rRow = - rCol - rThird;
+    else if (rowDiff >= colDiff && rowDiff >= thirdDiff) {
+        iRow = -iCol - iThird;
+    }
 
-    return rCol + rRow * this.props.map.Width;
-    */
-    return 0;
+    return iCol + iRow * mapWidth;
 }
