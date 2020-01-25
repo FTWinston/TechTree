@@ -3,6 +3,7 @@ import './App.css';
 import { TechTree } from './components/tree';
 import { ITechTree } from './data/definitions/ITechTree';
 import { IBattlefield } from './data/instances/IBattlefield';
+import { Battlefield } from './components/Battlefield';
 
 const App: React.FC = () => {
     const [treeData, setTreeData] = useState<ITechTree>();
@@ -10,13 +11,18 @@ const App: React.FC = () => {
 
     useEffect(() => { loadData(setTreeData, setBattlefield) }, []);
 
-    const treeOrMessage = treeData === undefined
-        ? <div>please wait</div>
-        : <TechTree data={treeData} />
+    const treeDisplay = treeData
+        ? <TechTree data={treeData} />
+        : undefined
+
+    const battlefieldDisplay = battlefield
+        ? <Battlefield data={battlefield} />
+        : <div>please wait</div>;
 
     return (
         <div className="App" onClick={() => loadData(setTreeData, setBattlefield)}>
-            {treeOrMessage}
+            {battlefieldDisplay}
+            {treeDisplay}
         </div>
     );
 }

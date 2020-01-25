@@ -1,0 +1,21 @@
+.scrollCanvas {
+    position: relative;
+}
+
+.scrollCanvas__display,
+.scrollCanvas__scroll {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+}
+
+.scrollCanvas__scroll {
+    overflow: scroll;
+}
+
+.scrollCanvas__display,
+.scrollCanvas__size {
+    pointer-events: none;
+}
