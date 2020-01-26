@@ -39,7 +39,7 @@ export const Battlefield: FunctionComponent<Props> = props => {
         [canvas.current]
     );
 
-    const clicked = /*useMemo(
+    const onClick = /*useMemo(
         () => */(x: number, y: number) => {
             const cellIndex = getCellIndexAtPoint(x, y, cellRadius, props.data.width);
             const cell = props.data.cells[cellIndex + 9]; // TODO: WORK OUT WHY THIS IS EXACLTY 9 OFF!
@@ -78,7 +78,7 @@ export const Battlefield: FunctionComponent<Props> = props => {
             contentWidth={battlefieldWidth}
             contentHeight={battlefieldHeight}
             boundsChanged={setBounds}
-            clicked={clicked}
+            onClick={onClick}
         />
     );
 }

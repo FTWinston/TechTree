@@ -6,7 +6,7 @@ interface Props {
     contentWidth: number;
     contentHeight: number;
     boundsChanged: (bounds: DOMRect) => void;
-    clicked?: (x: number, y: number) => void;
+    onClick?: (x: number, y: number) => void;
 }
 
 export const ScrollCanvas = forwardRef<HTMLCanvasElement, Props>((props, ref) => {
@@ -18,40 +18,26 @@ export const ScrollCanvas = forwardRef<HTMLCanvasElement, Props>((props, ref) =>
         canvasRef = ref as React.RefObject<HTMLCanvasElement>;
     }
 
-    const onClick = useMemo(
+    let onClick = useMemo(
         () => {
-            const { clicked } = props;
-            if (!clicked || !outerRef.current) {
+            const { onClick } = props;
+            if (!onClick || !outerRef.current) {
                 return undefined;
             }
 
             const outer = outerRef.current;
 
             return (e: React.MouseEvent<HTMLDivElement>) => {
-                const scroller = e.currentTarget;
-                
-                /*
-                console.log(`root offset ${outerRef.current!.offsetLeft}, ${outerRef.current!.offsetTop}`); // always from top of the PAGE (or its parent), ignore scroll
+                const { x, y } = resolvePosition(e, outer);
 
-                console.log(`scroller scroll ${scroller.scrollLeft}, ${scroller.scrollTop}`); // scroll pos
-                console.log(`scroller offset ${scroller.offsetLeft}, ${scroller.offsetLeft}`); // 0
-                console.log(`scroller client ${scroller.clientLeft}, ${scroller.clientTop}`); // 0
-
-                console.log(`click client ${e.clientX} ${e.clientY}`); // same
-                console.log(`click page ${e.pageX} ${e.pageY}`);       // same ... use this one
-                console.log(`click screen ${e.screenX} ${e.screenY}`);
-                */
-
-                const outerBounds = outer.getBoundingClientRect();
-
-                const x = e.clientX - outerBounds.left + scroller.scrollLeft;
-                const y = e.clientY - outerBounds.top + scroller.scrollTop;
-
-                clicked(x, y);
+                onClick(x, y);
             }
         },
-        [props.clicked]
+        [props.onClick]
     );
+    if (!props.onClick) {
+        onClick = undefined;
+    }
 
     const scrollStyle = useMemo(
         () => ({
@@ -151,6 +137,16 @@ export const ScrollCanvas = forwardRef<HTMLCanvasElement, Props>((props, ref) =>
         </div>
     );
 })
+
+function resolvePosition(e: React.MouseEvent<HTMLDivElement, MouseEvent>, outer: HTMLDivElement) {
+    const scroller = e.currentTarget;
+    const outerBounds = outer.getBoundingClientRect();
+    
+    return {
+        x: e.clientX - outerBounds.left + scroller.scrollLeft,
+        y: e.clientY - outerBounds.top + scroller.scrollTop,
+    };
+}
 
 function getScrollbarSize() {
     let outer = document.createElement('div');
