@@ -23,19 +23,26 @@ namespace TreeGeneration
             RandomizeCells(random, allCells);
 
             // TODO: place start positions and resources, ensure paths between them
-
             // TODO: remove these from the list of mutable cells
-            var mutableCells = allCells
-                .Where(cell => cell.Type != CellType.OutOfBounds) // This is a placeholder only
-                .ToList();
-
+            var mutableCells = new List<Cell>(allCells);
 
             for (var i = 0; i < 8; i++)
             {
-                RunCellularAutomataStep(battlefield, mutableCells);
+                RunCellularAutomataStep(battlefield, mutableCells, ResolveNewWaterAndUnpassableType);
             }
 
-            // TODO: remove unconnected open or water areas
+            // TODO: fill unconnected land or water areas with unpassable
+
+            var flatCells = mutableCells
+                .Where(cell => cell.Type == CellType.Flat)
+                .ToList();
+
+            MakeDifficult(random, flatCells);
+
+            for (var i = 0; i < 8; i++)
+            {
+                RunCellularAutomataStep(battlefield, mutableCells, ResolveNewDifficultType);
+            }
 
             return battlefield;
         }
@@ -74,9 +81,9 @@ namespace TreeGeneration
                 CellType type;
                 switch (random.Next(3))
                 {
-                    case 1:
+                    case 0:
                         type = CellType.Unpassable; break;
-                    case 2:
+                    case 1:
                         type = CellType.Water; break;
                     default:
                         type = CellType.Flat; break;
@@ -86,59 +93,90 @@ namespace TreeGeneration
             }
         }
 
-        private void RunCellularAutomataStep(Battlefield battlefield, List<Cell> mutableCells)
+        private void RunCellularAutomataStep(Battlefield battlefield, List<Cell> mutableCells, Func<Cell, Battlefield, CellType?> rules)
         {
             var results = new Dictionary<Cell, CellType>();
 
             foreach (var cell in mutableCells) {
-                // Water and unpassable becomes flat if < 3 around it have the same type.
-                // Flat becomes unpassable if > 3 around it are unpassable,
-                // and becomes water if > 3 around it are water.
-
-                var neighbours = battlefield.GetCellsWithinDistance(cell, 1);
-                var numAdjacentUnpassable = neighbours
-                    .Where(c => c?.Type == CellType.Unpassable)
-                    .Count();
-
-                var numAdjacentWater = neighbours
-                    .Where(c => c?.Type == CellType.Water)
-                    .Count();
-
-                CellType newType;
-
-                if (cell.Type == CellType.Unpassable)
-                {
-                    if (numAdjacentUnpassable < 3)
-                        newType = CellType.Flat;
-                    else
-                        continue;
-                }
-                else if (cell.Type == CellType.Water)
-                {
-                    if (numAdjacentWater < 3)
-                        newType = CellType.Flat;
-                    else
-                        continue;
-                }
-                else if (cell.Type == CellType.Flat)
-                {
-                    if (numAdjacentUnpassable > 3)
-                        newType = CellType.Unpassable;
-                    else if (numAdjacentWater > 3)
-                        newType = CellType.Water;
-                    else
-                        continue;
-                }
-                else
-                    continue;
-
-                results[cell] = newType;
+                var newType = rules(cell, battlefield);
+                if (newType.HasValue)
+                    results[cell] = newType.Value;
             }
 
             foreach (var kvp in results)
             {
                 kvp.Key.Type = kvp.Value;
             }
+        }
+
+        private CellType? ResolveNewWaterAndUnpassableType(Cell cell, Battlefield battlefield)
+        {
+            // Water and unpassable becomes flat if < 3 around it have the same type.
+            // Flat becomes unpassable if > 3 around it are unpassable,
+            // and becomes water if > 3 around it are water.
+            var neighbours = battlefield.GetCellsWithinDistance(cell, 1);
+
+            var numAdjacentUnpassable = neighbours
+                .Where(c => c?.Type == CellType.Unpassable)
+                .Count();
+
+            var numAdjacentWater = neighbours
+                .Where(c => c?.Type == CellType.Water)
+                .Count();
+
+            if (cell.Type == CellType.Unpassable)
+            {
+                if (numAdjacentUnpassable < 3)
+                    return CellType.Flat;
+            }
+            else if (cell.Type == CellType.Water)
+            {
+                if (numAdjacentWater < 3)
+                    return CellType.Flat;
+            }
+            else if (cell.Type == CellType.Flat)
+            {
+                if (numAdjacentUnpassable > 3)
+                    return CellType.Unpassable;
+                else if (numAdjacentWater > 3)
+                    return CellType.Water;
+            }
+
+            return null;
+        }
+
+        private void MakeDifficult(Random random, List<Cell> flatCells)
+        {
+            foreach (var cell in flatCells)
+            {
+                if (random.NextDouble() < 0.3)
+                    cell.Type = CellType.Difficult;
+            }
+        }
+
+
+        private CellType? ResolveNewDifficultType(Cell cell, Battlefield battlefield)
+        {
+            var numAdjacentFlat = battlefield
+                .GetCellsWithinDistance(cell, 1)
+                .Where(c => c == null || c.Type == CellType.Flat)
+                .Count();
+
+            // Flat becomes difficult if < 3 flat around it.
+            // Difficult becomes flat if > 3 flat around it.
+
+            if (cell.Type == CellType.Flat)
+            {
+                if (numAdjacentFlat < 3)
+                    return CellType.Difficult;
+            }
+            else if (cell.Type == CellType.Difficult)
+            {
+                if (numAdjacentFlat > 3)
+                    return CellType.Flat;
+            }
+
+            return null;
         }
 
         class MapPosition

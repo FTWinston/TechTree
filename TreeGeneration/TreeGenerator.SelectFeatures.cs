@@ -21,7 +21,7 @@ namespace TreeGeneration
         {
             // TODO: set up lists of features for each type, or rather feature generators.
             // Each of these can specify a min and max allowed value, and then have a function that takes a value and outputs an appropriately-scaled feature
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
         }
 
         private Feature PickFeature(List<FeatureGenerator> options, ref double value)

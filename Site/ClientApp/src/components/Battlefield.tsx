@@ -188,7 +188,7 @@ function drawHex(ctx: CanvasRenderingContext2D, cell: ICell, radius: number, sel
         case CellType.Flat:
             ctx.fillStyle = '#ccc'; break;
         case CellType.Difficult:
-            ctx.fillStyle = '#888'; break;
+            ctx.fillStyle = '#999'; break;
         case CellType.Unpassable:
             ctx.fillStyle = '#333'; break;
         case CellType.Water:
