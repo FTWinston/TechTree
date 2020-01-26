@@ -19,7 +19,10 @@ namespace GameModels
 
         private Cell GetCell(int col, int row)
         {
-            return Cells[col + row * Width];
+            int index = col + row * Width;
+            return index < 0 || index >= Cells.Length
+                ? null
+                : Cells[index];
         }
 
         public Cell GetNeighbor(Cell from, Direction towards)

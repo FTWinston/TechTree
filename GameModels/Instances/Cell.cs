@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using GameModels.Definitions;
+using Newtonsoft.Json;
 
 namespace GameModels.Instances
 {
@@ -17,16 +18,6 @@ namespace GameModels.Instances
             Row = row;
             Col = col;
             Type = type;
-        }
-
-        public enum CellType
-        {
-            OutOfBounds = 0,
-            Flat = 1,
-            Difficult = 2,
-            Unpassable = 3,
-            LowBarrier = 4,
-            Barrier = 5,
         }
 
         [JsonIgnore]
@@ -53,7 +44,7 @@ namespace GameModels.Instances
                 switch (Type)
                 {
                     case CellType.OutOfBounds:
-                    case CellType.Barrier:
+                    case CellType.Unpassable:
                         return true;
                     default:
                         return false;

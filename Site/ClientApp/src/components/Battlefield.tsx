@@ -1,6 +1,6 @@
 import React, { FunctionComponent, useState, useMemo, useRef, useLayoutEffect } from 'react';
 import { IBattlefield } from '../data/instances/IBattlefield';
-import { ICell } from '../data/instances/ICell';
+import { ICell, CellType } from '../data/instances/ICell';
 import { ScrollCanvas } from './common/ScrollCanvas';
 import './Battlefield.css';
 
@@ -183,14 +183,16 @@ function drawHex(ctx: CanvasRenderingContext2D, cell: ICell, radius: number, sel
     }
 
     switch (cell.type) {
-        case 0: // 'OutOfBounds':
+        case CellType.OutOfBounds:
             ctx.fillStyle = '#000'; break;
-        case 1: // 'Flat':
+        case CellType.Flat:
             ctx.fillStyle = '#ccc'; break;
-        case 2: // 'Difficult':
+        case CellType.Difficult:
             ctx.fillStyle = '#888'; break;
-        case 3: // 'Unpassable':
+        case CellType.Unpassable:
             ctx.fillStyle = '#333'; break;
+        case CellType.Water:
+            ctx.fillStyle = '#09f'; break;
         default:
             ctx.fillStyle = '#a88'; break;
     }

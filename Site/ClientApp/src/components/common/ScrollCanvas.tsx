@@ -18,6 +18,7 @@ export const ScrollCanvas = forwardRef<HTMLCanvasElement, Props>((props, ref) =>
         canvasRef = ref as React.RefObject<HTMLCanvasElement>;
     }
 
+    // TODO: replicate this for onMouseDown etc?
     let onClick = useMemo(
         () => {
             const { onClick } = props;
