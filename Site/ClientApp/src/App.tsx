@@ -9,7 +9,10 @@ const App: React.FC = () => {
     const [treeData, setTreeData] = useState<ITechTree>();
     const [battlefield, setBattlefield] = useState<IBattlefield>();
 
-    useEffect(() => { loadData(setTreeData, setBattlefield) }, []);
+    useEffect(() => {
+        loadTree(setTreeData)
+        loadBattlefield(setBattlefield)
+    }, []);
 
     const treeDisplay = treeData
         ? <TechTree data={treeData} />
@@ -20,8 +23,9 @@ const App: React.FC = () => {
         : <div>please wait</div>;
 
     return (
-        <div className="App" onClick={() => loadData(setTreeData, setBattlefield)}>
+        <div className="App">
             {battlefieldDisplay}
+            <button onClick={() => loadTree(setTreeData)}>new tree</button>
             {treeDisplay}
         </div>
     );
@@ -29,21 +33,20 @@ const App: React.FC = () => {
 
 export default App;
 
-async function loadData(
+async function loadTree(
     setTree: (data: ITechTree) => void,
+) {
+    const response = await fetch('/Game/Tree');
+    const data = await response.json() as ITechTree;
+    console.log('received tree', data);
+    setTree(data);
+}
+
+async function loadBattlefield(
     setBattlfield: (data: IBattlefield) => void
 ) {
-    {
-        const response = await fetch('/Game/Tree');
-        const data = await response.json() as ITechTree;
-        console.log('received tree', data);
-        setTree(data);
-    }
-
-    {
-        const response = await fetch('/Game/Battlefield');
-        const data = await response.json() as IBattlefield;
-        console.log('received battlefield', data);
-        setBattlfield(data);
-    }
+    const response = await fetch('/Game/Battlefield');
+    const data = await response.json() as IBattlefield;
+    console.log('received battlefield', data);
+    setBattlfield(data);
 }
