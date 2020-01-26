@@ -16,6 +16,8 @@ export const Battlefield: FunctionComponent<Props> = props => {
     const [bounds, setBounds] = useState<DOMRect>(defaultBounds);
 
     const [cellRadius, setCellRadius] = useState(30);
+
+    const [selectedCell, setSelectedCell] = useState<ICell>();
     
     const { cellPositions, minX, minY, maxX, maxY } = useMemo(
         () => positionCells(props.data),
@@ -37,6 +39,21 @@ export const Battlefield: FunctionComponent<Props> = props => {
         [canvas.current]
     );
 
+    const clicked = /*useMemo(
+        () => */(x: number, y: number) => {
+            const cellIndex = getCellIndexAtPoint(x, y, cellRadius, props.data.width);
+            const cell = props.data.cells[cellIndex + 9]; // TODO: WORK OUT WHY THIS IS EXACLTY 9 OFF!
+
+            if (cell) { 
+                setSelectedCell(selectedCell === cell ? undefined : cell);
+            }
+            else {
+                setSelectedCell(undefined);
+            }
+        }/*,
+        [selectedCell, cellRadius, props.data]
+    );*/
+
     const redraw = () => {
         if (!context) {
             return;
@@ -45,28 +62,14 @@ export const Battlefield: FunctionComponent<Props> = props => {
         context.translate(-bounds.x, -bounds.y);
         context.clearRect(bounds.x, bounds.y, bounds.width, bounds.height);
 
-        draw(cellPositions, context, bounds, cellRadius);
+        draw(cellPositions, context, bounds, cellRadius, selectedCell);
         context.translate(bounds.x, bounds.y);
     }
 
     useLayoutEffect(
         () => redraw(),
-        [context, bounds, cellRadius]
+        [context, bounds, cellRadius, selectedCell]
     );
-
-    const clicked = (x: number, y: number) => {
-        const cellIndex = getCellIndexAtPoint(x, y, cellRadius, props.data.width);
-        const cell = props.data.cells[cellIndex];
-
-        if (!cell) {
-            console.log(`clicked empty ${cellIndex} ${x}, ${y}`);
-            return;
-        }
-
-        console.log(`clicked cell ${cellIndex} type ${cell.type} at ${x}, ${y}`);
-        // cell.selected = !cell.selected;
-        redraw();
-    }
 
     return (
         <ScrollCanvas
@@ -141,7 +144,13 @@ function positionCells(battlefield: IBattlefield) {
     };
 }
 
-function draw(cellPositions: Map<ICell, Point>, ctx: CanvasRenderingContext2D, viewBounds: DOMRect, cellRadius: number) {
+function draw(
+    cellPositions: Map<ICell, Point>,
+    ctx: CanvasRenderingContext2D,
+    viewBounds: DOMRect,
+    cellRadius: number,
+    selectedCell?: ICell,
+) {
 
     for (const [cell, position] of cellPositions) {
         const dx = position.x * cellRadius + cellRadius;
@@ -150,12 +159,12 @@ function draw(cellPositions: Map<ICell, Point>, ctx: CanvasRenderingContext2D, v
         // TODO: check if cell is within viewBounds
 
         ctx.translate(dx, dy);
-        drawHex(ctx, cell, cellRadius);
+        drawHex(ctx, cell, cellRadius, cell === selectedCell);
         ctx.translate(-dx, -dy);
     }
 }
 
-function drawHex(ctx: CanvasRenderingContext2D, cell: ICell, radius: number) {
+function drawHex(ctx: CanvasRenderingContext2D, cell: ICell, radius: number, selected: boolean) {
     ctx.beginPath();
     
     radius -= 0.4; // ensure there's always a 1px border drawn between cells
@@ -186,10 +195,9 @@ function drawHex(ctx: CanvasRenderingContext2D, cell: ICell, radius: number) {
             ctx.fillStyle = '#a88'; break;
     }
     
-    /*
-    if (cell.selected)
+    if (selected) {
         ctx.fillStyle = '#fcc';
-    */
+    }
 
     ctx.fill();
 }
