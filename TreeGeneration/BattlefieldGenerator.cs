@@ -4,7 +4,6 @@ using GameModels.Instances;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace TreeGeneration
 {
@@ -18,13 +17,15 @@ namespace TreeGeneration
             Random random = new Random();
             var battlefield = new Battlefield(Width, Height);
 
-            List<Cell> allCells = CreateCells(battlefield);
+            CreateCells(battlefield);
 
-            RandomizeCells(random, allCells);
+            List<Tuple<Cell, Cell>> mirroredCells = MirrorCells(battlefield);
+
+            RandomizeCells(random, mirroredCells);
 
             // TODO: place start positions and resources, ensure paths between them
             // TODO: remove these from the list of mutable cells
-            var mutableCells = new List<Cell>(allCells);
+            var mutableCells = new List<Tuple<Cell, Cell>>(mirroredCells);
 
             for (var i = 0; i < 8; i++)
             {
@@ -34,7 +35,7 @@ namespace TreeGeneration
             // TODO: fill unconnected land or water areas with unpassable
 
             var flatCells = mutableCells
-                .Where(cell => cell.Type == CellType.Flat)
+                .Where(cell => cell.Item1.Type == CellType.Flat)
                 .ToList();
 
             MakeDifficult(random, flatCells);
@@ -47,18 +48,36 @@ namespace TreeGeneration
             return battlefield;
         }
 
-        private List<Cell> CreateCells(Battlefield map)
+        private static void ApplyToAll(Tuple<Cell, Cell> cells, Action<Cell> action)
         {
-            var allCells = new List<Cell>();
+            action(cells.Item1);
+            action(cells.Item2);
+        }
 
+        private List<Tuple<Cell, Cell>> MirrorCells(Battlefield battlefield)
+        {
+            // TODO: allow multiple axes of symmetry, and mirroring vs rotation
+
+            // For now, just do a rotational mirror vertically.
+            var allCells = battlefield.Cells
+                .Where(cell => cell != null)
+                .ToArray();
+
+            int halfLength = (int)Math.Ceiling(allCells.Length / 2.0);
+
+            // If there's a "center" cell, it will be in a tuple with itself, but that's fine.            
+            return allCells.Take(halfLength)
+                .Select((cell, index) => new Tuple<Cell, Cell>(cell, allCells[allCells.Length - 1 - index]))
+                .ToList();
+        }
+
+        private void CreateCells(Battlefield map)
+        {
             foreach (var position in GetValidCellPositions(Width, Height))
             {
                 var cell = new Cell(position.Row, position.Col, CellType.Flat);
-                allCells.Add(cell);
                 map.Cells[position.GetCellIndex(Width)] = cell;
             }
-
-            return allCells;
         }
 
         private IEnumerable<MapPosition> GetValidCellPositions(int width, int height)
@@ -73,10 +92,10 @@ namespace TreeGeneration
                         yield return new MapPosition { Col = col, Row = row };
         }
 
-        private void RandomizeCells(Random random, List<Cell> allCells)
+        private void RandomizeCells(Random random, IEnumerable<Tuple<Cell, Cell>> allCells)
         {
             // randomly make each cell either flat, water, or unpassable
-            foreach (var cell in allCells)
+            foreach (var cells in allCells)
             {
                 CellType type;
                 switch (random.Next(3))
@@ -89,23 +108,24 @@ namespace TreeGeneration
                         type = CellType.Flat; break;
                 }
 
-                cell.Type = type;
+                ApplyToAll(cells, cell => cell.Type = type);
             }
         }
 
-        private void RunCellularAutomataStep(Battlefield battlefield, List<Cell> mutableCells, Func<Cell, Battlefield, CellType?> rules)
+        private void RunCellularAutomataStep(Battlefield battlefield, IEnumerable<Tuple<Cell, Cell>> mutableCells, Func<Cell, Battlefield, CellType?> rules)
         {
-            var results = new Dictionary<Cell, CellType>();
+            var results = new Dictionary<Tuple<Cell, Cell>, CellType>();
 
-            foreach (var cell in mutableCells) {
-                var newType = rules(cell, battlefield);
+            foreach (var cells in mutableCells) {
+                var newType = rules(cells.Item1, battlefield);
+
                 if (newType.HasValue)
-                    results[cell] = newType.Value;
+                    results[cells] = newType.Value;
             }
 
             foreach (var kvp in results)
             {
-                kvp.Key.Type = kvp.Value;
+                ApplyToAll(kvp.Key, cell => cell.Type = kvp.Value);
             }
         }
 
@@ -145,12 +165,12 @@ namespace TreeGeneration
             return null;
         }
 
-        private void MakeDifficult(Random random, List<Cell> flatCells)
+        private void MakeDifficult(Random random, IEnumerable<Tuple<Cell, Cell>> flatCells)
         {
-            foreach (var cell in flatCells)
+            foreach (var cells in flatCells)
             {
                 if (random.NextDouble() < 0.3)
-                    cell.Type = CellType.Difficult;
+                    ApplyToAll(cells, cell => cell.Type = CellType.Difficult);
             }
         }
 
