@@ -2,9 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using static TreeGeneration.BuildingBuilder;
+using static GameGenerator.TreeGeneration.BuildingBuilder;
 
-namespace TreeGeneration
+namespace GameGenerator.TreeGeneration
 {
     public partial class TreeGenerator
     {

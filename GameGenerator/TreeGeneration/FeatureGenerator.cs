@@ -1,7 +1,7 @@
 ﻿using GameModels.Definitions;
 using System;
 
-namespace TreeGeneration
+namespace GameGenerator.TreeGeneration
 {
     public class FeatureGenerator
     {

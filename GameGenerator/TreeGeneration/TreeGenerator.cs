@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace TreeGeneration
+namespace GameGenerator.TreeGeneration
 {
     public partial class TreeGenerator : BaseTechTree<BuildingBuilder, UnitBuilder>
     {
@@ -15,10 +15,6 @@ namespace TreeGeneration
             Complex = 4,
             Extreme = 5,
         }
-
-        public TreeGenerator(TreeComplexity complexity = TreeComplexity.Normal)
-            : this(new Random().Next(int.MinValue, int.MaxValue), complexity)
-        { }
 
         public TreeGenerator(int seed, TreeComplexity complexity = TreeComplexity.Normal)
         {

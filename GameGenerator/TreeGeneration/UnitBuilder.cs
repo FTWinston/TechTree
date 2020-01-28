@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace TreeGeneration
+namespace GameGenerator.TreeGeneration
 {
     public class UnitBuilder : EntityBuilder, IUnitType
     {

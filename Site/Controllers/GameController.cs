@@ -1,10 +1,7 @@
 ﻿using GameModels;
-using GameModels.Instances;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using System;
-using TreeGeneration;
 
 namespace Site.Controllers
 {
@@ -21,24 +18,15 @@ namespace Site.Controllers
         }
 
         [HttpGet("[action]")]
-        public TechTree Tree()
+        public GameDefinition Generate()
         {
-            var treeGenerator = new TreeGenerator();
-            return treeGenerator.Generate();
+            return GameGenerator.GameGenerator.GenerateGame();
         }
 
         [HttpGet("[action]/{seed}")]
-        public TechTree Tree(int seed)
+        public GameDefinition Generate(int seed)
         {
-            var treeGenerator = new TreeGenerator(seed);
-            return treeGenerator.Generate();
-        }
-
-        [HttpGet("[action]")]
-        public Battlefield Battlefield()
-        {
-            var generator = new BattlefieldGenerator();
-            return generator.Generate();
+            return GameGenerator.GameGenerator.GenerateGame(seed);
         }
     }
 }

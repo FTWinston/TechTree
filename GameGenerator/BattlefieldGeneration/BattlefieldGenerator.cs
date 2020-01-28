@@ -1,22 +1,30 @@
-﻿using GameModels;
+﻿using GameGenerator;
+using GameModels;
 using GameModels.Definitions;
 using GameModels.Instances;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace TreeGeneration
+namespace GameGenerator.BattlefieldGeneration
 {
     public class BattlefieldGenerator
     {
-        public int Width { get; set; } = 37;
-        public int Height { get; set; } = 37;
+        public BattlefieldGenerator(int seed)
+        {
+            Seed = seed;
+        }
+
+        public int Seed { get; }
 
         private Random Random { get; set; }
 
+        public int Width { get; set; } = 37;
+        public int Height { get; set; } = 37;
+
         public Battlefield Generate()
         {
-            Random = new Random();
+            Random = new Random(Seed);
             var battlefield = new Battlefield(Width, Height);
 
             CreateCells(battlefield);

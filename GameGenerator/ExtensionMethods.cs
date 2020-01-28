@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace TreeGeneration
+namespace GameGenerator
 {
     internal static class ExtensionMethods
     {

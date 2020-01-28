@@ -1,4 +1,4 @@
-﻿namespace TreeGeneration
+﻿namespace GameGenerator.TreeGeneration
 {
     public enum UnitStat
     {
