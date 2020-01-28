@@ -12,38 +12,26 @@ namespace TreeGeneration
         public int Width { get; set; } = 37;
         public int Height { get; set; } = 37;
 
+        private Random Random { get; set; }
+
         public Battlefield Generate()
         {
-            Random random = new Random();
+            Random = new Random();
             var battlefield = new Battlefield(Width, Height);
 
             CreateCells(battlefield);
 
             List<Tuple<Cell, Cell>> mirroredCells = MirrorCells(battlefield);
 
-            RandomizeCells(random, mirroredCells);
+            List<Tuple<Cell, Cell>> startAreaCells = PickStartCells(battlefield, mirroredCells);
 
-            // TODO: place start positions and resources, ensure paths between them
-            // TODO: remove these from the list of mutable cells
-            var mutableCells = new List<Tuple<Cell, Cell>>(mirroredCells);
-
-            for (var i = 0; i < 8; i++)
-            {
-                RunCellularAutomataStep(battlefield, mutableCells, ResolveNewWaterAndUnpassableType);
-            }
-
-            // TODO: fill unconnected land or water areas with unpassable
-
-            var flatCells = mutableCells
-                .Where(cell => cell.Item1.Type == CellType.Flat)
+            var mutableCells = mirroredCells
+                .Where(cells => !startAreaCells.Contains(cells))
                 .ToList();
 
-            MakeDifficult(random, flatCells);
+            PlaceUnpassableAndWater(battlefield, mutableCells);
 
-            for (var i = 0; i < 8; i++)
-            {
-                RunCellularAutomataStep(battlefield, mutableCells, ResolveNewDifficultType);
-            }
+            PlaceDifficult(battlefield, mutableCells);
 
             return battlefield;
         }
@@ -52,6 +40,15 @@ namespace TreeGeneration
         {
             action(cells.Item1);
             action(cells.Item2);
+        }
+
+        private void CreateCells(Battlefield map)
+        {
+            foreach (var position in GetValidCellPositions(Width, Height))
+            {
+                var cell = new Cell(position.Row, position.Col, CellType.Flat);
+                map.Cells[position.GetCellIndex(Width)] = cell;
+            }
         }
 
         private List<Tuple<Cell, Cell>> MirrorCells(Battlefield battlefield)
@@ -71,13 +68,31 @@ namespace TreeGeneration
                 .ToList();
         }
 
-        private void CreateCells(Battlefield map)
+        private List<Tuple<Cell, Cell>> PickStartCells(Battlefield battlefield, List<Tuple<Cell, Cell>> mirroredCells)
         {
-            foreach (var position in GetValidCellPositions(Width, Height))
+            int minDist = (int)(Width * 0.25 + Height * 0.25);
+            Tuple<Cell, Cell> startCells;
+
+            do
             {
-                var cell = new Cell(position.Row, position.Col, CellType.Flat);
-                map.Cells[position.GetCellIndex(Width)] = cell;
+                startCells = mirroredCells.PickRandom(Random);
+            } while (battlefield.GetDistance(startCells.Item1, startCells.Item2) < minDist);
+
+            battlefield.StartPositions.Add(Array.IndexOf(battlefield.Cells, startCells.Item1));
+            battlefield.StartPositions.Add(Array.IndexOf(battlefield.Cells, startCells.Item2));
+
+            var startAreaCells = battlefield.GetCellsWithinDistance(startCells.Item1, 2);
+
+            var startAreaCellTuples = mirroredCells
+                .Where(cells => startAreaCells.Contains(cells.Item1))
+                .ToList();
+
+            foreach (var cells in startAreaCellTuples)
+            {
+                ApplyToAll(cells, cell => cell.Type = CellType.Flat);
             }
+
+            return startAreaCellTuples;
         }
 
         private IEnumerable<MapPosition> GetValidCellPositions(int width, int height)
@@ -92,13 +107,13 @@ namespace TreeGeneration
                         yield return new MapPosition { Col = col, Row = row };
         }
 
-        private void RandomizeCells(Random random, IEnumerable<Tuple<Cell, Cell>> allCells)
+        private void RandomizeCells(IEnumerable<Tuple<Cell, Cell>> allCells)
         {
             // randomly make each cell either flat, water, or unpassable
             foreach (var cells in allCells)
             {
                 CellType type;
-                switch (random.Next(3))
+                switch (Random.Next(3))
                 {
                     case 0:
                         type = CellType.Unpassable; break;
@@ -109,6 +124,32 @@ namespace TreeGeneration
                 }
 
                 ApplyToAll(cells, cell => cell.Type = type);
+            }
+        }
+
+        private void PlaceUnpassableAndWater(Battlefield battlefield, List<Tuple<Cell, Cell>> mutableCells)
+        {
+            RandomizeCells(mutableCells);
+
+            for (var i = 0; i < 8; i++)
+            {
+                RunCellularAutomataStep(battlefield, mutableCells, ResolveNewWaterAndUnpassableType);
+            }
+
+            // TODO: fill unconnected land or water areas with unpassable
+        }
+
+        private void PlaceDifficult(Battlefield battlefield, List<Tuple<Cell, Cell>> mutableCells)
+        {
+            var flatCells = mutableCells
+                .Where(cell => cell.Item1.Type == CellType.Flat)
+                .ToList();
+
+            MakeDifficult(flatCells);
+
+            for (var i = 0; i < 8; i++)
+            {
+                RunCellularAutomataStep(battlefield, mutableCells, ResolveNewDifficultType);
             }
         }
 
@@ -165,11 +206,11 @@ namespace TreeGeneration
             return null;
         }
 
-        private void MakeDifficult(Random random, IEnumerable<Tuple<Cell, Cell>> flatCells)
+        private void MakeDifficult(IEnumerable<Tuple<Cell, Cell>> flatCells)
         {
             foreach (var cells in flatCells)
             {
-                if (random.NextDouble() < 0.3)
+                if (Random.NextDouble() < 0.3)
                     ApplyToAll(cells, cell => cell.Type = CellType.Difficult);
             }
         }

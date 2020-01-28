@@ -1,4 +1,5 @@
 ﻿using GameModels.Instances;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 
@@ -16,6 +17,8 @@ namespace GameModels
         public int Width { get; private set; }
         public int Height { get; private set; }
         public Cell[] Cells { get; private set; }
+
+        public List<int> StartPositions { get; } = new List<int>();
 
         private Cell GetCell(int col, int row)
         {
@@ -86,9 +89,9 @@ namespace GameModels
             ) / 2;
         }
 
-        public List<Cell> GetCellsWithinDistance(Cell from, int distance)
+        public HashSet<Cell> GetCellsWithinDistance(Cell from, int distance)
         {
-            var cells = new List<Cell>();
+            var cells = new HashSet<Cell>();
             for (var dx = -distance; dx <= distance; dx++)
             {
                 var minZ = Math.Max(-distance, -dx - distance);
@@ -99,9 +102,9 @@ namespace GameModels
             return cells;
         }
 
-        public List<Cell> GetReachableCells(Cell from, int moveDistance)
+        public HashSet<Cell> GetReachableCells(Cell from, int moveDistance)
         {
-            var visited = new List<Cell>();
+            var visited = new HashSet<Cell>();
             visited.Add(from);
 
             var fringes = new List<List<Cell>>();

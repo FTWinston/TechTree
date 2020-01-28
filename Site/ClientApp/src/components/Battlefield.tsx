@@ -17,7 +17,7 @@ export const Battlefield: FunctionComponent<Props> = props => {
 
     const [cellRadius, setCellRadius] = useState(30);
 
-    const [selectedCell, setSelectedCell] = useState<ICell>();
+    const [selectedCell, setSelectedCell] = useState<ICell | undefined>(props.data.cells[props.data.startPositions[0]]);
     
     const { cellPositions, minX, minY, maxX, maxY } = useMemo(
         () => positionCells(props.data),
@@ -43,7 +43,8 @@ export const Battlefield: FunctionComponent<Props> = props => {
         () => */(x: number, y: number) => {
             const cellIndex = getCellIndexAtPoint(x, y, cellRadius, props.data.width);
             const cell = props.data.cells[cellIndex + 9]; // TODO: WORK OUT WHY THIS IS EXACLTY 9 OFF!
-
+            console.log('selected cell was', selectedCell);
+            console.log('selected cell is now ', cell);
             if (cell) { 
                 setSelectedCell(selectedCell === cell ? undefined : cell);
             }
