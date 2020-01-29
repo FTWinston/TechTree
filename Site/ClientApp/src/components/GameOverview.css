@@ -1,0 +1,24 @@
+.gameOverview {
+    display: flex;
+    height: 100vh;
+    /* vertical or horizontal depending on screen */
+}
+
+.gameOverview__element {
+    flex-grow: 1;
+    font-size: 0.333em;
+    transition: width 1s linear, font-size 1s linear, opacity 1s ease-in;
+    width: 50%;
+    padding: 2em;
+}
+
+.gameOverview--focused .gameOverview__element--focus {
+    font-size: 1em;
+    width: 100%;
+}
+
+.gameOverview--focused .gameOverview__element:not(.gameOverview__element--focus) {
+    font-size: 0.01em;
+    opacity: 0;
+    width: 0;
+}
