@@ -6,7 +6,7 @@
 
 .gameOverview__element {
     flex-grow: 1;
-    font-size: 0.333em;
+    font-size: 0.25em;
     transition: width 1s linear, font-size 1s linear, opacity 1s ease-in;
     width: 50%;
     padding: 2em;

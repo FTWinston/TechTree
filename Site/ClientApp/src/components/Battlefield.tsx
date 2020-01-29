@@ -15,7 +15,9 @@ export const Battlefield: FunctionComponent<Props> = props => {
     
     const [bounds, setBounds] = useState<DOMRect>(defaultBounds);
 
-    const [cellRadius, setCellRadius] = useState(30);
+    const cellRadius = canvas.current
+        ? parseFloat(window.getComputedStyle(canvas.current).fontSize) * 2
+        : 32;
 
     const [selectedCell, setSelectedCell] = useState<ICell | undefined>(props.data.cells[props.data.startPositions[0]]);
     
