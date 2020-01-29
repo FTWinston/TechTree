@@ -91,9 +91,10 @@ export const ScrollCanvas = forwardRef<HTMLCanvasElement, Props>((props, ref) =>
 
             updateCanvasSize();
 
-            window.addEventListener('resize', updateCanvasSize);
+            const resizeObserver = new ResizeObserver(() => updateCanvasSize());
+            resizeObserver.observe(outerRef.current!);
 
-            return () => window.removeEventListener('resize', updateCanvasSize);
+            return () => resizeObserver.disconnect();
         },
         [canvasRef.current, props.boundsChanged]
     );
