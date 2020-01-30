@@ -7,11 +7,15 @@ namespace GameGenerator
 {
     public static class GameGenerator
     {
-        public static GameDefinition GenerateGame(int? seed = null)
+        public static GameDefinition GenerateGame()
         {
-            Random random = seed.HasValue
-                ? new Random(seed.Value)
-                : new Random();
+            int seed = new Random().Next();
+            return GenerateGame(seed);
+        }
+
+        public static GameDefinition GenerateGame(int seed)
+        {
+            Random random = new Random(seed);
 
             // TODO: how is tree complexity and battlefield size controlled, if it is at all?
 
@@ -23,7 +27,9 @@ namespace GameGenerator
             var battlefield = new BattlefieldGenerator(random.Next())
                 .Generate();
 
-            return new GameDefinition(techTree, battlefield);
+            int complexity = 1;
+
+            return new GameDefinition(seed, complexity, techTree, battlefield);
         }
     }
 }
