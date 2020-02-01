@@ -1,4 +1,4 @@
-﻿namespace GameModels
+﻿namespace GameModels.Definitions
 {
     public class GameDefinition
     {

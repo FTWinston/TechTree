@@ -1,16 +1,36 @@
 ﻿using GameModels.Definitions;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GameModels.Instances
 {
     public abstract class Entity
     {
         public Player Owner { get; set; }
+
+        private Cell location;
+        public Cell Location
+        {
+            get => location;
+            set
+            {
+                if (value.Entity != null && value.Entity != this)
+                {
+                    throw new InvalidOperationException("Cannot move entity to non-empty cell");
+                }
+
+                if (location != null && location.Entity == this)
+                {
+                    location.Entity = null;
+                }
+
+                location = value;
+                location.Entity = this;
+            }
+        }
+
         public List<Feature> LockedFeatures { get; protected set; }
+
         public List<Tuple<IStatusEffect, int>> StatusEffects { get; protected set; }
 
         public void AddEffect(IStatusEffect effect)

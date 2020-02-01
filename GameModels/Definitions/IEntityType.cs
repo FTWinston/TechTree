@@ -4,6 +4,8 @@ namespace GameModels.Definitions
 {
     public interface IEntityType : IPurchasable
     {
+        uint ID { get; }
+
         int Health { get; }
 
         int Armor { get; }

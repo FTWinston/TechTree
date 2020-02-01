@@ -20,9 +20,15 @@ namespace GameModels
 
         public List<int> StartPositions { get; } = new List<int>();
 
+        public int GetIndex(int col, int row)
+        {
+            return col + row * Width;
+        }
+
         private Cell GetCell(int col, int row)
         {
-            int index = col + row * Width;
+            int index = GetIndex(col, row);
+
             return index < 0 || index >= Cells.Length
                 ? null
                 : Cells[index];

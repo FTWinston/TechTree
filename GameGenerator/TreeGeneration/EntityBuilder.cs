@@ -6,9 +6,10 @@ namespace GameGenerator.TreeGeneration
 {
     public abstract class EntityBuilder : IEntityType
     {
-        public EntityBuilder(Random random, string symbol)
+        public EntityBuilder(Random random, uint id, string symbol)
         {
             Random = random;
+            ID = id;
             Symbol = symbol;
         }
 
@@ -18,6 +19,7 @@ namespace GameGenerator.TreeGeneration
 
         public string Symbol { get; }
 
+        public uint ID { get; set; }
 
         public int Health { get; set; }
 

@@ -6,11 +6,14 @@ namespace GameModels.Instances
     public class Cell
     {
         [JsonIgnore]
-        public Entity Entity { get; set; }
+        public Entity Entity { get; internal set; }
+
         [JsonIgnore]
         public int Col { get; set; }
+
         [JsonIgnore]
         public int Row { get; set; }
+
         public CellType Type { get; set; }
 
         public Cell(int row, int col, CellType type)

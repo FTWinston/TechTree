@@ -7,6 +7,7 @@ namespace GameModels.Definitions
         protected EntityType(IEntityType copyFrom)
             : base(copyFrom)
         {
+            ID = copyFrom.ID;
             Health = copyFrom.Health;
             Armor = copyFrom.Armor;
             Mana = copyFrom.Mana;
@@ -19,6 +20,8 @@ namespace GameModels.Definitions
 
             Features = new List<Feature>(copyFrom.Features);
         }
+
+        public uint ID { get; internal set; }
 
         public int Health { get; internal set; }
 

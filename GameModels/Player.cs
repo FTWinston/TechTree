@@ -7,17 +7,19 @@ namespace GameModels
 {
     public class Player
     {
-        public TechTree TechTree { get; private set; }
+        public int ID { get; }
+        public TechTree TechTree { get; }
 
-        public List<Building> Buildings { get; private set; }
-        public List<Unit> Units { get; private set; }
+        public List<Building> Buildings { get; }
+        public List<Unit> Units { get; }
 
-        public List<BuildingType> AvailableBuildings { get; private set; }
-        public List<UnitType> AvailableUnits { get; private set; }
-        public List<Research> CompletedResearch { get; private set; }
+        public List<BuildingType> AvailableBuildings { get; }
+        public List<UnitType> AvailableUnits { get; }
+        public List<Research> CompletedResearch { get; }
 
-        public Player(TechTree tree)
+        public Player(int id, TechTree tree)
         {
+            ID = id;
             TechTree = tree;
             Buildings = new List<Building>();
             Units = new List<Unit>();

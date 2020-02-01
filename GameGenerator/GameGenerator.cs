@@ -1,4 +1,4 @@
-﻿using GameModels;
+﻿using GameModels.Definitions;
 using GameGenerator.BattlefieldGeneration;
 using GameGenerator.TreeGeneration;
 using System;

@@ -24,21 +24,21 @@ namespace GameModels.Definitions
             */
             Unlocks = new List<Feature>(features);
         }
-
+        
+        /*
         internal static Research CreateForFeature(OldTreeGenerator gen, BuildingType researchedBy, Feature feature, int tier)
         {
             var research = new Research(feature)
             {
-                /*
                 BuildTime = gen.Random.Next(Math.Min(3, tier), tier + 3),
                 MineralCost = (gen.Random.Next(80, 185) + gen.Random.Next(20, 40) * tier).RoundNearest(25),
                 GasCost = (gen.Random.Next(35, 80) + gen.Random.Next(32, 55) * tier).RoundNearest(25),
                 PerformedAt = feature.EntityDefinition.Prerequisite,
-                */
             };
 
             // researchedBy.AddFeature(new PerformResearch(research));
             return research;
         }
+        */
     }
 }

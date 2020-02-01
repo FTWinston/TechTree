@@ -6,8 +6,8 @@ namespace GameGenerator.TreeGeneration
 {
     public class BuildingBuilder : EntityBuilder, IBuildingType
     {
-        public BuildingBuilder(Random random, string symbol, BuildingRole role)
-            : base(random, symbol)
+        public BuildingBuilder(Random random, uint id, string symbol, BuildingRole role)
+            : base(random, id, symbol)
         {
             Role = role;
             Name = "Unnamed building";

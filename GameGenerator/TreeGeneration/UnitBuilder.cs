@@ -6,8 +6,8 @@ namespace GameGenerator.TreeGeneration
 {
     public class UnitBuilder : EntityBuilder, IUnitType
     {
-        public UnitBuilder(Random random, string symbol)
-            : base(random, symbol)
+        public UnitBuilder(Random random, uint id, string symbol)
+            : base(random, id, symbol)
         {
             Name = "Unnamed unit";
         }

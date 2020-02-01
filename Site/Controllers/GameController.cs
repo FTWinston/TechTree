@@ -1,4 +1,4 @@
-﻿using GameModels;
+﻿using GameModels.Definitions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
