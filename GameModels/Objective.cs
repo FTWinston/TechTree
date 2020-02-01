@@ -5,13 +5,22 @@ using System.Linq;
 
 namespace GameModels
 {
+    public enum ObjectiveFeature
+    {
+        Units,
+        ResourceReserves,
+        RevealObjectives,
+    }
+
     public class Objective
     {
         public string Description { get; set; }
 
         public int Value { get; set; }
 
-        public uint? UnitTypeID { get; set; }
+        public ObjectiveFeature Feature { get; set; }
+
+        public uint? FeatureTypeID { get; set; }
 
         public int TargetQuantity { get; set; }
 
@@ -21,11 +30,22 @@ namespace GameModels
 
         public bool IsSatisfied(Game game, Player player)
         {
+            switch (Feature)
+            {
+                case ObjectiveFeature.Units:
+                    return IsUnitQuantitySatisfied(game, player);
+                default:
+                    throw new NotImplementedException();
+            }
+        }
+
+        private bool IsUnitQuantitySatisfied(Game game, Player player)
+        {
             Func<Unit, bool> unitFilter = unit => true;
 
-            if (UnitTypeID.HasValue)
+            if (FeatureTypeID.HasValue)
             {
-                unitFilter = unit => /*unitFilter(unit) &&*/ unit.Definition.ID == UnitTypeID.Value;
+                unitFilter = unit => /*unitFilter(unit) &&*/ unit.Definition.ID == FeatureTypeID.Value;
             }
 
             if (CellsByPlayer != null)
