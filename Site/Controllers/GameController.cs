@@ -24,9 +24,9 @@ namespace Site.Controllers
         }
 
         [HttpGet("[action]/{seed}")]
-        public GameDefinition Generate(int seed)
+        public GameDefinition Generate(int complexity, int seed)
         {
-            return GameGenerator.GameGenerator.GenerateGame(seed);
+            return GameGenerator.GameGenerator.GenerateGame(complexity, seed);
         }
     }
 }

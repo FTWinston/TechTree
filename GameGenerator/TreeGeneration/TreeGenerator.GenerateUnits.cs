@@ -1,5 +1,4 @@
-﻿using GameModels.Generation;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -18,11 +17,12 @@ namespace GameGenerator.TreeGeneration
 
         protected void CreateUnits()
         {
-            int numUnits = Random.Next((int)Complexity * 3, (int)Complexity * 4);
+            int numUnits = Math.Max(2, Complexity / 3);
+
             for (int i = 0; i < numUnits; i++)
             {
-                var symbol = AllocateUnitSymbol();
-                Units.Add(nextIdentifier++, new UnitBuilder(Random, symbol));
+                uint identifier = nextIdentifier++;
+                Units.Add(identifier, new UnitBuilder(Random, identifier, AllocateUnitSymbol()));
             }
         }
 

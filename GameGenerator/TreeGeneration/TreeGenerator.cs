@@ -8,23 +8,17 @@ namespace GameGenerator.TreeGeneration
 {
     public partial class TreeGenerator : BaseTechTree<BuildingBuilder, UnitBuilder>
     {
-        public enum TreeComplexity
+        public TreeGenerator(int complexity, int seed)
         {
-            Simple = 2,
-            Normal = 3,
-            Complex = 4,
-            Extreme = 5,
-        }
-
-        public TreeGenerator(int seed, TreeComplexity complexity = TreeComplexity.Normal)
-        {
-            Seed = seed;
             Complexity = complexity;
+            Seed = seed;
         }
 
         private Random Random { get; set; }
 
-        public TreeComplexity Complexity { get; set; }
+        public int Seed { get; }
+
+        public int Complexity { get; }
 
         private double BaseUnitValue { get; set; }
 
@@ -136,6 +130,16 @@ namespace GameGenerator.TreeGeneration
 
         private Dictionary<ResourceType, int> SplitResourceCosts(int overallCost, double progressionFraction)
         {
+            var result = new Dictionary<ResourceType, int>();
+
+            if (ResourceCostRatioKeyframes.Count == 1)
+            {
+                result[ResourceCostRatioKeyframes.First().Keys.First()] = overallCost
+                    .RoundNearest(10);
+
+                return result;
+            }
+
             var scaledProgression = progressionFraction * (ResourceCostRatioKeyframes.Count - 1.00000000001);
             var iPrevious = (int)Math.Floor(scaledProgression);
 
@@ -144,7 +148,6 @@ namespace GameGenerator.TreeGeneration
             var previousFraction = scaledProgression - iPrevious;
             var subsequentFraction = 1 - previousFraction;
 
-            var result = new Dictionary<ResourceType, int>();
 
             foreach (var resource in previousFrame.Keys)
             {

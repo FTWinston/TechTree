@@ -10,22 +10,24 @@ namespace GameGenerator.BattlefieldGeneration
 {
     public class BattlefieldGenerator
     {
-        public BattlefieldGenerator(int seed)
+        public BattlefieldGenerator(int complexity, int seed)
         {
+            Complexity = complexity;
             Seed = seed;
         }
 
-        public int Seed { get; }
-
         private Random Random { get; set; }
 
-        public int Width { get; set; } = 37;
-        public int Height { get; set; } = 37;
+        public int Complexity { get; }
+
+        public int Seed { get; }
 
         public Battlefield Generate()
         {
             Random = new Random(Seed);
-            var battlefield = new Battlefield(Width, Height);
+
+            DetermineSize(out int width, out int height);
+            var battlefield = new Battlefield(width, height);
 
             CreateCells(battlefield);
 
@@ -44,18 +46,44 @@ namespace GameGenerator.BattlefieldGeneration
             return battlefield;
         }
 
+        private void DetermineSize(out int width, out int height)
+        {
+            const int minComplexitySize = 15; // Complexity 1 size 15 x 15
+            const int maxComplexitySize = 51; // Complexity 100 size 51 x 51
+
+            float complexityFraction = (Complexity - 1f) / (GameGenerator.MaxComplexity - 1f);
+
+            // TODO: variation within width and height would be nice to have here
+
+            float medianSize = minComplexitySize + (maxComplexitySize - minComplexitySize) * complexityFraction;
+
+            int size = (int)Math.Round(medianSize);
+
+            // Symmetry fails when size is even.
+            if (size % 2 == 0)
+            {
+                if (medianSize > size)
+                    size++;
+                else
+                    size--;
+            }
+
+            width = size;
+            height = size;
+        }
+
         private static void ApplyToAll(Tuple<Cell, Cell> cells, Action<Cell> action)
         {
             action(cells.Item1);
             action(cells.Item2);
         }
 
-        private void CreateCells(Battlefield map)
+        private void CreateCells(Battlefield battlefield)
         {
-            foreach (var position in GetValidCellPositions(Width, Height))
+            foreach (var position in GetValidCellPositions(battlefield.Width, battlefield.Height))
             {
                 var cell = new Cell(position.Row, position.Col, CellType.Flat);
-                map.Cells[position.GetCellIndex(Width)] = cell;
+                battlefield.Cells[position.GetCellIndex(battlefield.Width)] = cell;
             }
         }
 
@@ -78,7 +106,7 @@ namespace GameGenerator.BattlefieldGeneration
 
         private List<Tuple<Cell, Cell>> PickStartCells(Battlefield battlefield, List<Tuple<Cell, Cell>> mirroredCells)
         {
-            int minDist = (int)(Width * 0.25 + Height * 0.25);
+            int minDist = (int)(battlefield.Width * 0.25 + battlefield.Height * 0.25);
             Tuple<Cell, Cell> startCells;
 
             do

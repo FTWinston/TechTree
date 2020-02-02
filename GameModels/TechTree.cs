@@ -17,7 +17,7 @@ namespace GameModels
             units: copyFrom.AllUnits.ToDictionary(x => x.Key, x => new UnitType(x.Value)),
             research: new Dictionary<uint, Research>(copyFrom.Research) // No need to copy these, simply remove them once they are completed.
         ) {
-            Seed = copyFrom.Seed;
+            
         }
     }
 }

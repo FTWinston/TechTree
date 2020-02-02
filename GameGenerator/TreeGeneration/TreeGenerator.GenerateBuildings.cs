@@ -55,9 +55,13 @@ namespace GameGenerator.TreeGeneration
 
         private uint GenerateResourceBuildings()
         {
-            int numberOfResources = Complexity < TreeComplexity.Extreme
-                ? 2
-                : 3;
+            int numberOfResources = Complexity <= 15
+                ? 1
+                    : Complexity < 75
+                        ? 2
+                        : Complexity < 95
+                            ? 3
+                            : 4;
 
             var resources = Enum.GetValues(typeof(ResourceType))
                 .Cast<ResourceType>()
@@ -75,7 +79,7 @@ namespace GameGenerator.TreeGeneration
                 Resources.Add(resource);
 
                 var identifier = nextIdentifier++;
-                var building = GenerateResourceBuilding(resource, !primaryBuildingID.HasValue);
+                var building = GenerateResourceBuilding(identifier, resource, !primaryBuildingID.HasValue);
 
                 Buildings.Add(identifier, building);
 
@@ -101,17 +105,17 @@ namespace GameGenerator.TreeGeneration
         {
             var factoryIDs = new List<uint>();
 
-            int complexity = (int)Complexity;
+            int numFactories = Math.Max(1, Complexity / 10);
 
-            for (int i = 0; i < complexity; i++)
+            for (int i = 0; i < numFactories; i++)
             {
-                var factory = GenerateFactoryBuilding();
                 uint identifier = nextIdentifier++;
+                var factory = GenerateFactoryBuilding(identifier);
                 Buildings.Add(identifier, factory);
                 factoryIDs.Add(identifier);
 
                 // Factories shouldn't always be a linear chain. Bigger trees should branch more.
-                if (Random.Next(10) < complexity)
+                if (Random.Next(10) < numFactories)
                     AddToSubtree(prerequisiteID, identifier, factory);
                 else
                     AddUnlock(prerequisiteID, identifier, factory);
@@ -154,9 +158,10 @@ namespace GameGenerator.TreeGeneration
                     }
 
                     // generate a new tech building to be this unit type's prerequisite
-                    BuildingBuilder techBuilding = GenerateTechBuilding();
                     uint identifier = nextIdentifier++;
+                    BuildingBuilder techBuilding = GenerateTechBuilding(identifier);
                     Buildings.Add(identifier, techBuilding);
+
                     prevPrerequisite = identifier;
                     AddUnlock(identifier, unitID, unit);
 
@@ -170,9 +175,8 @@ namespace GameGenerator.TreeGeneration
         {
             Resources.Add(ResourceType.Supply);
 
-            var building = GenerateResourceBuilding(ResourceType.Supply, false);
-
             var identifier = nextIdentifier++;
+            var building = GenerateResourceBuilding(identifier, ResourceType.Supply, false);
             Buildings.Add(identifier, building);
 
             if (Random.Next(3) == 0) // 1 in 3 chance of this requiring the "root" building
@@ -181,9 +185,9 @@ namespace GameGenerator.TreeGeneration
             return identifier;
         }
 
-        private BuildingBuilder GenerateResourceBuilding(ResourceType resource, bool isPrimary)
+        private BuildingBuilder GenerateResourceBuilding(uint identifier, ResourceType resource, bool isPrimary)
         {
-            var building = new BuildingBuilder(Random, AllocateBuildingSymbol(), BuildingRole.Resource);
+            var building = new BuildingBuilder(Random, identifier, AllocateBuildingSymbol(), BuildingRole.Resource);
             building.AllocateName(UsedNames);
             building.VisionRange = BuildingVisionRange;
 
@@ -192,9 +196,9 @@ namespace GameGenerator.TreeGeneration
             return building;
         }
 
-        private BuildingBuilder GenerateFactoryBuilding()
+        private BuildingBuilder GenerateFactoryBuilding(uint identifier)
         {
-            var building = new BuildingBuilder(Random, AllocateBuildingSymbol(), BuildingRole.Factory);
+            var building = new BuildingBuilder(Random, identifier, AllocateBuildingSymbol(), BuildingRole.Factory);
             building.AllocateName(UsedNames);
             building.VisionRange = BuildingVisionRange;
 
@@ -203,9 +207,9 @@ namespace GameGenerator.TreeGeneration
             return building;
         }
 
-        private BuildingBuilder GenerateTechBuilding()
+        private BuildingBuilder GenerateTechBuilding(uint identifier)
         {
-            var building = new BuildingBuilder(Random, AllocateBuildingSymbol(), BuildingRole.Research);
+            var building = new BuildingBuilder(Random, identifier, AllocateBuildingSymbol(), BuildingRole.Research);
             building.AllocateName(UsedNames);
             building.VisionRange = BuildingVisionRange;
 
@@ -302,7 +306,7 @@ namespace GameGenerator.TreeGeneration
             }
 
             // Then, randomly move some around.
-            int numToMove = Random.Next(0, (int)Complexity);
+            int numToMove = Random.Next(0, factoryIDs.Count);
             var bucketArray = unitBuckets.ToArray();
             for (int i = 0; i < numToMove; i++)
             {

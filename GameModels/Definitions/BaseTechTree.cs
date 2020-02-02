@@ -10,8 +10,6 @@ namespace GameModels.Definitions
         internal abstract IEnumerable<KeyValuePair<uint, IUnitType>> AllUnits { get; }
 
         public abstract Dictionary<uint, Research> Research { get; }
-
-        public int Seed { get; set; }
     }
 
     public abstract class BaseTechTree<TBuildingType, TUnitType> : BaseTechTree
