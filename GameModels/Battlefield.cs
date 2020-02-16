@@ -1,5 +1,4 @@
 ﻿using GameModels.Instances;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 
@@ -34,40 +33,23 @@ namespace GameModels
                 : Cells[index];
         }
 
-        public Cell GetNeighbor(Cell from, Direction towards)
-        {
-            return GetNeighbor(from, (int)towards);
-        }
-
-        private Cell GetNeighbor(Cell from, int towards)
+        private Cell GetNeighbour(Cell from, Direction towards)
         {
             var offset = Offsets[towards];
             return GetCell(from.Col + offset.Col, from.Row + offset.Row);
         }
 
-        private class Offset
+        public IEnumerable<Cell> GetNeighbours(Cell from)
         {
-            public Offset(int col, int row) { Col = col; Row = row; }
-            public int Col, Row;
+            foreach (var direction in CardinalDirections)
+            {
+                var neighbour = GetNeighbour(from, direction);
+                if (neighbour != null)
+                    yield return neighbour;
+            }
         }
 
-        private static readonly Offset[] Offsets = new Offset[] {
-            new Offset(1, 0), // east
-            new Offset(+1, -1), // northeast
-            new Offset(0, -1), // northwest
-            new Offset(-1, 0), // west
-            new Offset(-1, +1), // southwest
-            new Offset(0, +1), // southeast
-
-            new Offset(2, -1), // diagonal northeast
-            new Offset(1, -2), // diagonal north
-            new Offset(-1, -1), // diagonal northwest
-            new Offset(-2, 1), // diagonal southwest
-            new Offset(-1, 2), // diagonal south
-            new Offset(1, 1), // diagonal southwest
-        };
-
-        public enum Direction
+        private enum Direction
         {
             East = 0,
             NorthEast = 1,
@@ -84,7 +66,44 @@ namespace GameModels
             Diagonal_SouthEast = 11,
         }
 
-        const int NumDirections = 6;
+        private static readonly Direction[] CardinalDirections =
+        {
+            Direction.East,
+            Direction.NorthEast,
+            Direction.NorthWest,
+            Direction.West,
+            Direction.SouthWest,
+            Direction.SouthEast,
+        };
+
+        private class Offset
+        {
+            public Offset(int col, int row)
+            {
+                Col = col;
+                Row = row;
+            }
+
+            public int Col { get; }
+            public int Row { get; }
+        }
+
+        private static readonly Dictionary<Direction, Offset> Offsets = new Dictionary<Direction, Offset>
+        {
+            { Direction.East, new Offset(1, 0) },
+            { Direction.NorthEast, new Offset(+1, -1) },
+            { Direction.NorthWest, new Offset(0, -1) },
+            { Direction.West, new Offset(-1, 0) },
+            { Direction.SouthWest, new Offset(-1, +1) },
+            { Direction.SouthEast, new Offset(0, +1) },
+
+            { Direction.Diagonal_NorthEast, new Offset(2, -1) },
+            { Direction.Diagonal_North, new Offset(1, -2) },
+            { Direction.Diagonal_NorthWest, new Offset(-1, -1) },
+            { Direction.Diagonal_SouthWest, new Offset(-2, 1) },
+            { Direction.Diagonal_South, new Offset(-1, 2) },
+            { Direction.Diagonal_SouthEast, new Offset(1, 1) },
+        };
 
         public int GetDistance(Cell from, Cell to)
         {
@@ -106,34 +125,6 @@ namespace GameModels
                     cells.Add(GetCell(from.Col + dx, from.Row + dz));
             }
             return cells;
-        }
-
-        public HashSet<Cell> GetReachableCells(Cell from, int moveDistance)
-        {
-            var visited = new HashSet<Cell>();
-            visited.Add(from);
-
-            var fringes = new List<List<Cell>>();
-            var startList = new List<Cell>();
-            startList.Add(from);
-            fringes.Add(startList);
-
-            for (var k = 1; k < moveDistance; k++)
-            {
-                var fringe = new List<Cell>();
-                fringes.Add(fringe);
-                foreach (var test in fringes[k-1])
-                    for (var dir=0; dir<NumDirections; dir++)
-                    {
-                        var neighbor = GetNeighbor(test, dir);
-                        if (neighbor == null || !neighbor.IsPassable || visited.Contains(neighbor))
-                            continue;
-
-                        visited.Add(neighbor);
-                        fringe.Add(neighbor);
-                    }
-            }
-            return visited;
         }
     }
 }
