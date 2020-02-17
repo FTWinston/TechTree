@@ -1,6 +1,7 @@
 ﻿using GameModels;
 using GameModels.Instances;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace GameLogic.Services
 {
@@ -17,13 +18,23 @@ namespace GameLogic.Services
 
         private void AddVisibleCells(HashSet<Cell> results, Battlefield battlefield, Cell from, int range)
         {
-            foreach (var neighbour in battlefield.GetNeighbours(from))
-            {
-                results.Add(neighbour);
+            var newNeighbours = battlefield
+                .GetNeighbours(from)
+                .Where(neighbour => !results.Contains(neighbour)) // "superfluous" check here so we can avoid recursively calling into visited cells
+                .ToArray();
 
-                if (!neighbour.BlocksVision && range > 1)
+            results.UnionWith(newNeighbours);
+
+            if (range > 1)
+            {
+                range--;
+
+                foreach (var neighbour in newNeighbours)
                 {
-                    AddVisibleCells(results, battlefield, neighbour, range - 1);
+                    if (!neighbour.BlocksVision)
+                    {
+                        AddVisibleCells(results, battlefield, neighbour, range - 1);
+                    }
                 }
             }
         }
