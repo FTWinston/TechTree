@@ -29,6 +29,8 @@ namespace GameModels.Instances
             }
         }
 
+        public abstract EntityType BaseDefinition { get; }
+
         public List<Feature> LockedFeatures { get; protected set; }
 
         public List<Tuple<IStatusEffect, int>> StatusEffects { get; protected set; }
@@ -53,6 +55,8 @@ namespace GameModels.Instances
     public abstract class Entity<T> : Entity where T: EntityType
     {
         public T Definition { get; private set; }
+
+        public override EntityType BaseDefinition => Definition;
 
         public Entity(Player owner, T definition)
         {
