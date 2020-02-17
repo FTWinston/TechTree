@@ -2,7 +2,7 @@
 
 namespace ObjectiveStrategy.GameModels.Map
 {
-    public interface IMap<TCell>
+    public interface IGraph<TCell>
     {
         IEnumerable<TCell> GetNeighbors(TCell from);
 

@@ -7,7 +7,7 @@ namespace ObjectiveStrategy.GameLogic.Services
 {
     public class PathingService
     {
-        public HashSet<TCell> GetReachableCells<TCell>(IMap<TCell> graph, TCell from, int maxDistance, Func<TCell, bool> isPassable)
+        public HashSet<TCell> GetReachableCells<TCell>(IGraph<TCell> graph, TCell from, int maxDistance, Func<TCell, bool> isPassable)
         {
             var visited = new HashSet<TCell> { from };
 

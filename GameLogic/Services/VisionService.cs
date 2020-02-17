@@ -6,7 +6,7 @@ namespace ObjectiveStrategy.GameLogic.Services
 {
     public class VisionService
     {
-        public HashSet<TCell> GetVisibleCells<TCell>(IMap<TCell> map, TCell from, int range, Func<TCell, bool> blocksVision)
+        public HashSet<TCell> GetVisibleCells<TCell>(IGraph<TCell> map, TCell from, int range, Func<TCell, bool> blocksVision)
         {
             var visible = new HashSet<TCell> { from };
 

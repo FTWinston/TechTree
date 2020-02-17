@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace ObjectiveStrategy.GameModels.Map
 {
-    public class HexMap<TCell> : IMap<TCell>
+    public class HexMap<TCell> : IGraph<TCell>
         where TCell : HexCell
     {
         public HexMap(int width, int height)
