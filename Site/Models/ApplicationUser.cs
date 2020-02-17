@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Site.Models
+namespace ObjectiveStrategy.Site.Models
 {
     public class ApplicationUser : IdentityUser
     {

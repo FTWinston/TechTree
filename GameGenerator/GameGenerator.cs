@@ -1,9 +1,9 @@
-﻿using GameModels.Definitions;
-using GameGenerator.BattlefieldGeneration;
-using GameGenerator.TreeGeneration;
+﻿using ObjectiveStrategy.GameModels.Definitions;
+using ObjectiveStrategy.GameGenerator.BattlefieldGeneration;
+using ObjectiveStrategy.GameGenerator.TreeGeneration;
 using System;
 
-namespace GameGenerator
+namespace ObjectiveStrategy.GameGenerator
 {
     public static class GameGenerator
     {

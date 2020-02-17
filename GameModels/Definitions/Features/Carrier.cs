@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GameModels.Definitions.Features
+namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
     public class Carrier : PassiveFeature
     {

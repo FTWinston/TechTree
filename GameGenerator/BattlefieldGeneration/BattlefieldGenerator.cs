@@ -1,12 +1,11 @@
-﻿using GameGenerator;
-using GameModels;
-using GameModels.Definitions;
-using GameModels.Instances;
+﻿using ObjectiveStrategy.GameModels;
+using ObjectiveStrategy.GameModels.Definitions;
+using ObjectiveStrategy.GameModels.Instances;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace GameGenerator.BattlefieldGeneration
+namespace ObjectiveStrategy.GameGenerator.BattlefieldGeneration
 {
     public class BattlefieldGenerator
     {

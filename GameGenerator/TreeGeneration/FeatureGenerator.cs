@@ -1,7 +1,7 @@
-﻿using GameModels.Definitions;
+﻿using ObjectiveStrategy.GameModels.Definitions;
 using System;
 
-namespace GameGenerator.TreeGeneration
+namespace ObjectiveStrategy.GameGenerator.TreeGeneration
 {
     public class FeatureGenerator
     {

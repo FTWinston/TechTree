@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
-namespace GameModels.Map
+namespace ObjectiveStrategy.GameModels.Map
 {
     public interface IMap<TCell>
     {

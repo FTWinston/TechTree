@@ -1,10 +1,10 @@
-﻿using GameModels.Definitions;
-using GameModels.Definitions.Features;
+﻿using ObjectiveStrategy.GameModels.Definitions;
+using ObjectiveStrategy.GameModels.Definitions.Features;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace GameModels.Generation
+namespace ObjectiveStrategy.GameModels.Generation
 {
     static class UnitGenerator
     {

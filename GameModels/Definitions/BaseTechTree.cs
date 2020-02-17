@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace GameModels.Definitions
+namespace ObjectiveStrategy.GameModels.Definitions
 {
     public abstract class BaseTechTree
     {

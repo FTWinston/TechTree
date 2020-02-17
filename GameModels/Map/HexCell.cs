@@ -1,4 +1,4 @@
-﻿namespace GameModels.Map
+﻿namespace ObjectiveStrategy.GameModels.Map
 {
     public class HexCell
     {

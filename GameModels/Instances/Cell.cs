@@ -1,8 +1,8 @@
-﻿using GameModels.Definitions;
-using GameModels.Map;
+﻿using ObjectiveStrategy.GameModels.Definitions;
+using ObjectiveStrategy.GameModels.Map;
 using Newtonsoft.Json;
 
-namespace GameModels.Instances
+namespace ObjectiveStrategy.GameModels.Instances
 {
     public class Cell : HexCell
     {

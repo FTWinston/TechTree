@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace Site
+namespace ObjectiveStrategy.Site
 {
     public class Program
     {

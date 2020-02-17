@@ -1,14 +1,14 @@
-﻿using GameModels.Definitions;
-using GameModels.Definitions.Features;
-using GameModels.Generation;
-using GameModels.Instances;
+﻿using ObjectiveStrategy.GameModels.Definitions;
+using ObjectiveStrategy.GameModels.Definitions.Features;
+using ObjectiveStrategy.GameModels.Generation;
+using ObjectiveStrategy.GameModels.Instances;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GameModels.Definitions.Features
+namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
     public class Construction : ActivatedFeature
     {

@@ -1,11 +1,11 @@
-﻿using GameModels.Instances;
+﻿using ObjectiveStrategy.GameModels.Instances;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GameModels.Definitions.Features
+namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
     public class Landmine : ActivatedFeature
     {

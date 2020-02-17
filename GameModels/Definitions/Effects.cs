@@ -1,11 +1,11 @@
-﻿using GameModels.Instances;
+﻿using ObjectiveStrategy.GameModels.Instances;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GameModels.Definitions
+namespace ObjectiveStrategy.GameModels.Definitions
 {
     public interface IEffect<T>
     {

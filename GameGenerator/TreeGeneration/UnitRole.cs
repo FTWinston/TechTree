@@ -1,4 +1,4 @@
-﻿namespace GameGenerator.TreeGeneration
+﻿namespace ObjectiveStrategy.GameGenerator.TreeGeneration
 {
     public enum UnitRole
     {
