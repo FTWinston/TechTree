@@ -1,11 +1,6 @@
-﻿using GameModels.Definitions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using ObjectiveStrategy.GameModels.Definitions;
 
-namespace GameModels.Instances
+namespace ObjectiveStrategy.GameModels.Instances
 {
     public class Building : Entity<BuildingType>
     {

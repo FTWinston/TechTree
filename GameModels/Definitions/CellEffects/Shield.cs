@@ -1,12 +1,12 @@
-﻿using GameModels.Definitions;
-using GameModels.Instances;
+﻿using ObjectiveStrategy.GameModels.Definitions;
+using ObjectiveStrategy.GameModels.Instances;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GameModels.Definitions.CellEffects
+namespace ObjectiveStrategy.GameModels.Definitions.CellEffects
 {
     public class Shield : ICellEffect
     {

@@ -1,9 +1,9 @@
-﻿using GameModels.Instances;
+﻿using ObjectiveStrategy.GameModels.Instances;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace GameModels
+namespace ObjectiveStrategy.GameModels
 {
     public enum ObjectiveFeature
     {

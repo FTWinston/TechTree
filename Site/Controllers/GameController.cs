@@ -1,9 +1,9 @@
-﻿using GameModels.Definitions;
+﻿using ObjectiveStrategy.GameModels.Definitions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-namespace Site.Controllers
+namespace ObjectiveStrategy.Site.Controllers
 {
     [AllowAnonymous]
     [ApiController]

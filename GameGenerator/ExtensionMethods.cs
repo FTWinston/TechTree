@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace GameGenerator
+namespace ObjectiveStrategy.GameGenerator
 {
     internal static class ExtensionMethods
     {

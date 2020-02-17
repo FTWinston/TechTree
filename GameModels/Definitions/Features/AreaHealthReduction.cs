@@ -1,10 +1,10 @@
-﻿using GameModels.Definitions.CellEffects;
-using GameModels.Definitions.StatusEffects;
-using GameModels.Instances;
+﻿using ObjectiveStrategy.GameModels.Definitions.CellEffects;
+using ObjectiveStrategy.GameModels.Definitions.StatusEffects;
+using ObjectiveStrategy.GameModels.Instances;
 using System;
 using System.Text;
 
-namespace GameModels.Definitions.Features
+namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
     public class AreaHealthReduction : TargettedStatusEffectFeature<ReducedHealth>
     {

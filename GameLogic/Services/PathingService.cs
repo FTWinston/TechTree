@@ -1,29 +1,30 @@
-﻿using GameModels;
-using GameModels.Instances;
+﻿using ObjectiveStrategy.GameModels.Instances;
+using ObjectiveStrategy.GameModels.Map;
+using System;
 using System.Collections.Generic;
 
-namespace GameLogic.Services
+namespace ObjectiveStrategy.GameLogic.Services
 {
     public class PathingService
     {
-        public HashSet<Cell> GetReachableCells(Battlefield battlefield, Cell from, int maxDistance)
+        public HashSet<TCell> GetReachableCells<TCell>(IMap<TCell> graph, TCell from, int maxDistance, Func<TCell, bool> isPassable)
         {
-            var visited = new HashSet<Cell> { from };
+            var visited = new HashSet<TCell> { from };
 
-            var fringes = new List<List<Cell>>
+            var fringes = new List<List<TCell>>
             {
-                new List<Cell> { from },
+                new List<TCell> { from },
             };
 
             for (var k = 1; k < maxDistance; k++)
             {
-                var fringe = new List<Cell>();
+                var fringe = new List<TCell>();
                 fringes.Add(fringe);
 
                 foreach (var test in fringes[k - 1])
-                    foreach (var neighbour in battlefield.GetNeighbours(from))
+                    foreach (var neighbour in graph.GetNeighbors(from))
                     {
-                        if (!neighbour.IsPassable || visited.Contains(neighbour))
+                        if (!isPassable(neighbour) || visited.Contains(neighbour))
                             continue;
 
                         visited.Add(neighbour);

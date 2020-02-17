@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace GameGenerator.TreeGeneration
+namespace ObjectiveStrategy.GameGenerator.TreeGeneration
 {
     public partial class TreeGenerator
     {

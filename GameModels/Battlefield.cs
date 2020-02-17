@@ -1,7 +1,8 @@
-﻿using GameModels.Instances;
+﻿using ObjectiveStrategy.GameModels.Instances;
+using ObjectiveStrategy.GameModels.Map;
 using System.Collections.Generic;
 
-namespace GameModels
+namespace ObjectiveStrategy.GameModels
 {
     public class Battlefield : HexMap<Cell>
     {

@@ -1,7 +1,7 @@
-﻿using GameModels.Definitions;
+﻿using ObjectiveStrategy.GameModels.Definitions;
 using System.Collections.Generic;
 
-namespace GameModels
+namespace ObjectiveStrategy.GameModels
 {
     public class Game
     {

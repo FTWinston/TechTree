@@ -1,42 +1,27 @@
-﻿using GameModels;
-using GameModels.Instances;
+﻿using ObjectiveStrategy.GameModels.Map;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 
-namespace GameLogic.Services
+namespace ObjectiveStrategy.GameLogic.Services
 {
     public class VisionService
     {
-        public HashSet<Cell> GetVisibleCells(Battlefield battlefield, Cell startLocation, int range)
+        public HashSet<TCell> GetVisibleCells<TCell>(IMap<TCell> map, TCell from, int range, Func<TCell, bool> blocksVision)
         {
-            var results = new HashSet<Cell> { startLocation };
+            var visible = new HashSet<TCell> { from };
 
-            AddVisibleCells(results, battlefield, startLocation, range);
-
-            return results;
-        }
-
-        private void AddVisibleCells(HashSet<Cell> results, Battlefield battlefield, Cell from, int range)
-        {
-            var newNeighbours = battlefield
-                .GetNeighbours(from)
-                .Where(neighbour => !results.Contains(neighbour)) // "superfluous" check here so we can avoid recursively calling into visited cells
-                .ToArray();
-
-            results.UnionWith(newNeighbours);
-
-            if (range > 1)
+            foreach (var targetCell in map.GetCellsWithinDistance(from, range))
             {
-                range--;
-
-                foreach (var neighbour in newNeighbours)
+                foreach (var testCell in map.TraceLine(from, targetCell))
                 {
-                    if (!neighbour.BlocksVision)
-                    {
-                        AddVisibleCells(results, battlefield, neighbour, range - 1);
-                    }
+                    visible.Add(testCell);
+
+                    if (blocksVision(testCell))
+                        break;
                 }
             }
+
+            return visible;
         }
     }
 }

@@ -1,9 +1,9 @@
-﻿using GameModels.Definitions;
-using GameModels.Instances;
+﻿using ObjectiveStrategy.GameModels.Definitions;
+using ObjectiveStrategy.GameModels.Instances;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace GameModels
+namespace ObjectiveStrategy.GameModels
 {
     public class Player
     {

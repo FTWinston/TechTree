@@ -1,26 +1,9 @@
-﻿using GameModels.Instances;
-using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 
-namespace GameModels
+namespace ObjectiveStrategy.GameModels.Map
 {
-    public class HexCell
-    {
-        public HexCell(int row, int col)
-        {
-            Row = row;
-            Col = col;
-        }
-
-        [JsonIgnore]
-        public int Col { get; }
-
-        [JsonIgnore]
-        public int Row { get; }
-    }
-
-    public class HexMap<TCell>
+    public class HexMap<TCell> : IMap<TCell>
         where TCell : HexCell
     {
         public HexMap(int width, int height)
@@ -48,6 +31,26 @@ namespace GameModels
                 : Cells[index];
         }
 
+        private TCell GetNearestCell(float col, float row, float z)
+        {
+            int rCol = (int)Math.Round(col);
+            int rRow = (int)Math.Round(row);
+            int rz = (int)Math.Round(z);
+
+            var colDiff = Math.Abs(rCol - col);
+            var rowDiff = Math.Abs(rRow - row);
+            var zDiff = Math.Abs(rz - z);
+
+            if (colDiff > rowDiff && colDiff > zDiff)
+                rCol = -rRow - rz;
+            else if (rowDiff > zDiff)
+                rRow = -rCol - rz;
+            //else
+            //    rz = -rx - ry;
+
+            return GetCell(rCol, rRow);
+        }
+
         private class Offset
         {
             public Offset(int col, int row)
@@ -70,7 +73,7 @@ namespace GameModels
             new Offset(0, +1), // southeast
         };
 
-        public IEnumerable<TCell> GetNeighbours(Cell from)
+        public IEnumerable<TCell> GetNeighbors(TCell from)
         {
             foreach (var offset in CardinalOffsets)
             {
@@ -93,6 +96,7 @@ namespace GameModels
         public HashSet<TCell> GetCellsWithinDistance(TCell from, int distance)
         {
             var cells = new HashSet<TCell>();
+
             for (var dx = -distance; dx <= distance; dx++)
             {
                 var minZ = Math.Max(-distance, -dx - distance);
@@ -100,22 +104,39 @@ namespace GameModels
                 for (var dz = minZ; dz <= maxZ; dz++)
                     cells.Add(GetCell(from.Col + dx, from.Row + dz));
             }
+
             return cells;
         }
 
-        public IEnumerable<TCell> GetCellsOnLine(TCell from, TCell to)
-        {
-            var distance = GetDistance(from, to);
 
-            for (var i = 0; i <= distance; i++)
+        public IEnumerable<TCell> TraceLine(TCell from, TCell to)
+        {
+            if (from == to)
+            {
+                yield return to;
+                yield break;
+            }
+
+            int distance = GetDistance(from, to);
+
+            // row + col + z = 0, so z = -row - col
+            int fromZ = -from.Col - from.Row;
+            int toZ = -to.Col - to.Row;
+
+            for (var i = 1; i <= distance; i++)
             {
                 var t = 1f / distance * i;
 
-                var x = Lerp(from.x, to.x, t);
-                var y = Lerp(from.y, to.y, t);
-                var z = Lerp(from.z, to.z, t);
+                var col = Lerp(from.Col, to.Col, t);
+                var row = Lerp(from.Row, to.Row, t);
+                var z = Lerp(fromZ, toZ, t);
 
-                yield return GetNearestCell(x, y, z);
+                var cell = GetNearestCell(col, row, z);
+
+                if (cell == null)
+                    yield break;
+
+                yield return cell;
             }
         }
 

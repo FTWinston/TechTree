@@ -1,8 +1,8 @@
-﻿using GameModels.Definitions;
+﻿using ObjectiveStrategy.GameModels.Definitions;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace GameModels
+namespace ObjectiveStrategy.GameModels
 {
     public class TechTree : BaseTechTree<BuildingType, UnitType>
     {

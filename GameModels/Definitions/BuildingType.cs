@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace GameModels.Definitions
+namespace ObjectiveStrategy.GameModels.Definitions
 {
     public class BuildingType : EntityType, IBuildingType
     {

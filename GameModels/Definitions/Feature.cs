@@ -1,9 +1,9 @@
-﻿using GameModels.Instances;
+﻿using ObjectiveStrategy.GameModels.Instances;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System;
 
-namespace GameModels.Definitions
+namespace ObjectiveStrategy.GameModels.Definitions
 {
     public abstract partial class Feature
     {

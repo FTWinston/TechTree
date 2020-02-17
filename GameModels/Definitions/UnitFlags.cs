@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace GameModels.Definitions
+namespace ObjectiveStrategy.GameModels.Definitions
 {
     [Flags]
     public enum UnitFlags // TODO: split these into movement flags and attack flags

@@ -1,11 +1,12 @@
-﻿using GameModels.Definitions;
+﻿using ObjectiveStrategy.GameModels.Definitions;
+using ObjectiveStrategy.GameModels.Map;
 using Newtonsoft.Json;
 
-namespace GameModels.Instances
+namespace ObjectiveStrategy.GameModels.Instances
 {
     public class Cell : HexCell
     {
-        public Cell(int row, int col, CellType type)
+        public Cell (int row, int col, CellType type)
             : base(row, col)
         {
             Type = type;

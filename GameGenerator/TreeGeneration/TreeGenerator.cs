@@ -1,10 +1,10 @@
-﻿using GameModels;
-using GameModels.Definitions;
+﻿using ObjectiveStrategy.GameModels;
+using ObjectiveStrategy.GameModels.Definitions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace GameGenerator.TreeGeneration
+namespace ObjectiveStrategy.GameGenerator.TreeGeneration
 {
     public partial class TreeGenerator : BaseTechTree<BuildingBuilder, UnitBuilder>
     {

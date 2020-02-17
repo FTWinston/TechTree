@@ -6,13 +6,13 @@ using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.EntityFrameworkCore;
-using Site.Data;
-using Site.Models;
+using ObjectiveStrategy.Site.Data;
+using ObjectiveStrategy.Site.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace Site
+namespace ObjectiveStrategy.Site
 {
     public class Startup
     {

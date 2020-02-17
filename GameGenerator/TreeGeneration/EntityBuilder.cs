@@ -1,8 +1,8 @@
-﻿using GameModels.Definitions;
+﻿using ObjectiveStrategy.GameModels.Definitions;
 using System;
 using System.Collections.Generic;
 
-namespace GameGenerator.TreeGeneration
+namespace ObjectiveStrategy.GameGenerator.TreeGeneration
 {
     public abstract class EntityBuilder : IEntityType
     {

@@ -1,8 +1,8 @@
-﻿using GameModels.Definitions;
+﻿using ObjectiveStrategy.GameModels.Definitions;
 using System;
 using System.Collections.Generic;
 
-namespace GameModels.Instances
+namespace ObjectiveStrategy.GameModels.Instances
 {
     public abstract class Entity
     {

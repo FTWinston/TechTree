@@ -1,12 +1,12 @@
-﻿using GameModels.Definitions.Features;
-using GameModels.Generation;
+﻿using ObjectiveStrategy.GameModels.Definitions.Features;
+using ObjectiveStrategy.GameModels.Generation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GameModels.Definitions
+namespace ObjectiveStrategy.GameModels.Definitions
 {
     public class Research : Purchasable
     {
