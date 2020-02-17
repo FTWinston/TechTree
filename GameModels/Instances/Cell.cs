@@ -1,27 +1,21 @@
 ﻿using GameModels.Definitions;
+using GameModels.Map;
 using Newtonsoft.Json;
 
 namespace GameModels.Instances
 {
-    public class Cell
+    public class Cell : HexCell
     {
+        public Cell (int row, int col, CellType type)
+            : base(row, col)
+        {
+            Type = type;
+        }
+
         [JsonIgnore]
         public Entity Entity { get; internal set; }
 
-        [JsonIgnore]
-        public int Col { get; set; }
-
-        [JsonIgnore]
-        public int Row { get; set; }
-
         public CellType Type { get; set; }
-
-        public Cell(int row, int col, CellType type)
-        {
-            Row = row;
-            Col = col;
-            Type = type;
-        }
 
         [JsonIgnore]
         public bool IsPassable
