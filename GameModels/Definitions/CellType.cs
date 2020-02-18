@@ -2,7 +2,7 @@
 {
     public enum CellType
     {
-        OutOfBounds = 0,
+        Unknown = 0,
         Water = 1,
         Flat = 2,
         Difficult = 3,

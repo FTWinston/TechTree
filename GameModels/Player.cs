@@ -10,23 +10,19 @@ namespace ObjectiveStrategy.GameModels
         public int ID { get; }
         public TechTree TechTree { get; }
 
-        public List<Building> Buildings { get; }
-        public List<Unit> Units { get; }
+        public List<Building> Buildings { get; } = new List<Building>();
+        public List<Unit> Units { get; } = new List<Unit>();
 
-        public List<BuildingType> AvailableBuildings { get; }
-        public List<UnitType> AvailableUnits { get; }
-        public List<Research> CompletedResearch { get; }
+        public List<BuildingType> AvailableBuildings { get; } = new List<BuildingType>();
+        public List<UnitType> AvailableUnits { get; } = new List<UnitType>();
+        public List<Research> CompletedResearch { get; } = new List<Research>();
+
+        public HashSet<Cell> SeenCells { get; } = new HashSet<Cell>();
 
         public Player(int id, TechTree tree)
         {
             ID = id;
             TechTree = tree;
-            Buildings = new List<Building>();
-            Units = new List<Unit>();
-
-            AvailableBuildings = new List<BuildingType>();
-            AvailableUnits = new List<UnitType>();
-            CompletedResearch = new List<Research>();
         }
 
         public void BuildingCompleted(Building b)

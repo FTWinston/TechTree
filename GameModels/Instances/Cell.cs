@@ -13,7 +13,7 @@ namespace ObjectiveStrategy.GameModels.Instances
         }
 
         [JsonIgnore]
-        public Entity Entity { get; internal set; }
+        public Entity Entity { get; set; }
 
         public CellType Type { get; set; }
 
@@ -40,7 +40,7 @@ namespace ObjectiveStrategy.GameModels.Instances
             {
                 switch (Type)
                 {
-                    case CellType.OutOfBounds:
+                    case CellType.Unknown:
                     case CellType.Unpassable:
                         return true;
                     default:
