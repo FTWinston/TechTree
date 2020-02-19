@@ -16,7 +16,7 @@ namespace ObjectiveStrategy.ClientModels.Models
 
             Player = player;
 
-            BattlefieldView = new BattlefieldView(Player, Game.Battlefield);
+            Battlefield = new BattlefieldView(Player, Game.Battlefield);
         }
 
         private Game Game { get; }
@@ -25,7 +25,7 @@ namespace ObjectiveStrategy.ClientModels.Models
 
         public int PlayerID => Player.ID;
 
-        public BattlefieldView BattlefieldView { get; }
+        public BattlefieldView Battlefield { get; }
 
         public TechTree TechTree => Player.TechTree;
     }
