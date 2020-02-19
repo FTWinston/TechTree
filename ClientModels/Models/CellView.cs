@@ -1,11 +1,11 @@
 ﻿using ObjectiveStrategy.GameModels.Definitions;
 using ObjectiveStrategy.GameModels.Instances;
 
-namespace ObjectiveStrategy.GameLogic.ClientModel
+namespace ObjectiveStrategy.ClientModels.Models
 {
-    public struct MapCell
+    public class CellView
     {
-        public MapCell(Cell cell, bool seen)
+        public CellView(Cell cell, bool seen)
         {
             Type = cell.Type;
 
@@ -13,16 +13,20 @@ namespace ObjectiveStrategy.GameLogic.ClientModel
                 ? Visibility.Seen
                 : Visibility.Unseen;
 
-            Content = seen
-                ? cell.Entity
-                : null;
+            if (seen && cell.Entity != null)
+            {
+                if (cell.Entity is Unit unit)
+                    Content = new UnitView(unit);
+                else if (cell.Entity is Building building)
+                    Content = new BuildingView(building);
+            }
         }
 
         public Visibility Visibility { get; }
 
         public CellType Type { get; }
 
-        public Entity Content { get; }
+        public EntityView Content { get; }
     }
 
     public enum Visibility

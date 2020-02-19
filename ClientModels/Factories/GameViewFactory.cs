@@ -1,11 +1,12 @@
-﻿using ObjectiveStrategy.GameLogic.Services;
+﻿using ObjectiveStrategy.ClientModels.Models;
+using ObjectiveStrategy.GameLogic.Services;
 using ObjectiveStrategy.GameModels;
 
-namespace ObjectiveStrategy.GameLogic.Factories
+namespace ObjectiveStrategy.ClientModels.Factories
 {
-    class ClientModelFactory
+    class GameViewFactory
     {
-        public ClientModelFactory
+        public GameViewFactory
         (
             VisionService visionService,
             PathingService pathingService
@@ -19,9 +20,9 @@ namespace ObjectiveStrategy.GameLogic.Factories
 
         public VisionService VisionService { get; }
 
-        public ClientModel.ClientModel GetClientModel(Game game, Player player)
+        public GameView CreateView(Game game, Player player)
         {
-            return new ClientModel.ClientModel(game, player);
+            return new GameView(game, player);
         }
     }
 }

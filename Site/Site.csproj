@@ -30,6 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ClientModels\ClientModels.csproj" />
     <ProjectReference Include="..\GameGenerator\GameGenerator.csproj" />
     <ProjectReference Include="..\GameLogic\GameLogic.csproj" />
     <ProjectReference Include="..\GameModels\GameModels.csproj" />

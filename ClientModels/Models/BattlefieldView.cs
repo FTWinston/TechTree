@@ -1,36 +1,27 @@
 ﻿using ObjectiveStrategy.GameModels;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 
-namespace ObjectiveStrategy.GameLogic.ClientModel
+namespace ObjectiveStrategy.ClientModels.Models
 {
-    public class ClientModel
+    public class BattlefieldView
     {
-        public ClientModel(Game game, Player player)
+        public BattlefieldView(Player player, Battlefield battlefield)
         {
-            if (!game.Players.Contains(player))
-            {
-                throw new InvalidOperationException("Cannot generate a view model for a player that isn't in the game");
-            }
-
-            Game = game;
             Player = player;
+            Battlefield = battlefield;
         }
 
-        private Game Game { get; }
-
         private Player Player { get; }
+        private Battlefield Battlefield { get; }
 
-        public int Width => Game.Battlefield.Width;
+        public int Width => Battlefield.Width;
 
-        public int Height => Game.Battlefield.Height;
+        public int Height => Battlefield.Height;
 
-        public MapCell[] Cells => Game.Battlefield.Cells
-            .Select(cell => new MapCell(cell, Player.SeenCells.Contains(cell)))
+        public CellView[] Cells => Battlefield.Cells
+            .Select(cell => new CellView(cell, Player.SeenCells.Contains(cell)))
             .ToArray();
-
-        public TechTree TechTree => Player.TechTree;
 
         /*
         private Dictionary<Entity, HashSet<Cell>> VisionByEntity { get; } = new Dictionary<Entity, HashSet<Cell>>();

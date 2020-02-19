@@ -29,6 +29,10 @@ namespace ObjectiveStrategy.GameModels.Instances
             }
         }
 
+        public int Health { get; set; }
+
+        public int Mana { get; set; }
+
         public abstract EntityType BaseDefinition { get; }
 
         public List<Feature> LockedFeatures { get; protected set; }

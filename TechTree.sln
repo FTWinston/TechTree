@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Site", "Site\Site.csproj", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameGenerator", "GameGenerator\GameGenerator.csproj", "{9D786014-552B-4F99-A247-9811ACFAC6DB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameLogic", "GameLogic\GameLogic.csproj", "{7D152559-222D-45C6-A408-E098BED2C774}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameLogic", "GameLogic\GameLogic.csproj", "{7D152559-222D-45C6-A408-E098BED2C774}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClientModels", "ClientModels\ClientModels.csproj", "{7AFB5764-BDD8-45FF-97B6-67DE5819C3F4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{7D152559-222D-45C6-A408-E098BED2C774}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7D152559-222D-45C6-A408-E098BED2C774}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7D152559-222D-45C6-A408-E098BED2C774}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7AFB5764-BDD8-45FF-97B6-67DE5819C3F4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7AFB5764-BDD8-45FF-97B6-67DE5819C3F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7AFB5764-BDD8-45FF-97B6-67DE5819C3F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7AFB5764-BDD8-45FF-97B6-67DE5819C3F4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
