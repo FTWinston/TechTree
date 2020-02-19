@@ -4,8 +4,8 @@ namespace ObjectiveStrategy.GameModels.Instances
 {
     public class Building : Entity<BuildingType>
     {
-        public Building(Player p, BuildingType type)
-            : base(p, type)
+        public Building(Player p, BuildingType type, Cell location)
+            : base(p, type, location)
         {
 
         }

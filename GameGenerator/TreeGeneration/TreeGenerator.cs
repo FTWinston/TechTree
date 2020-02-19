@@ -14,7 +14,7 @@ namespace ObjectiveStrategy.GameGenerator.TreeGeneration
             Seed = seed;
         }
 
-        private Random Random { get; set; }
+        private Random Random { get; set; } = new Random();
 
         public int Seed { get; }
 

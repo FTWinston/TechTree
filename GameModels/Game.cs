@@ -1,5 +1,6 @@
 ﻿using ObjectiveStrategy.GameModels.Definitions;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ObjectiveStrategy.GameModels
 {
@@ -16,6 +17,8 @@ namespace ObjectiveStrategy.GameModels
             };
 
             TurnsRemaining = definition.TurnLimit * Players.Count;
+
+            CurrentPlayer = Players.First();
         }
 
         public int TurnsRemaining { get; private set; }

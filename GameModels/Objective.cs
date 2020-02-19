@@ -14,7 +14,7 @@ namespace ObjectiveStrategy.GameModels
 
     public class Objective
     {
-        public string Description { get; set; }
+        public string Description { get; set; } = string.Empty;
 
         public int Value { get; set; }
 
@@ -26,7 +26,7 @@ namespace ObjectiveStrategy.GameModels
 
         public bool RelativeToOpponent { get; set; }
 
-        public Dictionary<int, int[]> CellsByPlayer { get; set; }
+        public Dictionary<int, int[]>? CellsByPlayer { get; set; }
 
         public bool IsSatisfied(Game game, Player player)
         {

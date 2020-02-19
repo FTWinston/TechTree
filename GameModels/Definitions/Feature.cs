@@ -14,7 +14,7 @@ namespace ObjectiveStrategy.GameModels.Definitions
 
         public EntityType EntityDefinition { get; internal set; }
 
-        public virtual Research UnlockedBy { get; internal set; }
+        public virtual Research? UnlockedBy { get; internal set; }
 
         public abstract bool UsesMana { get; }
 

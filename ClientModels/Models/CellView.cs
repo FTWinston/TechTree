@@ -26,7 +26,7 @@ namespace ObjectiveStrategy.ClientModels.Models
 
         public CellType Type { get; }
 
-        public EntityView Content { get; }
+        public EntityView? Content { get; }
     }
 
     public enum Visibility

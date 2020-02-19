@@ -12,7 +12,6 @@ namespace ObjectiveStrategy.GameLogic.Services
             if (entity.Location != null)
             {
                 entity.Location.Entity = null;
-                entity.Location = null;
             }
         }
 

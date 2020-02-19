@@ -6,6 +6,12 @@ namespace ObjectiveStrategy.GameModels.Instances
 {
     public abstract class Entity
     {
+        protected Entity(Player owner, Cell location)
+        {
+            Owner = owner;
+            this.location = location;
+        }
+
         public Player Owner { get; set; }
 
         private Cell location;
@@ -35,9 +41,9 @@ namespace ObjectiveStrategy.GameModels.Instances
 
         public abstract EntityType BaseDefinition { get; }
 
-        public List<Feature> LockedFeatures { get; protected set; }
+        public List<Feature> LockedFeatures { get; } = new List<Feature>();
 
-        public List<Tuple<IStatusEffect, int>> StatusEffects { get; protected set; }
+        public List<Tuple<IStatusEffect, int>> StatusEffects { get; } = new List<Tuple<IStatusEffect, int>>();
 
         public void AddEffect(IStatusEffect effect)
         {
@@ -62,17 +68,14 @@ namespace ObjectiveStrategy.GameModels.Instances
 
         public override EntityType BaseDefinition => Definition;
 
-        public Entity(Player owner, T definition)
+        public Entity(Player owner, T definition, Cell location)
+            : base(owner, location)
         {
             Definition = definition;
-            Owner = owner;
 
-            LockedFeatures = new List<Feature>();
             foreach (Feature f in Definition.Features)
                 if (f.UnlockedBy != null && !owner.CompletedResearch.Contains(f.UnlockedBy))
                     LockedFeatures.Add(f);
-
-            StatusEffects = new List<Tuple<IStatusEffect, int>>();
         }
     }
 }

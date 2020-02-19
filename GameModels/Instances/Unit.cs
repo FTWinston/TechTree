@@ -4,8 +4,8 @@ namespace ObjectiveStrategy.GameModels.Instances
 {
     public class Unit : Entity<UnitType>
     {
-        public Unit(Player p, UnitType type)
-            : base(p, type)
+        public Unit(Player p, UnitType type, Cell location)
+            : base(p, type, location)
         {
 
         }

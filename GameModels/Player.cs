@@ -63,12 +63,17 @@ namespace ObjectiveStrategy.GameModels
             {
                 EntityType relatedEntityType = unlock.EntityDefinition;
 
+                IEnumerable<Entity> entities;
+
                 if (relatedEntityType is UnitType)
-                    foreach (Unit u in Units.Where(u => u.Definition == relatedEntityType))
-                        u.LockedFeatures.Remove(unlock);
+                    entities = Units.Where(u => u.Definition == relatedEntityType);
                 else if (relatedEntityType is BuildingType)
-                    foreach (Building b in Buildings.Where(b => b.Definition == relatedEntityType))
-                        b.LockedFeatures.Remove(unlock);
+                    entities = Buildings.Where(b => b.Definition == relatedEntityType);
+                else
+                    continue;
+
+                foreach (Entity entity in entities)
+                    entity.LockedFeatures.Remove(unlock);
             }
         }
     }

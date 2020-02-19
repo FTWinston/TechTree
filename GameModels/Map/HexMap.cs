@@ -22,7 +22,7 @@ namespace ObjectiveStrategy.GameModels.Map
             return col + row * Width;
         }
 
-        private TCell GetCell(int col, int row)
+        private TCell? GetCell(int col, int row)
         {
             int index = GetIndex(col, row);
 
@@ -31,7 +31,7 @@ namespace ObjectiveStrategy.GameModels.Map
                 : Cells[index];
         }
 
-        private TCell GetNearestCell(float col, float row, float z)
+        private TCell? GetNearestCell(float col, float row, float z)
         {
             int rCol = (int)Math.Round(col);
             int rRow = (int)Math.Round(row);
@@ -102,7 +102,12 @@ namespace ObjectiveStrategy.GameModels.Map
                 var minZ = Math.Max(-distance, -dx - distance);
                 var maxZ = Math.Min(distance, -dx + distance);
                 for (var dz = minZ; dz <= maxZ; dz++)
-                    cells.Add(GetCell(from.Col + dx, from.Row + dz));
+                {
+                    var cell = GetCell(from.Col + dx, from.Row + dz);
+
+                    if (cell != null)
+                        cells.Add(cell);
+                }
             }
 
             return cells;

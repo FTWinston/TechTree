@@ -24,7 +24,7 @@ namespace ObjectiveStrategy.GameGenerator.TreeGeneration
             //throw new NotImplementedException();
         }
 
-        private Feature PickFeature(List<FeatureGenerator> options, ref double value)
+        private Feature? PickFeature(List<FeatureGenerator> options, ref double value)
         {
             var budget = value;
 
@@ -54,22 +54,22 @@ namespace ObjectiveStrategy.GameGenerator.TreeGeneration
             return valueBudget;
         }
 
-        private Feature SelectAttack(ref double valueBudget)
+        private Feature? SelectAttack(ref double valueBudget)
         {
             return PickFeature(AttackFeatures, ref valueBudget);
         }
 
-        private Feature SelectUtility(ref double valueBudget)
+        private Feature? SelectUtility(ref double valueBudget)
         {
             return PickFeature(UtilityFeatures, ref valueBudget);
         }
 
-        private Feature SelectOffensiveAbility(ref double valueBudget)
+        private Feature? SelectOffensiveAbility(ref double valueBudget)
         {
             return PickFeature(OffensiveFeatures, ref valueBudget);
         }
 
-        private Feature SelectDefensiveAbility(ref double valueBudget)
+        private Feature? SelectDefensiveAbility(ref double valueBudget)
         {
             return PickFeature(DefensiveFeatures, ref valueBudget);
         }

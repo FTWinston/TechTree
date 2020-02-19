@@ -176,7 +176,7 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 
         public override double Initialize(EntityType type)
         {
-            Attack feature = type.Features.SingleOrDefault(f => f is Attack) as Attack;
+            Attack? feature = type.Features.SingleOrDefault(f => f is Attack) as Attack;
             if (feature == null)
                 return 1;
 

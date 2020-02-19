@@ -15,7 +15,7 @@ namespace ObjectiveStrategy.GameGenerator.TreeGeneration
 
         protected Random Random { get; }
 
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
 
         public string Symbol { get; }
 

@@ -15,7 +15,7 @@ namespace ObjectiveStrategy.GameGenerator.BattlefieldGeneration
             Seed = seed;
         }
 
-        private Random Random { get; set; }
+        private Random Random { get; set; } = new Random();
 
         public int Complexity { get; }
 

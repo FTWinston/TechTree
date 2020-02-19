@@ -13,7 +13,7 @@ namespace ObjectiveStrategy.GameModels.Instances
         }
 
         [JsonIgnore]
-        public Entity Entity { get; set; }
+        public Entity? Entity { get; set; }
 
         public CellType Type { get; set; }
 

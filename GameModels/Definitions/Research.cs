@@ -15,13 +15,16 @@ namespace ObjectiveStrategy.GameModels.Definitions
         public BuildingType PerformedAt { get; private set; }
         public List<Feature> Unlocks { get; private set; }
 
-        public Research(params Feature[] features)
+        public Research(BuildingType performedAt, params Feature[] features)
             : base(null) // TODO: this is screwed up
         {
             /*
             Name = features.First().Name;
             Symbol = features.First().Symbol;
             */
+
+            Description = "To be determined";
+            PerformedAt = performedAt;
             Unlocks = new List<Feature>(features);
         }
         

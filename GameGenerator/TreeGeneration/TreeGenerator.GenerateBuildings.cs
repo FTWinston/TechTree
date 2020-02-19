@@ -98,6 +98,9 @@ namespace ObjectiveStrategy.GameGenerator.TreeGeneration
 
             DetermineResourceCostRatios();
 
+            if (!primaryBuildingID.HasValue)
+                throw new InvalidOperationException();
+
             return primaryBuildingID.Value;
         }
 
@@ -151,7 +154,7 @@ namespace ObjectiveStrategy.GameGenerator.TreeGeneration
                     }
 
                     // give this unit type a 1 in 3 chance of sharing a prerequisite with its predecessor
-                    if (prevPrerequisite.HasValue & Random.Next(3) == 0)
+                    if (prevPrerequisite.HasValue && Random.Next(3) == 0)
                     {
                         AddUnlock(prevPrerequisite.Value, unitID, unit);
                         continue;
@@ -342,7 +345,8 @@ namespace ObjectiveStrategy.GameGenerator.TreeGeneration
         {
             return IDs
                 .Select(id => Buildings.TryGetValue(id, out var building) ? building : null)
-                .Where(b => b != null);
+                .Where(b => b != null)
+                .Cast<BuildingBuilder>();
         }
     }
 }
