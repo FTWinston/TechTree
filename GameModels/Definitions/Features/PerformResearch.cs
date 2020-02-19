@@ -23,13 +23,7 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
         
         protected override string GetDescription()
         {
-            StringBuilder sb = new StringBuilder();
-            sb.Append("Unlocks the ");
-            sb.Append(Research.Name);
-            sb.Append(" feature for ");
-            sb.Append(Research.Unlocks.First().EntityDefinition.Name);
-
-            return sb.ToString();
+            return Research.Description;
         }
 
         [JsonIgnore]

@@ -7,7 +7,7 @@ namespace ObjectiveStrategy.GameGenerator.TreeGeneration
 {
     public partial class TreeGenerator
     {
-        public delegate Feature FeatureSelector(ref double remainingValue);
+        public delegate Feature? FeatureSelector(ref double remainingValue);
 
         private List<FeatureGenerator> AttackFeatures = new List<FeatureGenerator>();
 
