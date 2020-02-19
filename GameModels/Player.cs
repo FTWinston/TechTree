@@ -61,19 +61,11 @@ namespace ObjectiveStrategy.GameModels
             // for all features that this research unlocks, enable them on all units that have that feature
             foreach (Feature unlock in r.Unlocks)
             {
-                EntityType relatedEntityType = unlock.EntityDefinition;
+                foreach (var unit in Units)
+                    unit.LockedFeatures.Remove(unlock);
 
-                IEnumerable<Entity> entities;
-
-                if (relatedEntityType is UnitType)
-                    entities = Units.Where(u => u.Definition == relatedEntityType);
-                else if (relatedEntityType is BuildingType)
-                    entities = Buildings.Where(b => b.Definition == relatedEntityType);
-                else
-                    continue;
-
-                foreach (Entity entity in entities)
-                    entity.LockedFeatures.Remove(unlock);
+                foreach (var building in Buildings)
+                    building.LockedFeatures.Remove(unlock);
             }
         }
     }
