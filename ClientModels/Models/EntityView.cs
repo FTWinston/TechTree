@@ -6,6 +6,8 @@ namespace ObjectiveStrategy.ClientModels.Models
     {
         public abstract string Type { get; }
 
+        public abstract uint ID { get; }
+
         public abstract int Owner { get; }
 
         public abstract int Health { get; }
@@ -28,6 +30,8 @@ namespace ObjectiveStrategy.ClientModels.Models
         }
 
         protected TEntity Entity { get; }
+
+        public override uint ID => Entity.ID;
 
         public override int Owner => Entity.Owner.ID;
 

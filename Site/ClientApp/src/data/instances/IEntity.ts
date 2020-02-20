@@ -1,4 +1,5 @@
 export interface IEntity {
+    id: number;
     owner: number;
     health: number;
     maxHealth: number;

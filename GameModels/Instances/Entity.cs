@@ -6,11 +6,14 @@ namespace ObjectiveStrategy.GameModels.Instances
 {
     public abstract class Entity
     {
-        protected Entity(Player owner, Cell location)
+        protected Entity(uint id, Player owner, Cell location)
         {
+            ID = id;
             Owner = owner;
             this.location = location;
         }
+
+        public uint ID { get; }
 
         public Player Owner { get; set; }
 
@@ -68,8 +71,8 @@ namespace ObjectiveStrategy.GameModels.Instances
 
         public override EntityType BaseDefinition => Definition;
 
-        public Entity(Player owner, T definition, Cell location)
-            : base(owner, location)
+        public Entity(uint id, Player owner, T definition, Cell location)
+            : base(id, owner, location)
         {
             Definition = definition;
 
