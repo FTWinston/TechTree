@@ -26,7 +26,11 @@ namespace ObjectiveStrategy.ClientModels.Models
 
         public CellType Type { get; }
 
+        //[JsonIgnore]
         public EntityView? Content { get; }
+
+        //[JsonPropertyName("Content")]
+        //public object? RawContent { get; } // needs to be object if EntityView doesn't have every property we might need
     }
 
     public enum Visibility

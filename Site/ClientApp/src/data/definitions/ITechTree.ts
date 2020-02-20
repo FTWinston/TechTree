@@ -1,8 +1,6 @@
 import { ReadonlyDictionary } from '../Dictionary';
-import { IBuildingType } from './IBuildingType';
-import { IUnitType } from './IUnitType';
+import { ITreeBuilding } from './ITreeBuilding';
 
 export interface ITechTree {
-    buildings: ReadonlyDictionary<number, IBuildingType>;
-    units: ReadonlyDictionary<number, IUnitType>;
+    buildings: ReadonlyDictionary<number, ITreeBuilding>;
 }

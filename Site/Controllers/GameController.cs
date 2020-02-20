@@ -1,7 +1,10 @@
-﻿using ObjectiveStrategy.GameModels.Definitions;
+﻿using ObjectiveStrategy.ClientModels.Models;
+using ObjectiveStrategy.GameModels;
+using ObjectiveStrategy.GameModels.Definitions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System.Linq;
 
 namespace ObjectiveStrategy.Site.Controllers
 {
@@ -18,15 +21,19 @@ namespace ObjectiveStrategy.Site.Controllers
         }
 
         [HttpGet("[action]")]
-        public GameDefinition Generate()
+        public GameView Generate()
         {
-            return GameGenerator.GameGenerator.GenerateGame();
+            var gameDef = GameGenerator.GameGenerator.GenerateGame();
+            var game = new Game(gameDef);
+            return new GameView(game, game.Players.First());
         }
 
         [HttpGet("[action]/{seed}")]
-        public GameDefinition Generate(int complexity, int seed)
+        public GameView Generate(int complexity, int seed)
         {
-            return GameGenerator.GameGenerator.GenerateGame(complexity, seed);
+            var gameDef = GameGenerator.GameGenerator.GenerateGame(complexity, seed);
+            var game = new Game(gameDef);
+            return new GameView(game, game.Players.First());
         }
     }
 }

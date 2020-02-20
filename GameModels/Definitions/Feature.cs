@@ -5,7 +5,7 @@ using System;
 
 namespace ObjectiveStrategy.GameModels.Definitions
 {
-    public abstract partial class Feature
+    public abstract partial class Feature : ISelectable
     {
         public abstract string Name { get; }
         public string Description { get { return GetDescription(); } }

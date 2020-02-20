@@ -15,7 +15,7 @@ namespace ObjectiveStrategy.GameModels.Map
 
         public int Width { get; }
         public int Height { get; }
-        public TCell[] Cells { get; }
+        public TCell?[] Cells { get; }
 
         public int GetIndex(int col, int row)
         {

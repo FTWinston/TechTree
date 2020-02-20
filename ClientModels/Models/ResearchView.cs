@@ -2,9 +2,9 @@
 
 namespace ObjectiveStrategy.ClientModels.Models
 {
-    public class TreeResearchView : TreeItemView<Research>
+    public class ResearchView : PurchasableView<Research>
     {
-        public TreeResearchView(Research research)
+        public ResearchView(Research research)
             : base(research)
         { }
 

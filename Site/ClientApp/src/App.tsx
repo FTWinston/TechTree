@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
-import { IGameDefinition } from './data/definitions/IGameDefinition';
+import { IGame } from './data/instances/IGame';
 import { GameOverview } from './components/GameOverview';
 
 const App: React.FC = () => {
-    const [game, setGame] = useState<IGameDefinition>();
+    const [game, setGame] = useState<IGame>();
 
     useEffect(() => {
         loadGameDefinition(setGame);
@@ -25,10 +25,10 @@ const App: React.FC = () => {
 export default App;
 
 async function loadGameDefinition(
-    setGame: (data: IGameDefinition) => void
+    setGame: (data: IGame) => void
 ) {
     const response = await fetch('/Game/Generate');
-    const data = await response.json() as IGameDefinition;
-    console.log('received definition', data);
+    const data = await response.json() as IGame;
+    console.log('received game', data);
     setGame(data);
 }

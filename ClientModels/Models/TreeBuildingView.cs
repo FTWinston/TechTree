@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace ObjectiveStrategy.ClientModels.Models
 {
-    public class TreeBuildingView : TreeItemView<BuildingType>
+    public class TreeBuildingView : TreeEntityView<BuildingType>
     {
         public TreeBuildingView(TechTree techTree, BuildingType buildingType)
             : base(buildingType)
@@ -17,7 +17,7 @@ namespace ObjectiveStrategy.ClientModels.Models
 
             Researches = techTree.Research
                 .Where(kvp => kvp.Value.PerformedAt == buildingType)
-                .Select(kvp => new TreeResearchView(kvp.Value))
+                .Select(kvp => new ResearchView(kvp.Value))
                 .ToArray();
         }
 
@@ -31,6 +31,6 @@ namespace ObjectiveStrategy.ClientModels.Models
 
         public TreeUnitView[] Builds { get; }
 
-        public TreeResearchView[] Researches { get; }
+        public ResearchView[] Researches { get; }
     }
 }

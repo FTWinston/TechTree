@@ -23,7 +23,7 @@ namespace ObjectiveStrategy.ClientModels.Models
 
         private Player Player { get; }
 
-        public int PlayerID => Player.ID;
+        public int LocalPlayerID => Player.ID;
 
         public BattlefieldView Battlefield { get; }
 

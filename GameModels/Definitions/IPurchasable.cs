@@ -2,12 +2,8 @@
 
 namespace ObjectiveStrategy.GameModels.Definitions
 {
-    public interface IPurchasable
+    public interface IPurchasable : ISelectable
     {
-        string Name { get; }
-
-        string Symbol { get; }
-
         int BuildTime { get; }
 
         Dictionary<ResourceType, int> Cost { get; }

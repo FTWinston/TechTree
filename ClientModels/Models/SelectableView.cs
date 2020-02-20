@@ -3,23 +3,18 @@ using System.Collections.Generic;
 
 namespace ObjectiveStrategy.ClientModels.Models
 {
-    public class TreeItemView<TItem>
-        where TItem : Purchasable
+    public class SelectableView<TSelectable>
+        where TSelectable : ISelectable
     {
-        public TreeItemView(TItem item)
+        public SelectableView(TSelectable item)
         {
             Item = item;
         }
 
-        protected TItem Item { get; }
+        protected TSelectable Item { get; }
 
         public string Name => Item.Name;
 
         public string Symbol => Item.Symbol;
-
-        public int BuildTime => Item.BuildTime;
-
-        public Dictionary<ResourceType, int> Cost => Item.Cost;
-
     }
 }

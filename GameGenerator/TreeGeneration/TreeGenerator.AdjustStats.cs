@@ -106,7 +106,7 @@ namespace ObjectiveStrategy.GameGenerator.TreeGeneration
             var actualGain = fullConversionGain.RoundNearestDown(1);
             var actualSpend = actualGain * ValuePerCostMultiplierIncrement;
 
-            foreach (var cost in unit.Cost)
+            foreach (var cost in unit.Cost.ToArray())
                 if (cost.Key != ResourceType.Supply)
                     unit.Cost[cost.Key] = cost.Value * -actualGain;
 

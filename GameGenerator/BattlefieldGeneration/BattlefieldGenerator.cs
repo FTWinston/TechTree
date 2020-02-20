@@ -99,7 +99,7 @@ namespace ObjectiveStrategy.GameGenerator.BattlefieldGeneration
 
             // If there's a "center" cell, it will be in a tuple with itself, but that's fine.            
             return allCells.Take(halfLength)
-                .Select((cell, index) => new Tuple<Cell, Cell>(cell, allCells[allCells.Length - 1 - index]))
+                .Select((cell, index) => new Tuple<Cell, Cell>(cell!, allCells[allCells.Length - 1 - index]!))
                 .ToList();
         }
 

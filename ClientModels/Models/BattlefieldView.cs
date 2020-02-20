@@ -1,5 +1,6 @@
 ﻿using ObjectiveStrategy.GameModels;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace ObjectiveStrategy.ClientModels.Models
@@ -19,9 +20,11 @@ namespace ObjectiveStrategy.ClientModels.Models
 
         public int Height => Battlefield.Height;
 
-        public CellView[] Cells => Battlefield.Cells
-            .Select(cell => new CellView(cell, Player.SeenCells.Contains(cell)))
+        public CellView?[] Cells => Battlefield.Cells
+            .Select(cell => cell == null ? null : new CellView(cell, Player.SeenCells.Contains(cell)))
             .ToArray();
+
+        public List<int> StartPositions => Battlefield.StartPositions;
 
         /*
         private Dictionary<Entity, HashSet<Cell>> VisionByEntity { get; } = new Dictionary<Entity, HashSet<Cell>>();

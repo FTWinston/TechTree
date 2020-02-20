@@ -1,9 +1,8 @@
 ﻿using ObjectiveStrategy.GameModels.Definitions;
-using System.Collections.Generic;
 
 namespace ObjectiveStrategy.ClientModels.Models
 {
-    public class TreeEntityView<TEntityType> : TreeItemView<TEntityType>
+    public class TreeEntityView<TEntityType> : PurchasableView<TEntityType>
         where TEntityType : EntityType
     {
         public TreeEntityView(TEntityType entityType)
@@ -11,5 +10,9 @@ namespace ObjectiveStrategy.ClientModels.Models
         { }
 
         public int Health => Item.Health;
+
+        public int Mana => Item.Mana;
+
+        public int Armor => Item.Armor;
     }
 }

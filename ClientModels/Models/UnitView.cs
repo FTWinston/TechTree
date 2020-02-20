@@ -10,5 +10,6 @@ namespace ObjectiveStrategy.ClientModels.Models
             
         }
 
+        public override string Type => "unit";
     }
 }

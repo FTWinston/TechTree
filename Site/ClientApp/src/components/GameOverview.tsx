@@ -1,11 +1,11 @@
 import React, { FunctionComponent, useState } from 'react';
-import { IGameDefinition } from '../data/definitions/IGameDefinition';
+import { IGame } from '../data/instances/IGame';
 import { Battlefield } from './Battlefield';
 import { TechTree } from './tree';
 import './GameOverview.css';
 
 interface Props {
-    data: IGameDefinition;
+    data: IGame;
 }
 
 enum Element {
