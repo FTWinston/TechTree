@@ -21,6 +21,8 @@ namespace ObjectiveStrategy.GameModels
             CurrentPlayer = Players.First();
         }
 
+        public uint NextEntityID { get; set; }
+
         public int TurnsRemaining { get; private set; }
 
         public Player CurrentPlayer { get; private set; }

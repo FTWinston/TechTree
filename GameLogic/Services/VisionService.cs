@@ -1,4 +1,6 @@
-﻿using ObjectiveStrategy.GameModels.Map;
+﻿using ObjectiveStrategy.GameModels;
+using ObjectiveStrategy.GameModels.Instances;
+using ObjectiveStrategy.GameModels.Map;
 using System;
 using System.Collections.Generic;
 
@@ -6,7 +8,7 @@ namespace ObjectiveStrategy.GameLogic.Services
 {
     public class VisionService
     {
-        public HashSet<TCell> GetVisibleCells<TCell>(IGraph<TCell> map, TCell from, int range, Func<TCell, bool> blocksVision)
+        private static HashSet<TCell> GetVisibleCells<TCell>(IGraph<TCell> map, TCell from, int range, Func<TCell, bool> blocksVision)
         {
             var visible = new HashSet<TCell> { from };
 
@@ -22,6 +24,31 @@ namespace ObjectiveStrategy.GameLogic.Services
             }
 
             return visible;
+        }
+
+        public HashSet<Cell> GetVisibleCells(IGraph<Cell> map, Cell from, int range)
+        {
+            return GetVisibleCells(map, from, range, cell => cell.BlocksVision);
+        }
+
+        public void RevealCells(Player player, IEnumerable<Cell> cells)
+        {
+            foreach (var cell in cells)
+            {
+                player.SeenCells.Remove(cell);
+            }
+        }
+
+        public void HideCells(Player player, IEnumerable<Cell> cells)
+        {
+            foreach (var cell in cells)
+            {
+                var content = cell.Entity;
+
+                player.SeenCells[cell] = content == null || !(content is Building building)
+                    ? null
+                    : new BuildingSnapshot(building);
+            }
         }
     }
 }

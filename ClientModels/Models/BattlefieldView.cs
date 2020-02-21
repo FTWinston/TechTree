@@ -21,7 +21,7 @@ namespace ObjectiveStrategy.ClientModels.Models
         public int Height => Battlefield.Height;
 
         public CellView?[] Cells => Battlefield.Cells
-            .Select(cell => cell == null ? null : new CellView(cell, Player.SeenCells.Contains(cell)))
+            .Select(cell => cell == null ? null : new CellView(cell, Player))
             .ToArray();
 
         public List<int> StartPositions => Battlefield.StartPositions;

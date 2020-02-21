@@ -17,7 +17,7 @@ namespace ObjectiveStrategy.GameModels
         public List<UnitType> AvailableUnits { get; } = new List<UnitType>();
         public List<Research> CompletedResearch { get; } = new List<Research>();
 
-        public HashSet<Cell> SeenCells { get; } = new HashSet<Cell>();
+        public Dictionary<Cell, BuildingSnapshot?> SeenCells { get; } = new Dictionary<Cell, BuildingSnapshot?>();
 
         public Player(int id, TechTree tree)
         {

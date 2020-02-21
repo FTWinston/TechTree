@@ -1,24 +1,39 @@
-﻿using ObjectiveStrategy.GameModels.Definitions;
+﻿using ObjectiveStrategy.GameModels;
+using ObjectiveStrategy.GameModels.Definitions;
 using ObjectiveStrategy.GameModels.Instances;
 
 namespace ObjectiveStrategy.ClientModels.Models
 {
     public class CellView
     {
-        public CellView(Cell cell, bool seen)
+        public CellView(Cell cell, Player player)
         {
             Type = cell.Type;
 
-            Visibility = seen
-                ? Visibility.Seen
-                : Visibility.Unseen;
+            bool canSee = false; // TODO: determine this
 
-            if (seen && cell.Entity != null)
+            if (canSee)
             {
-                if (cell.Entity is Unit unit)
-                    Content = new UnitView(unit);
-                else if (cell.Entity is Building building)
-                    Content = new BuildingView(building);
+                Visibility = Visibility.Visible;
+
+                if (cell.Entity != null)
+                {
+                    if (cell.Entity is Unit unit)
+                        Content = new UnitView(unit);
+                    else if (cell.Entity is Building building)
+                        Content = new BuildingView(building);
+                }
+            }
+            else if (player.SeenCells.TryGetValue(cell, out var snapshot))
+            {
+                Visibility = Visibility.Seen;
+
+                if (snapshot != null)
+                    Content = new BuildingSnapshotView(snapshot);
+            }
+            else
+            {
+                Visibility = Visibility.Unseen;
             }
         }
 
