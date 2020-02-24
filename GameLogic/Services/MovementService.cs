@@ -9,7 +9,7 @@ namespace ObjectiveStrategy.GameLogic.Services
     {
         public void Remove(Entity entity)
         {
-            if (entity.Location != null)
+            if (entity.Location.Entity == entity)
             {
                 entity.Location.Entity = null;
             }

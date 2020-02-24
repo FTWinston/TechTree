@@ -1,4 +1,5 @@
-﻿using ObjectiveStrategy.GameModels.Instances;
+﻿using ObjectiveStrategy.GameModels;
+using ObjectiveStrategy.GameModels.Instances;
 
 namespace ObjectiveStrategy.ClientModels.Models
 {
@@ -24,10 +25,13 @@ namespace ObjectiveStrategy.ClientModels.Models
     public abstract class EntityView<TEntity> : EntityView
         where TEntity : Entity
     {
-        public EntityView(TEntity entity)
+        public EntityView(Player viewPlayer, TEntity entity)
         {
+            ViewPlayer = viewPlayer;
             Entity = entity;
         }
+
+        protected Player ViewPlayer { get; }
 
         protected TEntity Entity { get; }
 
@@ -39,9 +43,9 @@ namespace ObjectiveStrategy.ClientModels.Models
 
         public override int MaxHealth => Entity.BaseDefinition.Health;
 
-        public override int Mana => Entity.Mana;
+        public override int Mana => Entity.Owner == ViewPlayer ? Entity.Mana : 0;
 
-        public override int MaxMana => Entity.BaseDefinition.Mana;
+        public override int MaxMana => Entity.Owner == ViewPlayer ? Entity.BaseDefinition.Mana : 0;
 
         public override int Armor => Entity.BaseDefinition.Armor;
     }

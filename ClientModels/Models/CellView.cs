@@ -19,9 +19,9 @@ namespace ObjectiveStrategy.ClientModels.Models
                 if (cell.Entity != null)
                 {
                     if (cell.Entity is Unit unit)
-                        Content = new UnitView(unit);
+                        Content = new UnitView(player, unit);
                     else if (cell.Entity is Building building)
-                        Content = new BuildingView(building);
+                        Content = new BuildingView(player, building);
                 }
             }
             else if (player.SeenCells.TryGetValue(cell, out var snapshot))
