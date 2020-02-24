@@ -1,6 +1,7 @@
 ﻿using ObjectiveStrategy.GameModels;
 using ObjectiveStrategy.GameModels.Definitions;
 using ObjectiveStrategy.GameModels.Instances;
+using System.Linq;
 
 namespace ObjectiveStrategy.ClientModels.Models
 {
@@ -16,12 +17,16 @@ namespace ObjectiveStrategy.ClientModels.Models
             {
                 Visibility = Visibility.Visible;
 
-                if (cell.Entity != null)
+                if (cell.Building != null)
                 {
-                    if (cell.Entity is Unit unit)
-                        Content = new UnitView(player, unit);
-                    else if (cell.Entity is Building building)
-                        Content = new BuildingView(player, building);
+                    Building = new BuildingView(player, cell.Building);
+                }
+
+                if (cell.Units.Count > 0)
+                {
+                    Units = cell.Units
+                        .Select(u => new UnitView(player, u))
+                        .ToArray();
                 }
             }
             else if (player.SeenCells.TryGetValue(cell, out var snapshot))
@@ -29,7 +34,7 @@ namespace ObjectiveStrategy.ClientModels.Models
                 Visibility = Visibility.Seen;
 
                 if (snapshot != null)
-                    Content = new BuildingSnapshotView(snapshot);
+                    Building = new BuildingSnapshotView(snapshot);
             }
             else
             {
@@ -42,10 +47,13 @@ namespace ObjectiveStrategy.ClientModels.Models
         public CellType Type { get; }
 
         //[JsonIgnore]
-        public EntityView? Content { get; }
+        public EntityView? Building { get; }
 
-        //[JsonPropertyName("Content")]
-        //public object? RawContent { get; } // needs to be object if EntityView doesn't have every property we might need
+        // This would be needed if EntityView doesn't expose every building property we care about (e.g. builds-in-progress etc)
+        //[JsonPropertyName("Building")]
+        //public object? RawBuilding => Building;
+
+        public UnitView[]? Units { get; }
     }
 
     public enum Visibility

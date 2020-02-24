@@ -43,9 +43,9 @@ namespace ObjectiveStrategy.GameLogic.Services
         {
             foreach (var cell in cells)
             {
-                var content = cell.Entity;
+                var building = cell.Building;
 
-                player.SeenCells[cell] = content == null || !(content is Building building)
+                player.SeenCells[cell] = building == null
                     ? null
                     : new BuildingSnapshot(building);
             }

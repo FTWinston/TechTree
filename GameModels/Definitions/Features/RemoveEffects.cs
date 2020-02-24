@@ -44,7 +44,11 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 
         public override void Activate(Entity user, Cell target)
         {
-            target.Entity?.RemoveAllEffects();
+            target.Building?.RemoveAllEffects();
+
+            foreach (var unit in target.Units)
+                unit.RemoveAllEffects();
+
             throw new NotImplementedException();
         }
     }

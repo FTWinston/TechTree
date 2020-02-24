@@ -78,10 +78,14 @@ namespace ObjectiveStrategy.GameModels.Definitions
     {
         public override bool IsValidTarget(Entity user, Cell target)
         {
-            if (target.Entity == null)
-                return false;
+            if (target.Building != null && IsValidTarget(user, target.Building))
+                return true;
 
-            return IsValidTarget(user, target.Entity);
+            foreach (var unit in target.Units)
+                if (IsValidTarget(user, unit))
+                    return true;
+
+            return false;
         }
 
         public abstract bool IsValidTarget(Entity user, Entity target);

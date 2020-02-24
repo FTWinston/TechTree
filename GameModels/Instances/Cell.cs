@@ -1,19 +1,21 @@
 ﻿using ObjectiveStrategy.GameModels.Definitions;
 using ObjectiveStrategy.GameModels.Map;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace ObjectiveStrategy.GameModels.Instances
 {
     public class Cell : HexCell
     {
-        public Cell (int row, int col, CellType type)
+        public Cell(int row, int col, CellType type)
             : base(row, col)
         {
             Type = type;
         }
 
-        [JsonIgnore]
-        public Entity? Entity { get; set; }
+        public Building? Building { get; set; }
+
+        public List<Unit> Units { get; } = new List<Unit>();
 
         public CellType Type { get; set; }
 

@@ -10,33 +10,14 @@ namespace ObjectiveStrategy.GameModels.Instances
         {
             ID = id;
             Owner = owner;
-            this.location = location;
+            Location = location;
         }
 
         public uint ID { get; }
 
         public Player Owner { get; set; }
 
-        private Cell location;
-        public Cell Location
-        {
-            get => location;
-            set
-            {
-                if (value.Entity != null && value.Entity != this)
-                {
-                    throw new InvalidOperationException("Cannot move entity to non-empty cell");
-                }
-
-                if (location != null && location.Entity == this)
-                {
-                    location.Entity = null;
-                }
-
-                location = value;
-                location.Entity = this;
-            }
-        }
+        public Cell Location { get; set; }
 
         public int Health { get; set; }
 

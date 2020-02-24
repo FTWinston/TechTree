@@ -52,7 +52,7 @@ namespace ObjectiveStrategy.GameModels
             {
                 // unitFilter = unit => unitFilter(unit) && CellsByPlayer[unit.Owner.ID].Contains(unit.Location.ID);
                 // TODO: fix this ugly hack. Let cells have an ID?
-                unitFilter = unit => unitFilter(unit) && CellsByPlayer[unit.Owner.ID].Any(cellID => game.Battlefield.Cells[cellID]?.Entity == unit);
+                unitFilter = unit => unitFilter(unit) && CellsByPlayer[unit.Owner.ID].Any(cellID => game.Battlefield.Cells[cellID]?.Units.Contains(unit) ?? false);
             }
 
             int quantity = player.Units.Count(unitFilter);

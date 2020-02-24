@@ -7,25 +7,33 @@ namespace ObjectiveStrategy.GameLogic.Services
 {
     public class MovementService
     {
-        public void Remove(Entity entity)
+        public bool Remove(Unit unit)
         {
-            if (entity.Location.Entity == entity)
-            {
-                entity.Location.Entity = null;
-            }
+            return unit.Location.Units.Remove(unit);
         }
 
-        public void Place(Entity entity, Cell location)
+        public bool Place(Unit unit, Cell location)
         {
-            // TODO: check its empty first
-            entity.Location = location;
-            location.Entity = entity;
+            if (location.Building != null || location.Units.Count > 0)
+                return false;
+
+            unit.Location = location;
+
+            if (!location.Units.Contains(unit))
+                location.Units.Add(unit);
+
+            return true;
         }
 
-        public void Move(Entity entity, Cell destination)
+        public bool Move(Unit unit, Cell destination)
         {
-            Remove(entity);
-            Place(entity, destination);
+            var prevLocation = unit.Location;
+
+            if (!Place(unit, destination))
+                return false;
+
+            prevLocation.Units.Remove(unit);
+            return true;
         }
     }
 }
