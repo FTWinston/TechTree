@@ -7,11 +7,14 @@ namespace ObjectiveStrategy.GameModels.Instances
 {
     public class Cell : HexCell
     {
-        public Cell(int row, int col, CellType type)
+        public Cell(int id, int row, int col, CellType type)
             : base(row, col)
         {
+            ID = id;
             Type = type;
         }
+
+        public int ID { get; }
 
         public Building? Building { get; set; }
 

@@ -81,8 +81,9 @@ namespace ObjectiveStrategy.GameGenerator.BattlefieldGeneration
         {
             foreach (var position in GetValidCellPositions(battlefield.Width, battlefield.Height))
             {
-                var cell = new Cell(position.Row, position.Col, CellType.Flat);
-                battlefield.Cells[position.GetCellIndex(battlefield.Width)] = cell;
+                int index = position.GetCellIndex(battlefield.Width);
+                var cell = new Cell(index, position.Row, position.Col, CellType.Flat);
+                battlefield.Cells[index] = cell;
             }
         }
 
