@@ -1,4 +1,4 @@
-﻿namespace ObjectiveStrategy.GameGenerator.TreeGeneration
+﻿namespace ObjectiveStrategy.GameGeneration.TreeGeneration
 {
     public enum UnitStat
     {

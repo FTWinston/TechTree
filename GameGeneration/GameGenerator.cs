@@ -1,10 +1,10 @@
 ﻿using ObjectiveStrategy.GameModels.Definitions;
-using ObjectiveStrategy.GameGenerator.BattlefieldGeneration;
-using ObjectiveStrategy.GameGenerator.TreeGeneration;
+using ObjectiveStrategy.GameGeneration.BattlefieldGeneration;
+using ObjectiveStrategy.GameGeneration.TreeGeneration;
 using System;
 using ObjectiveStrategy.GameModels;
 
-namespace ObjectiveStrategy.GameGenerator
+namespace ObjectiveStrategy.GameGeneration
 {
     public static class GameGenerator
     {

@@ -32,7 +32,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ClientModels\ClientModels.csproj" />
-    <ProjectReference Include="..\GameGenerator\GameGenerator.csproj" />
+    <ProjectReference Include="..\GameGeneration\GameGeneration.csproj" />
     <ProjectReference Include="..\GameLogic\GameLogic.csproj" />
     <ProjectReference Include="..\GameModels\GameModels.csproj" />
   </ItemGroup>

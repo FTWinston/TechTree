@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace ObjectiveStrategy.GameGenerator.TreeGeneration
+namespace ObjectiveStrategy.GameGeneration.TreeGeneration
 {
     public class BuildingBuilder : EntityBuilder, IBuildingType
     {

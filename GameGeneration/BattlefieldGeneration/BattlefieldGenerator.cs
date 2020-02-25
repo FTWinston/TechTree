@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace ObjectiveStrategy.GameGenerator.BattlefieldGeneration
+namespace ObjectiveStrategy.GameGeneration.BattlefieldGeneration
 {
     public class BattlefieldGenerator
     {

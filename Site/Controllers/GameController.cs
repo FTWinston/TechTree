@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Linq;
+using ObjectiveStrategy.GameGeneration;
+using ObjectiveStrategy.GameLogic.Factories;
 
 namespace ObjectiveStrategy.Site.Controllers
 {
@@ -21,18 +23,18 @@ namespace ObjectiveStrategy.Site.Controllers
         }
 
         [HttpGet("[action]")]
-        public GameView Generate()
+        public GameView Generate([FromServices] GameFactory gameFactory)
         {
-            var gameDef = GameGenerator.GameGenerator.GenerateGame();
-            var game = new Game(gameDef);
+            var gameDef = GameGenerator.GenerateGame();
+            var game = gameFactory.CreateGame(gameDef);
             return new GameView(game, game.Players.First());
         }
 
         [HttpGet("[action]/{seed}")]
-        public GameView Generate(int complexity, int seed)
+        public GameView Generate([FromServices] GameFactory gameFactory, int complexity, int seed)
         {
-            var gameDef = GameGenerator.GameGenerator.GenerateGame(complexity, seed);
-            var game = new Game(gameDef);
+            var gameDef = GameGenerator.GenerateGame(complexity, seed);
+            var game = gameFactory.CreateGame(gameDef);
             return new GameView(game, game.Players.First());
         }
     }
