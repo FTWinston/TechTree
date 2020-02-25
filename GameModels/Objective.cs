@@ -14,6 +14,22 @@ namespace ObjectiveStrategy.GameModels
 
     public class Objective
     {
+        public Objective()
+        {
+
+        }
+
+        public Objective(Objective copyFrom)
+        {
+            Description = copyFrom.Description;
+            Value = copyFrom.Value;
+            Feature = copyFrom.Feature;
+            FeatureTypeID = copyFrom.FeatureTypeID;
+            TargetQuantity = copyFrom.TargetQuantity;
+            RelativeToOpponent = copyFrom.RelativeToOpponent;
+            CellsByPlayer = new Dictionary<int, int[]>(copyFrom.CellsByPlayer);
+        }
+
         public string Description { get; set; } = string.Empty;
 
         public int Value { get; set; }

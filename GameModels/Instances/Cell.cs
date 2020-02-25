@@ -14,6 +14,12 @@ namespace ObjectiveStrategy.GameModels.Instances
             Type = type;
         }
 
+        public Cell(Cell copyFrom)
+            : this(copyFrom.ID, copyFrom.Row, copyFrom.Col, copyFrom.Type)
+        {
+            // Note: we don't copy Building or Units from annother cell (which would be the initial definition, and won't have those).
+        }
+
         public int ID { get; }
 
         public Building? Building { get; set; }

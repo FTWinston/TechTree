@@ -1,5 +1,6 @@
 ﻿using ObjectiveStrategy.GameModels;
 using System;
+using System.Linq;
 
 namespace ObjectiveStrategy.ClientModels.Models
 {

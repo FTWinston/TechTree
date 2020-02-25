@@ -1,4 +1,5 @@
-﻿using ObjectiveStrategy.GameModels.Definitions;
+﻿using Newtonsoft.Json;
+using ObjectiveStrategy.GameModels.Definitions;
 using ObjectiveStrategy.GameModels.Instances;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,14 +9,20 @@ namespace ObjectiveStrategy.GameModels
     public class Player
     {
         public int ID { get; }
+
         public TechTree TechTree { get; }
 
         public List<Building> Buildings { get; } = new List<Building>();
+        
         public List<Unit> Units { get; } = new List<Unit>();
 
         public List<BuildingType> AvailableBuildings { get; } = new List<BuildingType>();
+        
         public List<UnitType> AvailableUnits { get; } = new List<UnitType>();
+        
         public List<Research> CompletedResearch { get; } = new List<Research>();
+
+        public List<int> ObjectiveIndices { get; } = new List<int>();
 
         public Dictionary<Cell, BuildingSnapshot?> SeenCells { get; } = new Dictionary<Cell, BuildingSnapshot?>();
 

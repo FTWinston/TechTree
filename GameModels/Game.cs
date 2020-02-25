@@ -1,31 +1,33 @@
-﻿using ObjectiveStrategy.GameModels.Definitions;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Newtonsoft.Json;
 
 namespace ObjectiveStrategy.GameModels
 {
     public class Game
     {
-        public Game(GameDefinition definition)
+        public Game(Battlefield battlefield, Objective[] objectives, Player[] players, int turnsRemaining)
         {
-            Battlefield = definition.Battlefield;
+            Battlefield = battlefield;
 
-            Players = new List<Player>
-            {
-                new Player(1, new TechTree(definition.TechTree)),
-                new Player(2, new TechTree(definition.TechTree))
-            };
+            Objectives = objectives;
 
-            TurnsRemaining = definition.TurnLimit * Players.Count;
-
-            CurrentPlayer = Players.First();
+            Players = players;
         }
 
         public uint NextEntityID { get; set; }
 
         public int TurnsRemaining { get; private set; }
 
-        public Player CurrentPlayer { get; private set; }
+        public Battlefield Battlefield { get; }
+
+        public Objective[] Objectives { get; }
+
+        public Player[] Players { get; }
+
+        [JsonProperty(PropertyName = "CurrentPlayer")]
+        public int CurrentPlayerIndex { get; set; } = 0;
+
+        [JsonIgnore]
+        public Player CurrentPlayer => Players[CurrentPlayerIndex];
 
         public bool FinishTurn()
         {
@@ -36,16 +38,11 @@ namespace ObjectiveStrategy.GameModels
                 return false;
             }
 
-            int nextIndex = Players.IndexOf(CurrentPlayer);
-            if (nextIndex >= Players.Count)
-                nextIndex = 0;
+            CurrentPlayerIndex = CurrentPlayerIndex >= Players.Length - 1
+                ? 0
+                : CurrentPlayerIndex + 1;
 
-            CurrentPlayer = Players[nextIndex];
             return true;
         }
-
-        public List<Player> Players { get; }
-
-        public Battlefield Battlefield { get; }
     }
 }

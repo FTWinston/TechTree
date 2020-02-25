@@ -2,6 +2,7 @@
 using ObjectiveStrategy.GameGenerator.BattlefieldGeneration;
 using ObjectiveStrategy.GameGenerator.TreeGeneration;
 using System;
+using ObjectiveStrategy.GameModels;
 
 namespace ObjectiveStrategy.GameGenerator
 {
@@ -39,7 +40,9 @@ namespace ObjectiveStrategy.GameGenerator
             var battlefield = new BattlefieldGenerator(complexity, random.Next())
                 .Generate();
 
-            return new GameDefinition(seed, complexity, techTree, battlefield);
+            var objectives = new Objective[] { }; // TODO: actually generate these
+
+            return new GameDefinition(seed, complexity, techTree, battlefield, objectives);
         }
     }
 }

@@ -9,9 +9,22 @@ namespace ObjectiveStrategy.GameModels
         public Battlefield(int width, int height)
             : base(width, height)
         {
-
+            StartPositions = new List<int>();
         }
 
-        public List<int> StartPositions { get; } = new List<int>();
+        public Battlefield(Battlefield copyFrom)
+            : base(copyFrom.Width, copyFrom.Height)
+        {
+            StartPositions = new List<int>(copyFrom.StartPositions);
+
+            for (int i = 0; i < copyFrom.Cells.Length; i++)
+            {
+                var existing = copyFrom.Cells[i];
+                if (existing != null)
+                    Cells[i] = new Cell(existing);
+            }
+        }
+
+        public List<int> StartPositions { get; }
     }
 }
