@@ -11,6 +11,9 @@ using ObjectiveStrategy.Site.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using ObjectiveStrategy.GameGeneration;
+using ObjectiveStrategy.GameLogic.Factories;
+using ObjectiveStrategy.GameLogic.Services;
 
 namespace ObjectiveStrategy.Site
 {
@@ -29,6 +32,13 @@ namespace ObjectiveStrategy.Site
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
+
+            services.AddScoped<GameFactory>();
+            services.AddScoped<EntityFactory>();
+            services.AddScoped<GameService>();
+            services.AddScoped<MovementService>();
+            services.AddScoped<PathingService>();
+            services.AddScoped<VisionService>();
 
             services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = false)
                 .AddEntityFrameworkStores<ApplicationDbContext>();

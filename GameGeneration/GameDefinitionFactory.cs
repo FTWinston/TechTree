@@ -1,16 +1,15 @@
 ﻿using ObjectiveStrategy.GameModels.Definitions;
-using ObjectiveStrategy.GameGeneration.BattlefieldGeneration;
 using ObjectiveStrategy.GameGeneration.TreeGeneration;
 using System;
 using ObjectiveStrategy.GameModels;
 
 namespace ObjectiveStrategy.GameGeneration
 {
-    public static class GameGenerator
+    public class GameDefinitionFactory
     {
         internal const int MaxComplexity = 100;
 
-        public static GameDefinition GenerateGame()
+        public GameDefinition GenerateGame()
         {
             var random = new Random();
             int complexity = random.Next(1, MaxComplexity + 1);
@@ -19,13 +18,13 @@ namespace ObjectiveStrategy.GameGeneration
             return GenerateGame(complexity, seed);
         }
 
-        public static GameDefinition GenerateGame(int complexity)
+        public GameDefinition GenerateGame(int complexity)
         {
             int seed = new Random().Next();
             return GenerateGame(complexity, seed);
         }
 
-        public static GameDefinition GenerateGame(int complexity, int seed)
+        public GameDefinition GenerateGame(int complexity, int seed)
         {
             if (complexity < 1 || complexity > MaxComplexity)
                 throw new ArgumentException($"Invalid complexity value; expected value in range 1 to {MaxComplexity}");

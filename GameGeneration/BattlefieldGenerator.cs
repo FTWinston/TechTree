@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace ObjectiveStrategy.GameGeneration.BattlefieldGeneration
+namespace ObjectiveStrategy.GameGeneration
 {
     public class BattlefieldGenerator
     {
@@ -50,7 +50,7 @@ namespace ObjectiveStrategy.GameGeneration.BattlefieldGeneration
             const int minComplexitySize = 15; // Complexity 1 size 15 x 15
             const int maxComplexitySize = 51; // Complexity 100 size 51 x 51
 
-            float complexityFraction = (Complexity - 1f) / (GameGenerator.MaxComplexity - 1f);
+            float complexityFraction = (Complexity - 1f) / (GameDefinitionFactory.MaxComplexity - 1f);
 
             // TODO: variation within width and height would be nice to have here
 
