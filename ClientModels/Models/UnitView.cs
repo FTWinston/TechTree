@@ -12,5 +12,9 @@ namespace ObjectiveStrategy.ClientModels.Models
         }
 
         public override string Type => "unit";
+
+        public int MovementRemaining => Entity.MovementRemaining;
+
+        public int MovementRange => Entity.Definition.MoveRange;
     }
 }

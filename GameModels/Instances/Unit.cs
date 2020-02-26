@@ -7,7 +7,9 @@ namespace ObjectiveStrategy.GameModels.Instances
         public Unit(uint id, Player p, UnitType type, Cell location)
             : base(id, p, type, location)
         {
-
+            MovementRemaining = type.MoveRange;
         }
+
+        public int MovementRemaining { get; set; }
     }
 }

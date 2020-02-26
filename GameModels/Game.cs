@@ -11,11 +11,13 @@ namespace ObjectiveStrategy.GameModels
             Objectives = objectives;
 
             Players = players;
+
+            TurnsRemaining = turnsRemaining;
         }
 
         public uint NextEntityID { get; set; }
 
-        public int TurnsRemaining { get; private set; }
+        public int TurnsRemaining { get; set; }
 
         public Battlefield Battlefield { get; }
 
@@ -28,21 +30,5 @@ namespace ObjectiveStrategy.GameModels
 
         [JsonIgnore]
         public Player CurrentPlayer => Players[CurrentPlayerIndex];
-
-        public bool FinishTurn()
-        {
-            TurnsRemaining--;
-
-            if (TurnsRemaining <= 0)
-            {
-                return false;
-            }
-
-            CurrentPlayerIndex = CurrentPlayerIndex >= Players.Length - 1
-                ? 0
-                : CurrentPlayerIndex + 1;
-
-            return true;
-        }
     }
 }
