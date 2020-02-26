@@ -1,5 +1,7 @@
 ﻿using ObjectiveStrategy.GameModels;
 using ObjectiveStrategy.GameModels.Instances;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace ObjectiveStrategy.ClientModels.Models
 {
@@ -20,6 +22,8 @@ namespace ObjectiveStrategy.ClientModels.Models
         public abstract int MaxMana { get; }
 
         public abstract int Armor { get; }
+
+        public abstract FeatureView[] Features { get; }
     }
 
     public abstract class EntityView<TEntity> : EntityView
@@ -48,5 +52,11 @@ namespace ObjectiveStrategy.ClientModels.Models
         public override int MaxMana => Entity.Owner == ViewPlayer ? Entity.BaseDefinition.Mana : 0;
 
         public override int Armor => Entity.BaseDefinition.Armor;
+
+        public override FeatureView[] Features => Entity.Owner == ViewPlayer
+            ? Entity.BaseDefinition.Features
+                .Select(f => new FeatureView(Entity, f))
+                .ToArray()
+            : new FeatureView[] { };
     }
 }

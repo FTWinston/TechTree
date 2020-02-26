@@ -25,7 +25,7 @@ namespace ObjectiveStrategy.GameModels.Instances
 
         public abstract EntityType BaseDefinition { get; }
 
-        public List<Feature> LockedFeatures { get; } = new List<Feature>();
+        public Dictionary<Feature, Dictionary<string, int>> FeatureData { get; } = new Dictionary<Feature, Dictionary<string, int>>();
 
         public List<Tuple<IStatusEffect, int>> StatusEffects { get; } = new List<Tuple<IStatusEffect, int>>();
 

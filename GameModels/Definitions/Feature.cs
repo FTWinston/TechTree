@@ -1,51 +1,60 @@
 ﻿using ObjectiveStrategy.GameModels.Instances;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 using System;
+using System.Collections.Generic;
 
 namespace ObjectiveStrategy.GameModels.Definitions
 {
-    public abstract partial class Feature : ISelectable
+    public abstract class Feature : ISelectable
     {
         public abstract string Name { get; }
-        public string Description { get { return GetDescription(); } }
-        protected abstract string GetDescription();
+        
+        public abstract string Description { get; }
+        
         public abstract string Symbol { get; }
+
+        public abstract FeatureType Type { get; }
 
         public virtual Research? UnlockedBy { get; internal set; }
 
-        public abstract bool UsesMana { get; }
-
-        [JsonConverter(typeof(StringEnumConverter))]
-        public abstract InteractionMode Mode { get; }
-
-        public enum InteractionMode
+        public virtual FeatureState DetermineState(Entity entity)
         {
-            Passive,
-            Toggled,
-            Triggered,
-            Purchased,
+            return FeatureState.None;
         }
 
+        /*
         public virtual double Initialize(EntityType type) { return 1; }
         public virtual bool Validate(EntityType type) { return true; }
         public abstract bool Clicked(Entity entity);
+        */
+
+        public virtual void Trigger(Entity entity) { }
+
+        public virtual void StartTurn(Entity entity) { }
+
+        public virtual void EndTurn(Entity entity) { }
+
+        protected Dictionary<string, int> GetData(Entity entity)
+        {
+            if (!entity.FeatureData.TryGetValue(this, out var featureData))
+                featureData = new Dictionary<string, int>();
+
+            return featureData;
+        }
     }
 
     public abstract class PassiveFeature : Feature
     {
-        public override InteractionMode Mode { get { return InteractionMode.Passive; } }
-        public override bool UsesMana { get { return false; } }
+        public override FeatureType Type => FeatureType.Passive;
 
-        public override bool Clicked(Entity entity)
+        public override FeatureState DetermineState(Entity entity)
         {
-            return false;
+            return FeatureState.Enabled;
         }
     }
 
     public abstract class ActivatedFeature : Feature
     {
-        public override InteractionMode Mode { get { return InteractionMode.Triggered; } }
+        public override FeatureType Type { get { return FeatureType.Triggered; } }
         public override bool UsesMana { get { return ManaCost > 0; } }
         public virtual int LimitedUses { get { return 0; } }
 
@@ -93,7 +102,7 @@ namespace ObjectiveStrategy.GameModels.Definitions
 
     public abstract class ToggleFeature : Feature
     {
-        public override InteractionMode Mode { get { return InteractionMode.Toggled; } }
+        public override FeatureType Type { get { return FeatureType.Toggled; } }
         public override bool UsesMana { get { return ActivateManaCost > 0 || ManaCostPerTurn > 0; } }
 
         public abstract void Enable(Entity entity);

@@ -22,7 +22,8 @@ namespace ObjectiveStrategy.GameModels.Definitions
 
         uint? UpgradesFrom { get; }
 
-
         List<Feature> Features { get; }
+
+        List<Feature> LockedFeatures { get; }
     }
 }

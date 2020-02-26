@@ -19,6 +19,8 @@ namespace ObjectiveStrategy.GameModels.Definitions
             UpgradesFrom = copyFrom.UpgradesFrom;
 
             Features = new List<Feature>(copyFrom.Features);
+
+            LockedFeatures = new List<Feature>(copyFrom.LockedFeatures);
         }
 
         public uint ID { get; internal set; }
@@ -41,5 +43,7 @@ namespace ObjectiveStrategy.GameModels.Definitions
 
 
         public List<Feature> Features { get; }
+        
+        public List<Feature> LockedFeatures { get; }
     }
 }

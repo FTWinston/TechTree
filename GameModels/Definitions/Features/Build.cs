@@ -15,7 +15,7 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             Unit = unit;
         }
 
-        public override Feature.InteractionMode Mode { get { return InteractionMode.Purchased; } }
+        public override Feature.InteractionMode Type { get { return FeatureType.Purchased; } }
         public override bool UsesMana { get { return false; } }
 
         public override string Name { get { return "Build: " + Unit.Name; } }

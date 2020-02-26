@@ -26,5 +26,7 @@ namespace ObjectiveStrategy.ClientModels.Models
         public override int MaxMana => 0;
 
         public override int Armor => Building.Armor;
+
+        public override FeatureView[] Features => new FeatureView[] { };
     }
 }

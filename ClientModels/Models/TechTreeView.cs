@@ -9,13 +9,9 @@ namespace ObjectiveStrategy.ClientModels.Models
     {
         public TechTreeView(TechTree techTree)
         {
-            TechTree = techTree;
-
             Buildings = techTree.Buildings
                 .ToDictionary(kvp => kvp.Key, kvp => new TreeBuildingView(techTree, kvp.Value));
         }
-
-        private TechTree TechTree { get; }
 
         public Dictionary<uint, TreeBuildingView> Buildings { get; }
     }
