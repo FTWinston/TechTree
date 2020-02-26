@@ -1,4 +1,7 @@
 ﻿using ObjectiveStrategy.GameModels;
+using ObjectiveStrategy.GameModels.Instances;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace ObjectiveStrategy.GameLogic.Services
 {
@@ -65,6 +68,20 @@ namespace ObjectiveStrategy.GameLogic.Services
         private void EndPlayerTurn(Player player)
         {
             // TODO: have resource buildings give resources
+        }
+
+        public bool TryMove(Game game, Unit unit, IList<int> cells)
+        {
+            if (unit.Owner != game.CurrentPlayer)
+                return false;
+
+            int[] moveCells = MovementService.TryMove(game.Battlefield, unit, cells);
+
+            if (moveCells.Length == 0)
+                return false;
+
+            // TODO: fire "moved" event?
+            return true;
         }
     }
 }

@@ -1,7 +1,5 @@
 ﻿using ObjectiveStrategy.GameModels;
 using ObjectiveStrategy.GameModels.Definitions;
-using ObjectiveStrategy.GameModels.Instances;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace ObjectiveStrategy.GameLogic.Factories

@@ -1,5 +1,4 @@
-﻿using ObjectiveStrategy.GameModels.Instances;
-using ObjectiveStrategy.GameModels.Map;
+﻿using ObjectiveStrategy.GameModels.Map;
 using System;
 using System.Collections.Generic;
 
