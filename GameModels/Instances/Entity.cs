@@ -1,4 +1,5 @@
-﻿using ObjectiveStrategy.GameModels.Definitions;
+﻿using Newtonsoft.Json;
+using ObjectiveStrategy.GameModels.Definitions;
 using System;
 using System.Collections.Generic;
 
@@ -24,6 +25,9 @@ namespace ObjectiveStrategy.GameModels.Instances
         public int Mana { get; set; }
 
         public abstract EntityType BaseDefinition { get; }
+
+        [JsonIgnore]
+        public HashSet<Cell> VisibleCells { get; set; } = new HashSet<Cell>();
 
         public Dictionary<Feature, Dictionary<string, int>> FeatureData { get; } = new Dictionary<Feature, Dictionary<string, int>>();
 

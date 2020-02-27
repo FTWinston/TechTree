@@ -8,6 +8,13 @@ namespace ObjectiveStrategy.GameLogic.Services
 {
     public class MovementService
     {
+        public MovementService(VisionService visionService)
+        {
+            VisionService = visionService;
+        }
+
+        private VisionService VisionService { get; }
+
         public bool Remove(Unit unit)
         {
             return unit.Location.Units.Remove(unit);
@@ -30,18 +37,19 @@ namespace ObjectiveStrategy.GameLogic.Services
             if (moveCells.Count == 0)
                 return new int[] { };
 
-            int startCellID = unit.Location.ID;
+            Cell startCell = unit.Location;
             Remove(unit);
             Place(unit, moveCells.Last());
             
             unit.MovementRemaining -= moveCells.Count;
 
+            VisionService.UpdateVisionForMove(battlefield, unit, startCell, moveCells);
+
             return moveCells
                 .Select(cell => cell.ID)
-                .Prepend(startCellID)
+                .Prepend(startCell.ID)
                 .ToArray();
         }
-
         private List<Cell> DetermineMovePath(Battlefield battlefield, Unit unit, IList<int> desiredCells)
         {
             int movementRemaining = unit.MovementRemaining;

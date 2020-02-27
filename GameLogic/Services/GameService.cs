@@ -33,6 +33,7 @@ namespace ObjectiveStrategy.GameLogic.Services
 
         private void StartPlayerTurn(Player player)
         {
+            VisionService.StartPlayerTurn(player);
 
             foreach (var unit in player.Units)
             {
@@ -71,6 +72,8 @@ namespace ObjectiveStrategy.GameLogic.Services
 
         private void EndPlayerTurn(Player player)
         {
+            VisionService.EndPlayerTurn(player);
+
             foreach (var unit in player.Units)
             {
                 unit.MovementRemaining = unit.Definition.MoveRange;
