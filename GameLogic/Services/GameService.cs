@@ -33,14 +33,18 @@ namespace ObjectiveStrategy.GameLogic.Services
 
         private void StartPlayerTurn(Player player)
         {
-            // TODO: update construction and researching
 
             foreach (var unit in player.Units)
             {
                 unit.MovementRemaining = unit.Definition.MoveRange;
+
+                foreach (var feature in unit.Definition.Features)
+                    feature.StartTurn(unit);
             }
 
-            // TODO: reset all attacks (or other "per turn" abilities ... this is done by feature, i guess)
+            foreach (var building in player.Buildings)
+                foreach (var feature in building.Definition.Features)
+                    feature.StartTurn(building);
 
             // TODO: generate mana
 
@@ -67,7 +71,17 @@ namespace ObjectiveStrategy.GameLogic.Services
 
         private void EndPlayerTurn(Player player)
         {
-            // TODO: have resource buildings give resources
+            foreach (var unit in player.Units)
+            {
+                unit.MovementRemaining = unit.Definition.MoveRange;
+
+                foreach (var feature in unit.Definition.Features)
+                    feature.EndTurn(unit);
+            }
+
+            foreach (var building in player.Buildings)
+                foreach (var feature in building.Definition.Features)
+                    feature.EndTurn(building);
         }
 
         public bool TryMove(Game game, Unit unit, IList<int> cells)
