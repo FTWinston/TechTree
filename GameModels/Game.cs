@@ -1,4 +1,8 @@
 ﻿using Newtonsoft.Json;
+using ObjectiveStrategy.GameModels.Events;
+using ObjectiveStrategy.GameModels.Instances;
+using System;
+using System.Collections.Generic;
 
 namespace ObjectiveStrategy.GameModels
 {
@@ -30,5 +34,12 @@ namespace ObjectiveStrategy.GameModels
 
         [JsonIgnore]
         public Player CurrentPlayer => Players[CurrentPlayerIndex];
+
+        public event EventHandler<MoveEvent> UnitMoved;
+
+        public void OnUnitMoved(Unit unit, Cell from, Cell to, HashSet<Cell> cellsRevealed, HashSet<Cell> cellsHidden)
+        {
+            UnitMoved?.Invoke(this, new MoveEvent(unit, from, to, cellsRevealed, cellsHidden));
+        }
     }
 }

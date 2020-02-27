@@ -30,9 +30,9 @@ namespace ObjectiveStrategy.GameLogic.Services
             return true;
         }
 
-        public int[] TryMove(Battlefield battlefield, Unit unit, IList<int> desiredCells)
+        public int[] TryMove(Game game, Unit unit, IList<int> desiredCells)
         {
-            var moveCells = DetermineMovePath(battlefield, unit, desiredCells);
+            var moveCells = DetermineMovePath(game.Battlefield, unit, desiredCells);
 
             if (moveCells.Count == 0)
                 return new int[] { };
@@ -43,7 +43,13 @@ namespace ObjectiveStrategy.GameLogic.Services
             
             unit.MovementRemaining -= moveCells.Count;
 
-            VisionService.UpdateVisionForMove(battlefield, unit, startCell, moveCells);
+            var prevCell = startCell;
+            foreach (var toCell in moveCells)
+            {
+                VisionService.UpdateVisionForMoveStep(game.Battlefield, unit, prevCell, toCell, out HashSet<Cell> cellsRevealed, out HashSet<Cell> cellsHidden);
+                game.OnUnitMoved(unit, prevCell, toCell, cellsRevealed, cellsHidden);
+                prevCell = toCell;
+            }
 
             return moveCells
                 .Select(cell => cell.ID)
