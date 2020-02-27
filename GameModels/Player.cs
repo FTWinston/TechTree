@@ -26,9 +26,6 @@ namespace ObjectiveStrategy.GameModels
 
         public Dictionary<Cell, BuildingSnapshot?> SeenCells { get; } = new Dictionary<Cell, BuildingSnapshot?>();
 
-        [JsonIgnore]
-        public HashSet<Cell> VisibleCells { get; } = new HashSet<Cell>();
-
         public Player(int id, TechTree tree)
         {
             ID = id;

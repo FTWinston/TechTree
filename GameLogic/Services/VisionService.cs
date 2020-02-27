@@ -32,6 +32,44 @@ namespace ObjectiveStrategy.GameLogic.Services
             return GetVisibleCells(map, from, range, cell => cell.BlocksVision);
         }
 
+        private void RecordVisibleCells(Battlefield battlefield, Entity entity)
+        {
+            var cells = GetVisibleCells(battlefield, entity.Location, entity.BaseDefinition.VisionRange);
+
+            foreach (var cell in cells)
+                cell.EntitiesThatCanSee.Add(entity);
+
+            entity.VisibleCells = cells;
+        }
+
+        private void RecordSnapshot(Entity entity, Cell cell)
+        {
+            entity.Owner.SeenCells[cell] = cell.Building == null || cell.Building == entity
+                ? null
+                : new BuildingSnapshot(cell.Building);
+        }
+
+        public bool CanSee(Player player, Cell cell)
+        {
+            return cell.EntitiesThatCanSee.Any(e => e.Owner == player);
+        }
+
+        public void PopulateVision(Game game)
+        {
+            foreach (var cell in game.Battlefield.Cells)
+                if (cell != null)
+                    cell.EntitiesThatCanSee.Clear();
+
+            foreach (var player in game.Players)
+            {
+                foreach (var building in player.Buildings)
+                    RecordVisibleCells(game.Battlefield, building);
+
+                foreach (var unit in player.Units)
+                    RecordVisibleCells(game.Battlefield, unit);
+            }
+        }
+
         public void UpdateVisionForMoveStep
         (
             Battlefield battlefield,
@@ -51,28 +89,60 @@ namespace ObjectiveStrategy.GameLogic.Services
             var unitRevealed = unit.VisibleCells.Except(prevVisibleCells);
             var unitHidden = prevVisibleCells.Except(unit.VisibleCells);
 
-            cellsRevealed = unitRevealed.Except(unit.Owner.VisibleCells)
+            foreach (var cell in unitHidden)
+                cell.EntitiesThatCanSee.Remove(unit);
+
+            cellsRevealed = unitRevealed
+                .Where(cell => !cell.EntitiesThatCanSee.Any(e => e.Owner == unit.Owner))
                 .ToHashSet();
 
-            unit.Owner.VisibleCells.UnionWith(cellsRevealed);
+            cellsHidden = unitHidden
+                .Where(cell => !cell.EntitiesThatCanSee.Any(e => e.Owner == unit.Owner))
+                .ToHashSet();
 
-            cellsHidden = unitHidden.ToHashSet(); // TODO: ach this works for revealing cells but not hiding them.
-            // Can't know with current setup if another unit can still see these.
-            // Do we calculate a "vision except for this unit" here, or does our stored vision store the entities that can see each cell?
+            foreach (var cell in unitRevealed)
+                cell.EntitiesThatCanSee.Add(unit);
 
-            // TODO: update unit.Owner.SeenCells
+            foreach (var cell in cellsHidden)
+                RecordSnapshot(unit, cell);
         }
 
-        public void UpdateVisionForCreation(Battlefield battlefield, Unit unit)
+        public void UpdateVisionForCreation(Battlefield battlefield, Entity entity, out HashSet<Cell> cellsRevealed)
         {
-            int visionRange = unit.Definition.VisionRange;
+            int visionRange = entity.BaseDefinition.VisionRange;
 
-            unit.VisibleCells = GetVisibleCells(battlefield, unit.Location, visionRange);
+            entity.VisibleCells = GetVisibleCells(battlefield, entity.Location, visionRange);
+
+            cellsRevealed = new HashSet<Cell>();
+
+            foreach (var cell in entity.VisibleCells)
+            {
+                entity.Owner.SeenCells.Remove(cell);
+
+                if (!CanSee(entity.Owner, cell))
+                {
+                    cellsRevealed.Add(cell);
+                    entity.Owner.SeenCells.Remove(cell);
+                }
+
+                cell.EntitiesThatCanSee.Add(entity);
+            }
         }
 
-        public void UpdateVisionForDestruction(Battlefield battlefield, Unit unit)
+        public void UpdateVisionForDestruction(Battlefield battlefield, Entity entity, out HashSet<Cell> cellsHidden)
         {
-            unit.Owner.CellsSeenThisTurn.UnionWith(unit.VisibleCells);
+            cellsHidden = new HashSet<Cell>();
+
+            foreach (var cell in entity.VisibleCells)
+            {
+                cell.EntitiesThatCanSee.Remove(entity);
+
+                if (!CanSee(entity.Owner, cell))
+                {
+                    cellsHidden.Add(cell);
+                    RecordSnapshot(entity, cell);
+                }
+            }
         }
 
         public HashSet<Cell> DetermineVision(Player player)
@@ -86,44 +156,6 @@ namespace ObjectiveStrategy.GameLogic.Services
                 currentVision.UnionWith(unit.VisibleCells);
 
             return currentVision;
-        }
-
-        public void StartPlayerTurn(Player player)
-        {
-            player.CellsSeenThisTurn.Clear();
-
-            // TODO: any more?
-        }
-
-        public void EndPlayerTurn(Player player)
-        {
-            // TODO: MORE!
-
-            HideCells(player, player.CellsSeenThisTurn);
-
-            player.CellsSeenThisTurn.Clear();
-        }
-
-        /*
-        private void RevealCells(Player player, IEnumerable<Cell> cells)
-        {
-            foreach (var cell in cells)
-            {
-                if (!player.SeenCells.ContainsKey(cell))
-                    player.SeenCells.Add(cell, null);
-            }
-        }
-        */
-        private void HideCells(Player player, IEnumerable<Cell> cells)
-        {
-            foreach (var cell in cells)
-            {
-                var building = cell.Building;
-
-                player.SeenCells[cell] = building == null
-                    ? null
-                    : new BuildingSnapshot(building);
-            }
         }
     }
 }

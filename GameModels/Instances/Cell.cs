@@ -59,5 +59,8 @@ namespace ObjectiveStrategy.GameModels.Instances
                 }
             }
         }
+
+        [JsonIgnore]
+        public HashSet<Entity> EntitiesThatCanSee { get; } = new HashSet<Entity>();
     }
 }

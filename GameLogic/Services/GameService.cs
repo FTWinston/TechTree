@@ -33,8 +33,6 @@ namespace ObjectiveStrategy.GameLogic.Services
 
         private void StartPlayerTurn(Player player)
         {
-            VisionService.StartPlayerTurn(player);
-
             foreach (var unit in player.Units)
             {
                 unit.MovementRemaining = unit.Definition.MoveRange;
@@ -72,8 +70,6 @@ namespace ObjectiveStrategy.GameLogic.Services
 
         private void EndPlayerTurn(Player player)
         {
-            VisionService.EndPlayerTurn(player);
-
             foreach (var unit in player.Units)
             {
                 unit.MovementRemaining = unit.Definition.MoveRange;
@@ -92,7 +88,7 @@ namespace ObjectiveStrategy.GameLogic.Services
             if (unit.Owner != game.CurrentPlayer)
                 return false;
 
-            int[] moveCells = MovementService.TryMove(game.Battlefield, unit, cells);
+            int[] moveCells = MovementService.TryMove(game, unit, cells);
 
             if (moveCells.Length == 0)
                 return false;
