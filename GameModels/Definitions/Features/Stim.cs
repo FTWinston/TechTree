@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
-    public class Stim : SelfStatusEffectFeature<Stimmed>
+    public class Stim : StatusEffectFeature<Stimmed>
     {
         public override string Name { get { return "Drain Own Health"; } }
         protected override string GetDescription()

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
-    public class Suicide : SelfStatusEffectFeature<Exploding>
+    public class Suicide : StatusEffectFeature<Exploding>
     {
         public override string Name { get { return "Suicide"; } }
         protected override string GetDescription()

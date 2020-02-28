@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
-    public class Burrow : ToggleFeature<Burrowed>
+    public class Burrow : EffectToggleFeature<Burrowed>
     {
         public override string Name { get { return "Burrow"; } }
         protected override string GetDescription()

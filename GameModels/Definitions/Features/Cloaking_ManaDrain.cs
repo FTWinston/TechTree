@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
-    public class Cloaking_ManaDrain : ToggleFeature<Invisible>
+    public class Cloaking_ManaDrain : EffectToggleFeature<Invisible>
     {
         public override string Name { get { return "Cloaking"; } }
         protected override string GetDescription()

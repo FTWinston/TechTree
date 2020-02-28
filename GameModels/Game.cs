@@ -35,7 +35,7 @@ namespace ObjectiveStrategy.GameModels
         [JsonIgnore]
         public Player CurrentPlayer => Players[CurrentPlayerIndex];
 
-        public event EventHandler<MoveEvent> UnitMoved;
+        public event EventHandler<MoveEvent>? UnitMoved;
 
         public void OnUnitMoved(Unit unit, Cell from, Cell to, HashSet<Cell> cellsRevealed, HashSet<Cell> cellsHidden)
         {
