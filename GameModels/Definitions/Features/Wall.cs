@@ -1,40 +1,42 @@
-﻿using ObjectiveStrategy.GameModels.Definitions.CellEffects;
-using ObjectiveStrategy.GameModels.Instances;
-using System;
-using System.Text;
+﻿using System.Text;
 
 namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
     public class Wall : TargettedCellEffectFeature<CellEffects.Wall>
     {
-        public override string Name { get { return "Wall"; } }
-        protected override string GetDescription()
-        {
-            StringBuilder sb = new StringBuilder();
-
-            sb.Append("Prevents ground units from passing through a cell");
-
-            if (Range == 1)
-                sb.Append(" 1 tile away");
-            else
-            {
-                sb.Append(" up to ");
-                sb.Append(Range);
-                sb.Append(" tiles away");
-            }
-                
-            sb.Append(", for ");
-            sb.Append(EffectInstance.Duration);
-            sb.Append(" turns");
-
-            return sb.ToString();
-        }
-        public override string Symbol { get { return "❒"; } }
-
         public Wall(int range, int duration)
         {
             Range = range;
             EffectInstance.Duration = duration;
         }
+
+        public override string Name => "Wall";
+
+        public override string Description
+        {
+            get
+            {
+                var sb = new StringBuilder();
+
+                sb.Append("Prevents ground units from passing through a cell");
+
+                if (Range == 1)
+                    sb.Append(" 1 tile away");
+                else
+                {
+                    sb.Append(" up to ");
+                    sb.Append(Range);
+                    sb.Append(" tiles away");
+                }
+
+                sb.Append(", for ");
+                sb.Append(EffectInstance.Duration);
+                sb.Append(" turns");
+
+                return sb.ToString();
+            }
+        }
+
+        public override string Symbol => "❒";
     }
 }

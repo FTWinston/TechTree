@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using ObjectiveStrategy.GameModels.Definitions;
 using ObjectiveStrategy.GameModels.Instances;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -12,15 +13,17 @@ namespace ObjectiveStrategy.GameModels
 
         public TechTree TechTree { get; }
 
-        public List<Building> Buildings { get; } = new List<Building>();
-        
-        public List<Unit> Units { get; } = new List<Unit>();
+        public Dictionary<ResourceType, int> Resources { get; } = new Dictionary<ResourceType, int>();
 
-        public List<BuildingType> AvailableBuildings { get; } = new List<BuildingType>();
+        public HashSet<Building> Buildings { get; } = new HashSet<Building>();
         
-        public List<UnitType> AvailableUnits { get; } = new List<UnitType>();
+        public HashSet<Unit> Units { get; } = new HashSet<Unit>();
+
+        public HashSet<BuildingType> AvailableBuildings { get; } = new HashSet<BuildingType>();
         
-        public List<Research> CompletedResearch { get; } = new List<Research>();
+        public HashSet<UnitType> AvailableUnits { get; } = new HashSet<UnitType>();
+        
+        public HashSet<Research> CompletedResearch { get; } = new HashSet<Research>();
 
         public List<int> ObjectiveIndices { get; } = new List<int>();
 
@@ -65,15 +68,33 @@ namespace ObjectiveStrategy.GameModels
         {
             CompletedResearch.Add(r);
 
+            /*
             // for all features that this research unlocks, enable them on all units that have that feature
             foreach (Feature unlock in r.Unlocks)
             {
-                foreach (var unit in Units)
-                    unit.LockedFeatures.Remove(unlock);
+                foreach (var unitType in TechTree.Units.Values)
+                    if (unitType.LockedFeatures.Contains(unlock))
+                    {
+                        unitType.LockedFeatures.Remove(unlock);
+                        unitType.Features.Add(unlock);
+                        unlock.Initialize(unitType);
 
-                foreach (var building in Buildings)
-                    building.LockedFeatures.Remove(unlock);
+                        foreach (var unit in Units.Where(u => u.Definition == unitType))
+                            unlock.Unlock(unit);
+                   }
+
+                foreach (var buildingType in TechTree.Buildings.Values)
+                    if (buildingType.LockedFeatures.Contains(unlock))
+                    {
+                        buildingType.LockedFeatures.Remove(unlock);
+                        buildingType.Features.Add(unlock);
+                        unlock.Initialize(buildingType);
+
+                        foreach (var building in Buildings.Where(b => b.Definition == buildingType))
+                            unlock.Unlock(building);
+                    }
             }
+            */
         }
     }
 }

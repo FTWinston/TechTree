@@ -1,52 +1,52 @@
-﻿using ObjectiveStrategy.GameModels.Definitions;
-using ObjectiveStrategy.GameModels.Instances;
+﻿using ObjectiveStrategy.GameModels.Instances;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
     public class KillForMana : EntityTargettedFeature
     {
-        public override string Name { get { return "Kill for Mana"; } }
-        protected override string GetDescription()
-        {
-            StringBuilder sb = new StringBuilder();
-
-            sb.Append("Kills a friendly unit ");
-    
-            if (Range == 1)
-                sb.Append(" 1 tile away");
-            else
-            {
-                sb.Append(" up to ");
-                sb.Append(Range);
-                sb.Append(" tiles away");
-            }
-
-            sb.Append(", and restores ");
-            sb.Append(ManaPerHitpoint.ToString("n1"));
-            sb.Append(" mana for each hitpoint the killed unit had");
-            
-            return sb.ToString();
-        }
-        public override string Symbol { get { return "♏"; } }
-        public float ManaPerHitpoint { get; protected set; }
-
         public KillForMana(int range, float manaPerHitpoint)
         {
             Range = range;
             ManaPerHitpoint = manaPerHitpoint;
         }
 
-        public override bool IsValidTarget(Entity user, Entity target)
+        public override string Name => "Kill for Mana";
+
+        public override string Description
         {
-            return user.Owner == target.Owner;
+            get
+            {
+                StringBuilder sb = new StringBuilder();
+
+                sb.Append("Kills a friendly unit ");
+
+                if (Range == 1)
+                    sb.Append(" 1 tile away");
+                else
+                {
+                    sb.Append(" up to ");
+                    sb.Append(Range);
+                    sb.Append(" tiles away");
+                }
+
+                sb.Append(", and restores ");
+                sb.Append(ManaPerHitpoint.ToString("n1"));
+                sb.Append(" mana for each hitpoint the killed unit had");
+
+                return sb.ToString();
+            }
         }
 
-        public override void Activate(Entity user, Cell target)
+        public override string Symbol => "♏";
+
+        public float ManaPerHitpoint { get; }
+
+        public override TargetingOptions AllowedTargets => TargetingOptions.Units | TargetingOptions.SameOwner;
+
+        protected override bool Trigger(Entity entity, Cell target, Dictionary<string, int> data)
         {
             throw new NotImplementedException();
         }

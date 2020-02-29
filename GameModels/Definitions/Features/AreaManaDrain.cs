@@ -10,27 +10,33 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
     public class AreaManaDrain : TargettedFeature
     {
-        public override string Name { get { return "Mana Drain"; } }
-        protected override string GetDescription()
+        public override string Name => "Mana Drain";
+
+        public override string Description
         {
-            StringBuilder sb = new StringBuilder();
-
-            sb.Append("Drains all mana from everything in a ");
-            sb.Append(Radius);
-            sb.Append(" tile radius,");
-
-            if (Range == 1)
-                sb.Append(" 1 tile away");
-            else
+            get
             {
-                sb.Append(" up to ");
-                sb.Append(Range);
-                sb.Append(" tiles away");
-            }
+                var sb = new StringBuilder();
 
-            return sb.ToString();
+                sb.Append("Drains all mana from everything in a ");
+                sb.Append(Radius);
+                sb.Append(" tile radius,");
+
+                if (Range == 1)
+                    sb.Append(" 1 tile away");
+                else
+                {
+                    sb.Append(" up to ");
+                    sb.Append(Range);
+                    sb.Append(" tiles away");
+                }
+
+                return sb.ToString();
+            }
         }
-        public override string Symbol { get { return "♊"; } }
+
+        public override string Symbol => "♊";
+
         public int Radius { get; internal set; }
 
         public AreaManaDrain(int range, int radius, int damageMin, int damageMax)
@@ -39,7 +45,7 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             Radius = radius;
         }
 
-        public override void Activate(Entity user, Cell target)
+        protected override bool Trigger(Entity entity, Cell target, Dictionary<string, int> data)
         {
             throw new NotImplementedException();
         }

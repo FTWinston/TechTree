@@ -1,49 +1,12 @@
-﻿using ObjectiveStrategy.GameModels.Definitions;
-using ObjectiveStrategy.GameModels.Instances;
+﻿using ObjectiveStrategy.GameModels.Instances;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
     public class ManaBurn : EntityTargettedFeature
     {
-        public override string Name { get { return "Mana Burn"; } }
-        protected override string GetDescription()
-        {
-            StringBuilder sb = new StringBuilder();
-
-            if (MaxMana > 0)
-            {
-                sb.Append("Drains up to ");
-                sb.Append(MaxMana);
-            }
-            else
-                sb.Append("Drains all the");
-
-            sb.Append(" mana from an enemy");
-
-            if (Range == 1)
-                sb.Append(" 1 tile away");
-            else
-            {
-                sb.Append(" up to ");
-                sb.Append(Range);
-                sb.Append(" tiles away");
-            }
-
-            sb.Append(", dealing ");
-            sb.Append(DamagePerMana.ToString("n1"));
-            sb.Append(" damage for each point drained");
-
-            return sb.ToString();
-        }
-        public override string Symbol { get { return "⚳"; } }
-        public int MaxMana { get; protected set; }
-        public float DamagePerMana { get; protected set; }
-
         public ManaBurn(int range, int maxMana, float damagePerMana)
         {
             Range = range;
@@ -51,14 +14,52 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             DamagePerMana = damagePerMana;
         }
 
-        public override bool IsValidTarget(Entity user, Entity target)
+        public override string Name => "Mana Burn";
+
+        public override string Description
         {
-            return user.Owner != target.Owner;
+            get
+            {
+                var sb = new StringBuilder();
+
+                if (MaxMana > 0)
+                {
+                    sb.Append("Drains up to ");
+                    sb.Append(MaxMana);
+                }
+                else
+                    sb.Append("Drains all the");
+
+                sb.Append(" mana from an enemy");
+
+                if (Range == 1)
+                    sb.Append(" 1 tile away");
+                else
+                {
+                    sb.Append(" up to ");
+                    sb.Append(Range);
+                    sb.Append(" tiles away");
+                }
+
+                sb.Append(", dealing ");
+                sb.Append(DamagePerMana.ToString("n1"));
+                sb.Append(" damage for each point drained");
+
+                return sb.ToString();
+            }
         }
 
-        public override void Activate(Entity user, Cell target)
+        public override string Symbol => "⚳";
+
+        public int MaxMana { get; }
+
+        public float DamagePerMana { get; }
+
+        public override TargetingOptions AllowedTargets => TargetingOptions.Units | TargetingOptions.Enemies | TargetingOptions.RequiresMana;
+
+        protected override bool Trigger(Entity entity, Cell target, Dictionary<string, int> data)
         {
-            throw new NotImplementedException();
+            throw new NotImplementedException(); ;
         }
     }
 }

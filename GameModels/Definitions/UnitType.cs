@@ -1,4 +1,6 @@
-﻿namespace ObjectiveStrategy.GameModels.Definitions
+﻿using System;
+
+namespace ObjectiveStrategy.GameModels.Definitions
 {
     public class UnitType : EntityType, IUnitType
     {

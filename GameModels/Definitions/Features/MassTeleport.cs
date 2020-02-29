@@ -11,50 +11,44 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
     public class MassTeleport : TargettedStatusEffectFeature<Teleporting>
     {
-        public override string Name { get { return "Mass Teleport"; } }
-        protected override string GetDescription()
+        public override string Name => "Mass Teleport";
+
+        public override string Description
         {
-            StringBuilder sb = new StringBuilder();
-
-            sb.Append("Teleports ");
-            sb.Append(FriendlyOnly ? "friendly" : "all");
-            sb.Append(" units in a ");
-
-            sb.Append(Radius);
-            sb.Append(" tile radius,");
-
-            if (Range == 1)
-                sb.Append(" 1 tile away");
-            else
+            get
             {
-                sb.Append(" up to ");
-                sb.Append(Range);
-                sb.Append(" tiles away");
+                var sb = new StringBuilder();
+
+                sb.Append("Teleports friendly units in a ");
+
+                sb.Append(Radius);
+                sb.Append(" tile radius,");
+
+                if (Range == 1)
+                    sb.Append(" 1 tile away");
+                else
+                {
+                    sb.Append(" up to ");
+                    sb.Append(Range);
+                    sb.Append(" tiles away");
+                }
+
+                sb.Append(", to this unit");
+
+                return sb.ToString();
             }
-
-            sb.Append(", to this unit");
-
-            return sb.ToString();
         }
-        public override string Symbol { get { return "⚝"; } }
-        public int Radius { get; private set; }
-        public bool FriendlyOnly { get; private set; }
 
-        public MassTeleport(int range, int radius, bool friendlyOnly)
+        public override string Symbol => "⚝";
+
+        public int Radius { get; }
+
+        public MassTeleport(int range, int radius)
         {
             Range = range;
             Radius = radius;
-            FriendlyOnly = friendlyOnly;
         }
 
-        public override void Activate(Entity user, Cell target)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override bool IsValidTarget(Entity user, Entity target)
-        {
-            throw new NotImplementedException();
-        }
+        public override TargetingOptions AllowedTargets => TargetingOptions.SameOwner | TargetingOptions.Units | TargetingOptions.Self;
     }
 }

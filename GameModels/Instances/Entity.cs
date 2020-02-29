@@ -66,10 +66,6 @@ namespace ObjectiveStrategy.GameModels.Instances
             : base(id, owner, location)
         {
             Definition = definition;
-
-            foreach (Feature f in Definition.Features)
-                if (f.UnlockedBy != null && !owner.CompletedResearch.Contains(f.UnlockedBy))
-                    LockedFeatures.Add(f);
         }
     }
 }

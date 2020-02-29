@@ -11,35 +11,6 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
     public class Attack : EntityTargettedFeature
     {
-        public override string Name { get { return "Attack"; } }
-        protected override string GetDescription()
-        {
-            StringBuilder sb = new StringBuilder();
-
-            sb.Append("Deals ");
-            sb.Append(DamageMin);
-            if (DamageMin != DamageMax)
-            {
-                sb.Append("-");
-                sb.Append(DamageMax);
-            }
-            sb.Append(" damage to an enemy ");
-
-            if (Range == 1)
-                sb.Append(" 1 tile away");
-            else
-            {
-                sb.Append(" up to ");
-                sb.Append(Range);
-                sb.Append(" tiles away");
-            }
-
-            return sb.ToString();
-        }
-        public override string Symbol { get { return "⚔"; } }
-        public int DamageMin { get; protected set; }
-        public int DamageMax { get; protected set; }
-
         public Attack(int range, int damageMin, int damageMax)
         {
             Range = range;
@@ -47,12 +18,45 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             DamageMax = damageMax;
         }
 
-        public override bool IsValidTarget(Entity user, Entity target)
+        public override string Name => "Attack";
+
+        public override string Description
         {
-            return target.Owner != user.Owner;
+            get
+            {
+                var sb = new StringBuilder();
+
+                sb.Append("Deals ");
+                sb.Append(DamageMin);
+                if (DamageMin != DamageMax)
+                {
+                    sb.Append("-");
+                    sb.Append(DamageMax);
+                }
+                sb.Append(" damage to an enemy ");
+
+                if (Range == 1)
+                    sb.Append(" 1 tile away");
+                else
+                {
+                    sb.Append(" up to ");
+                    sb.Append(Range);
+                    sb.Append(" tiles away");
+                }
+
+                return sb.ToString();
+            }
         }
 
-        public override void Activate(Entity user, Cell target)
+        public override string Symbol => "⚔";
+
+        public int DamageMin { get; }
+
+        public int DamageMax { get; }
+
+        public override TargetingOptions AllowedTargets => TargetingOptions.Enemies | TargetingOptions.Buildings | TargetingOptions.Units;
+
+        protected override bool Trigger(Entity entity, Cell target, Dictionary<string, int> data)
         {
             throw new NotImplementedException();
         }

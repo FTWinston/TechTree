@@ -1,27 +1,12 @@
 ﻿using ObjectiveStrategy.GameModels.Definitions;
 using ObjectiveStrategy.GameModels.Definitions.StatusEffects;
 using ObjectiveStrategy.GameModels.Instances;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
     public class Cloaking_Permanent : PassiveFeature
     {
-        public override string Name { get { return "Cloaking"; } }
-        protected override string GetDescription()
-        {
-            StringBuilder sb = new StringBuilder();
-            sb.Append("Prevents this unit from being seen by enemy units that lack the [detector] feature");
-            return sb.ToString();
-        }
-        public override string Symbol { get { return "☍"; } }
-
-        private Invisible EffectInstance { get; set; }
-
         public Cloaking_Permanent()
         {
             EffectInstance = new Invisible();
@@ -29,6 +14,15 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             // TODO: work out how to actually apply this effect to units
         }
 
+        public override string Name => "Cloaking";
+
+        public override string Description => "Prevents this unit from being seen by enemy units that lack the [detector] feature";
+
+        public override string Symbol => "☍";
+
+        private Invisible EffectInstance { get; set; }
+
+        /*
         public override bool Validate(EntityType type)
         {
             // an entity type should only have one cloak
@@ -37,5 +31,6 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
                 && type.Features.FirstOrDefault(f => f is Cloaking_AOE_Permanent) == null
                 && type.Features.FirstOrDefault(f => f is Burrow) == null;
         }
+        */
     }
 }

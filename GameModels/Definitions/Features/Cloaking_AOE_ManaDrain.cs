@@ -1,26 +1,10 @@
-﻿using ObjectiveStrategy.GameModels.Definitions;
-using ObjectiveStrategy.GameModels.Definitions.StatusEffects;
-using ObjectiveStrategy.GameModels.Instances;
-using System;
-using System.Collections.Generic;
+﻿using ObjectiveStrategy.GameModels.Definitions.StatusEffects;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
     public class Cloaking_AOE_ManaDrain : EffectToggleFeature<AreaInvisible>
     {
-        public override string Name { get { return "AOE Cloaking"; } }
-        protected override string GetDescription()
-        {
-            StringBuilder sb = new StringBuilder();
-            sb.Append("Prevents this unit from being seen by enemy units that lack the [detector] feature");
-            return sb.ToString();
-        }
-        public override string Symbol { get { return "⛲"; } }
-        public int Radius { get; private set; }
-
         public Cloaking_AOE_ManaDrain(int manaCostPerTurn, int activateManaCost, int radius)
         {
             Radius = radius;
@@ -28,6 +12,15 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             ActivateManaCost = activateManaCost;
         }
 
+        public override string Name => "AOE Cloaking";
+
+        public override string Description => "Prevents this unit from being seen by enemy units that lack the [detector] feature";
+
+        public override string Symbol => "⛲";
+
+        public int Radius { get; }
+
+        /*
         public override bool Validate(EntityType type)
         {
             // an entity type should only have one cloak
@@ -36,5 +29,6 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
                 && type.Features.FirstOrDefault(f => f is Cloaking_AOE_Permanent) == null
                 && type.Features.FirstOrDefault(f => f is Burrow) == null;
         }
+        */
     }
 }

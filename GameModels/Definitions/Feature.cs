@@ -1,7 +1,8 @@
 ﻿using ObjectiveStrategy.GameModels.Instances;
 using System;
-using System.Collections.Generic;
 using System.Linq;
+
+using FeatureData = System.Collections.Generic.Dictionary<string, int>;
 
 namespace ObjectiveStrategy.GameModels.Definitions
 {
@@ -19,27 +20,46 @@ namespace ObjectiveStrategy.GameModels.Definitions
 
         public abstract FeatureState DetermineState(Entity entity);
 
-        /*
-        public virtual double Initialize(EntityType type) { return 1; }
-        public virtual bool Validate(EntityType type) { return true; }
-        public abstract bool Clicked(Entity entity);
-        */
+        public virtual void Initialize(EntityType entityType) { }
 
-        public abstract void Trigger(Entity entity, Cell target);
+        public virtual void Unlock(Entity entity) { }
 
-        public abstract bool CanTrigger(Entity entity, Cell target);
+        public bool TryTrigger(Entity entity, Cell target)
+        {
+            var data = GetData(entity);
 
-        protected virtual void AfterTriggered(Entity entity) { }
+            if (!CanTrigger(entity, target, data))
+                return false;
+
+            if (!Trigger(entity, target, data))
+                return false;
+
+            AfterTriggered(entity, data);
+            return true;
+        }
+
+        public bool CanTrigger(Entity entity, Cell target)
+        {
+            var data = GetData(entity);
+
+            return CanTrigger(entity, target, data);
+        }
+
+        protected abstract bool CanTrigger(Entity entity, Cell target, FeatureData data);
+
+        protected abstract bool Trigger(Entity entity, Cell target, FeatureData data);
+
+        protected virtual void AfterTriggered(Entity entity, FeatureData data) { }
 
         public virtual void StartTurn(Entity entity) { }
 
         public virtual void EndTurn(Entity entity) { }
 
-        protected Dictionary<string, int> GetData(Entity entity)
+        protected FeatureData GetData(Entity entity)
         {
             if (!entity.FeatureData.TryGetValue(this, out var featureData))
             {
-                featureData = new Dictionary<string, int>();
+                featureData = new FeatureData();
                 entity.FeatureData.Add(this, featureData);
             }
 
@@ -56,12 +76,12 @@ namespace ObjectiveStrategy.GameModels.Definitions
             return FeatureState.None;
         }
 
-        public override void Trigger(Entity entity, Cell target)
+        protected override bool Trigger(Entity entity, Cell target, FeatureData data)
         {
             throw new NotImplementedException();
         }
 
-        public override bool CanTrigger(Entity entity, Cell target)
+        protected override bool CanTrigger(Entity entity, Cell target, FeatureData data)
         {
             return false;
         }
@@ -77,16 +97,26 @@ namespace ObjectiveStrategy.GameModels.Definitions
 
         public virtual int? CooldownTurns { get; set; }
 
+        public override FeatureState DetermineState(Entity entity)
+        {
+            return IsReadyToTrigger(entity, GetData(entity))
+                ? FeatureState.CanTrigger
+                : FeatureState.Disabled;
+        }
+
+        protected override bool CanTrigger(Entity entity, Cell target, FeatureData data)
+        {
+            return IsReadyToTrigger(entity, data);
+        }
+
         private const string limitedUsesDataKey = "uses";
 
         private const string cooldownTurnsDataKey = "cooldown";
 
-        public override bool CanTrigger(Entity entity, Cell target)
+        private bool IsReadyToTrigger(Entity entity, FeatureData data)
         {
             if (entity.Mana < ManaCost)
                 return false;
-
-            var data = GetData(entity);
 
             if (LimitedUses.HasValue && data.TryGetValue(limitedUsesDataKey, out int usesLeft) && usesLeft <= 0)
                 return false;
@@ -97,11 +127,9 @@ namespace ObjectiveStrategy.GameModels.Definitions
             return true;
         }
 
-        protected override void AfterTriggered(Entity entity)
+        protected override void AfterTriggered(Entity entity, FeatureData data)
         {
             entity.Mana = Math.Max(0, entity.Mana - ManaCost);
-
-            var data = GetData(entity);
 
             if (LimitedUses.HasValue)
             {
@@ -120,11 +148,9 @@ namespace ObjectiveStrategy.GameModels.Definitions
 
     public abstract class TargettedFeature : ActivatedFeature
     {
-        public abstract void Activate(Entity user, Cell target);
-
         public virtual int? Range { get; set; }
 
-        public override bool CanTrigger(Entity entity, Cell target)
+        protected override bool CanTrigger(Entity entity, Cell target, FeatureData data)
         {
             if (!base.CanTrigger(entity, target))
                 return false;
@@ -143,7 +169,7 @@ namespace ObjectiveStrategy.GameModels.Definitions
 
     public abstract class EntityTargettedFeature : TargettedFeature
     {
-        public override bool CanTrigger(Entity entity, Cell target)
+        protected override bool CanTrigger(Entity entity, Cell target, FeatureData data)
         {
             if (!base.CanTrigger(entity, target))
                 return false;
@@ -162,31 +188,26 @@ namespace ObjectiveStrategy.GameModels.Definitions
             return false;
         }
 
-        public virtual bool CanTargetSelf => false;
+        public abstract TargetingOptions AllowedTargets { get; }
 
-        public virtual bool CanTargetBuildings { get; }
-
-        public virtual bool CanTargetUnits { get; }
-
-        public abstract bool CanTargetEnemies { get; }
-
-        public abstract bool CanTargetFriendlies { get; }
-
-        public virtual bool IsValidTarget(Entity user, Entity target)
+        public bool IsValidTarget(Entity user, Entity target)
         {
-            if (target is Building && !CanTargetBuildings)
+            if (target is Building && !AllowedTargets.HasFlag(TargetingOptions.Buildings))
                 return false;
 
-            else if (target is Unit && !CanTargetUnits)
+            else if (target is Unit && !AllowedTargets.HasFlag(TargetingOptions.Units))
+                return false;
+
+            if (AllowedTargets.HasFlag(TargetingOptions.RequiresMana) && target.BaseDefinition.Mana == 0)
                 return false;
 
             if (target == user)
-                return CanTargetSelf;
+                return AllowedTargets.HasFlag(TargetingOptions.Self);
 
             if (target.Owner == user.Owner)
-                return CanTargetFriendlies;
+                return AllowedTargets.HasFlag(TargetingOptions.SameOwner);
 
-            return CanTargetEnemies;
+            return AllowedTargets.HasFlag(TargetingOptions.Enemies);
         }
     }
 
@@ -195,23 +216,33 @@ namespace ObjectiveStrategy.GameModels.Definitions
         public override FeatureType Type => FeatureType.Toggled;
 
         public abstract void Enable(Entity entity);
+
         public abstract void Disable(Entity entity);
 
-        public virtual int ActivateManaCost => 0;
-        public virtual int ManaCostPerTurn => 0;
+        public virtual int ActivateManaCost { get; set; } = 0;
+
+        public virtual int ManaCostPerTurn { get; set; } = 0;
 
         private const string enabledDataKey = "enabled";
 
-        public override void Trigger(Entity entity, Cell target)
+        protected override bool CanTrigger(Entity entity, Cell target, FeatureData data)
         {
-            var data = GetData(entity);
+            bool isEnabled = data.ContainsKey(enabledDataKey);
+
+            if (isEnabled)
+                return true;
+
+            return entity.Mana >= ActivateManaCost;
+        }
+
+        protected override bool Trigger(Entity entity, Cell target, FeatureData data)
+        {
             bool isEnabled = data.ContainsKey(enabledDataKey);
 
             if (isEnabled)
             {
                 Disable(entity);
                 data.Remove(enabledDataKey);
-                return;
             }
             else if (entity.Mana >= ActivateManaCost)
             {
@@ -219,6 +250,8 @@ namespace ObjectiveStrategy.GameModels.Definitions
                 data[enabledDataKey] = 1;
                 Enable(entity);
             }
+
+            return true;
         }
 
         public override void StartTurn(Entity entity)
@@ -268,16 +301,17 @@ namespace ObjectiveStrategy.GameModels.Definitions
     public abstract class StatusEffectFeature<Effect> : ActivatedFeature
         where Effect : IStatusEffect
     {
-        public override void Trigger(Entity user, Cell target)
+        protected override bool Trigger(Entity entity, Cell target, FeatureData data)
         {
-            user.AddEffect(Activator.CreateInstance<Effect>());
+            entity.AddEffect(Activator.CreateInstance<Effect>());
+            return true;
         }
     }
 
     public abstract class TargettedStatusEffectFeature<Effect> : EntityTargettedFeature
         where Effect : IStatusEffect
     {
-        public override void Trigger(Entity entity, Cell target)
+        protected override bool Trigger(Entity entity, Cell target, FeatureData data)
         {
             if (target.Building != null && IsValidTarget(entity, target.Building))
             {
@@ -285,9 +319,14 @@ namespace ObjectiveStrategy.GameModels.Definitions
             }
             else
             {
-                var targetUnit = target.Units.First(u => IsValidTarget(entity, u));
+                var targetUnit = target.Units.FirstOrDefault(u => IsValidTarget(entity, u));
+                if (targetUnit == null)
+                    return false;
+
                 ApplyEffect(targetUnit);
             }
+
+            return true;
         }
 
         private void ApplyEffect(Entity target)
@@ -299,20 +338,22 @@ namespace ObjectiveStrategy.GameModels.Definitions
     public abstract class SelfCellEffectFeature<Effect> : ActivatedFeature
         where Effect : ICellEffect
     {
-        public override void Trigger(Entity entity, Cell target)
+        protected override bool Trigger(Entity entity, Cell target, FeatureData data)
         {
             // TODO: this effect would need to apply to all effects within range of the unit, every turn
             // target.AddEffect(Activator.CreateInstance<Effect>());
+            return false;
         }
     }
 
     public abstract class TargettedCellEffectFeature<Effect> : TargettedFeature
         where Effect : ICellEffect
     {
-        public override void Trigger(Entity entity, Cell target)
+        protected override bool Trigger(Entity entity, Cell target, FeatureData data)
         {
             // TODO: need the concept of cell effects
             // target.AddEffect(Activator.CreateInstance<Effect>())
+            return false;
         }
     }
 }

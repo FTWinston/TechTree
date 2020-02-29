@@ -1,10 +1,6 @@
-﻿using ObjectiveStrategy.GameModels.Definitions;
-using ObjectiveStrategy.GameModels.Definitions.Features;
+﻿using ObjectiveStrategy.GameModels.Extensions;
 using ObjectiveStrategy.GameModels.Instances;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
@@ -15,16 +11,22 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             ExtraPoints = extraPoints;
         }
 
-        public override string Name { get { return "More Health"; } }
-        protected override string GetDescription() { return string.Format("Adds {0} hitpoints", ExtraPoints); }
-        public override string Symbol { get { return "☥"; } }
+        public override string Name => "More Health";
+
+        public override string Description => $"Adds {ExtraPoints} hitpoints";
+
+        public override string Symbol => "☥";
+
         private int ExtraPoints { get; set; }
 
-        public override double Initialize(EntityType type)
+        public override void Initialize(EntityType type)
         {
-            float old = type.Health;
             type.Health += ExtraPoints;
-            return 1.0 * (type.Health / old);
+        }
+
+        public override void Unlock(Entity entity)
+        {
+            entity.Health += ExtraPoints;
         }
     }
     
@@ -35,15 +37,17 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             ExtraPoints = extraPoints;
         }
 
-        public override string Name { get { return "Armored"; } }
-        protected override string GetDescription() { return string.Format("Adds {0} armor points", ExtraPoints); }
-        public override string Symbol { get { return "♈"; } }
+        public override string Name => "Armored";
+
+        public override string Description => $"Adds {ExtraPoints} armor points";
+
+        public override string Symbol => "♈";
+
         private int ExtraPoints { get; set; }
 
-        public override double Initialize(EntityType type)
+        public override void Initialize(EntityType type)
         {
             type.Armor += ExtraPoints;
-            return 1.0 + ExtraPoints * 0.05;
         }
     }
 
@@ -54,21 +58,26 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             ExtraPoints = extraPoints;
         }
 
-        public override string Name { get { return "Greater Mobility"; } }
-        protected override string GetDescription() { return string.Format("Adds {0} action points", ExtraPoints); }
-        public override string Symbol { get { return "♒"; } }
+        public override string Name => "Greater Mobility";
+
+        public override string Description => $"Adds {ExtraPoints} action points";
+
+        public override string Symbol => "♒";
+
         private int ExtraPoints { get; set; }
 
-        public override double Initialize(EntityType type)
+        public override void Initialize(EntityType type)
         {
-            // type.MoveRange += ExtraPoints;
-            return 1.0 + ExtraPoints * 0.15;
+            if (type is UnitType unitType)
+                unitType.MoveRange += ExtraPoints;
         }
         
+        /*
         public override bool Validate(EntityType type)
-        {// don't allow on a type that is a building
-            return !(type is BuildingType);
+        {
+            return !(type is BuildingType); // // don't allow on buildings
         }
+        */
     }
 
     public class GreaterVisibility : PassiveFeature
@@ -78,15 +87,17 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             ExtraPoints = extraPoints;
         }
 
-        public override string Name { get { return "Greater Visibility"; } }
-        protected override string GetDescription() { return string.Format("Increases vision range by {0} tiles", ExtraPoints); }
-        public override string Symbol { get { return "⚙"; } }
+        public override string Name => "Greater Visibility";
+
+        public override string Description => $"Increases vision range by {ExtraPoints} tiles";
+
+        public override string Symbol => "⚙";
+
         private int ExtraPoints { get; set; }
 
-        public override double Initialize(EntityType type)
+        public override void Initialize(EntityType type)
         {
             type.VisionRange += ExtraPoints;
-            return 1.0 + ExtraPoints * 0.1;
         }
     }
 
@@ -97,40 +108,46 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             ExtraPoints = extraPoints;
         }
 
-        public override string Name { get { return "Potency"; } }
-        protected override string GetDescription() { return string.Format("Adds {0} mana points", ExtraPoints); }
-        public override string Symbol { get { return "⚛"; } }
+        public override string Name => "Potency";
+
+        public override string Description => $"Adds {ExtraPoints} mana points";
+
+        public override string Symbol => "⚛";
+
         private int ExtraPoints { get; set; }
 
-        public override double Initialize(EntityType type)
+        public override void Initialize(EntityType type)
         {
-            float old = type.Health;
             type.Mana += ExtraPoints;
-            return 1.0 * (type.Health / old);
         }
 
+        /*
         public override bool Validate(EntityType type)
-        {// don't allow on a type that doesn't havea any mana-using features
-            return type.Mana > 0 && type.Features.FirstOrDefault(f => f.UsesMana) != null;
+        {
+            return type.Mana > 0; // only allow on types with mana
         }
+        */
     }
 
     public class Detector : PassiveFeature
     {
-        public override string Name { get { return "Awareness"; } }
-        protected override string GetDescription() { return "Allows detection of invisible units"; }
-        public override string Symbol { get { return "☉"; } }
+        public override string Name => "Awareness";
 
-        public override double Initialize(EntityType type)
+        public override string Description => "Allows detection of invisible units";
+
+        public override string Symbol => "☉";
+
+        public override void Initialize(EntityType type)
         {
             type.IsDetector = true;
-            return 1.4;
         }
 
+        /*
         public override bool Validate(EntityType type)
         {// only allow this feature exactly once
             return type.VisionRange > 0 && type.Features.Count(f => f is Detector) == 1;
         }
+        */
     }
 
     public class Supply : PassiveFeature
@@ -140,25 +157,23 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             Points = points;
         }
 
-        public override string Name { get { return "Supply"; } }
-        protected override string GetDescription() { return string.Format("Provides {0} supply points, allowing units to be built", Points); }
-        public override string Symbol { get { return "⛽"; } }
+        public override string Name => "Supply";
+
+        public override string Description => $"Provides {Points} supply points, allowing units to be built";
+        
+        public override string Symbol => "⛽";
+
         private int Points { get; set; }
 
-        public override double Initialize(EntityType type)
+        public override void Initialize(EntityType type)
         {
-            /*
-            int before = type.SupplyCost;
+            if (!type.Cost.TryGetValue(ResourceType.Supply, out var existingSupplyCost))
+                existingSupplyCost = 0;
 
-            if (type.SupplyCost >= 0)
-                type.SupplyCost = -Points;
+            if (existingSupplyCost >= 0)
+                type.Cost.AddValue(ResourceType.Supply, -Points);
             else
-                type.SupplyCost -= Points;
-
-            int diff = before - type.SupplyCost;
-            return 1.0 + diff * 0.1;
-            */
-            return 1;
+                type.Cost.SubtractValue(ResourceType.Supply, Points);
         }
     }
 
@@ -169,25 +184,29 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             ExtraPoints = extraPoints;
         }
 
-        public override string Name { get { return "Range"; } }
-        protected override string GetDescription() { return string.Format("Increases attack range by {0} tiles", ExtraPoints); }
-        public override string Symbol { get { return "♐"; } }
+        public override string Name => "Range";
+
+        public override string Description => $"Increases attack range by {ExtraPoints} tiles";
+
+        public override string Symbol => "♐";
+
         private int ExtraPoints { get; set; }
 
-        public override double Initialize(EntityType type)
+        public override void Initialize(EntityType type)
         {
-            Attack? feature = type.Features.SingleOrDefault(f => f is Attack) as Attack;
+            Attack? feature = type.Features.FirstOrDefault(f => f is Attack) as Attack;
+
             if (feature == null)
-                return 1;
+                return;
 
             feature.Range += ExtraPoints;
-
-            return 1.0 + ExtraPoints * 0.1;
         }
 
+        /*
         public override bool Validate(EntityType type)
         {// only allow this feature exactly once
             return type.Features.SingleOrDefault(f => f is Attack) != null;
         }
+        */
     }
 }

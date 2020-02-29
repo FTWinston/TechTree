@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace ObjectiveStrategy.GameModels.Definitions
 {
@@ -24,5 +25,10 @@ namespace ObjectiveStrategy.GameModels.Definitions
         public Dictionary<ResourceType, int> Cost { get; } = new Dictionary<ResourceType, int>();
 
         public uint? Prerequisite { get; internal set; }
+
+        public string WriteCost()
+        {
+            return string.Join(", ", Cost.Select(kvp => $"{kvp.Value} {kvp.Key}"));
+        }
     }
 }

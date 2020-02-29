@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ObjectiveStrategy.GameModels.Definitions.Features
+﻿namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
     public class Carrier : PassiveFeature
     {
@@ -13,14 +7,12 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             Capacity = capacity;
         }
 
-        public override string Name { get { return "Carrier"; } }
-        protected override string GetDescription() { return string.Format("Carries up to {0} units", Capacity); }
-        public override string Symbol { get { return "⚖"; } }
-        private int Capacity { get; set; }
+        public override string Name => "Carrier";
 
-        public override double Initialize(EntityType type)
-        {
-            return 1.0 + Capacity * 0.1;
-        }
+        public override string Description => $"Carries up to {Capacity} units";
+
+        public override string Symbol => "⚖";
+
+        private int Capacity { get; }
     }
 }

@@ -10,46 +10,44 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
     public class RemoveEffects : EntityTargettedFeature
     {
-        public override string Name { get { return "Remove Effects"; } }
-        protected override string GetDescription()
-        {
-            StringBuilder sb = new StringBuilder();
-
-            sb.Append("Removes all status effects from a target unit");
-            
-            if (Range == 1)
-                sb.Append(" 1 tile away");
-            else
-            {
-                sb.Append(" up to ");
-                sb.Append(Range);
-                sb.Append(" tiles away");
-            }
-
-            return sb.ToString();
-        }
-        public override string Symbol { get { return "⚜"; } }
-        public int DamageMin { get; protected set; }
-        public int DamageMax { get; protected set; }
-
         public RemoveEffects(int range)
         {
             Range = range;
         }
 
-        public override bool IsValidTarget(Entity user, Entity target)
+        public override string Name => "Remove Effects";
+
+        public override string Description
         {
-            return target is Unit;
+            get
+            {
+                StringBuilder sb = new StringBuilder();
+
+                sb.Append("Removes all status effects from a target unit");
+
+                if (Range == 1)
+                    sb.Append(" 1 tile away");
+                else
+                {
+                    sb.Append(" up to ");
+                    sb.Append(Range);
+                    sb.Append(" tiles away");
+                }
+
+                return sb.ToString();
+            }
         }
 
-        public override void Activate(Entity user, Cell target)
-        {
-            target.Building?.RemoveAllEffects();
+        public override string Symbol => "⚜";
 
+        public override TargetingOptions AllowedTargets => TargetingOptions.AnyOwner | TargetingOptions.Units;
+
+        protected override bool Trigger(Entity entity, Cell target, Dictionary<string, int> data)
+        {
             foreach (var unit in target.Units)
                 unit.RemoveAllEffects();
 
-            throw new NotImplementedException();
+            return true;
         }
     }
 }

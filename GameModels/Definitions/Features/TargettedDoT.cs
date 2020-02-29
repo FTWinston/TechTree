@@ -1,36 +1,11 @@
-﻿using ObjectiveStrategy.GameModels.Definitions;
-using ObjectiveStrategy.GameModels.Instances;
-using ObjectiveStrategy.GameModels.Definitions.StatusEffects;
-using System;
-using System.Collections.Generic;
+﻿using ObjectiveStrategy.GameModels.Definitions.StatusEffects;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
     public class TargettedDoT : TargettedStatusEffectFeature<DamageOverTime>
     {
-        public override string Name { get { return "Targetted DoT"; } }
-        protected override string GetDescription()
-        {
-            StringBuilder sb = new StringBuilder();
-            sb.Append(EffectInstance.GetDescription());
-            sb.Append(", to an enemy");
-
-            if (Range == 1)
-                sb.Append(" 1 tile away");
-            else
-            {
-                sb.Append(" up to ");
-                sb.Append(Range);
-                sb.Append(" tiles away");
-            }
-
-            return sb.ToString();
-        }
-        public override string Symbol { get { return "♅"; } }
-
         public TargettedDoT(int range, int duration, int damageMin, int damageMax)
         {
             Range = range;
@@ -38,10 +13,32 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             EffectInstance.DamageMin = damageMin;
             EffectInstance.DamageMax = damageMax;
         }
+        
+        public override string Name => "Targetted DoT";
 
-        public override bool IsValidTarget(Entity user, Entity target)
+        public override string Description
         {
-            return user.Owner != target.Owner;
+            get
+            {
+                var sb = new StringBuilder();
+                sb.Append(EffectInstance.GetDescription());
+                sb.Append(", to an enemy");
+
+                if (Range == 1)
+                    sb.Append(" 1 tile away");
+                else
+                {
+                    sb.Append(" up to ");
+                    sb.Append(Range);
+                    sb.Append(" tiles away");
+                }
+
+                return sb.ToString();
+            }
         }
+
+        public override string Symbol => "♅";
+
+        public override TargetingOptions AllowedTargets => TargetingOptions.Enemies | TargetingOptions.Units;
     }
 }
