@@ -8,9 +8,9 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
         {
             Range = range;
             Radius = radius;
-            EffectInstance.ExtraHealth = extraHealth;
-            EffectInstance.ExtraArmor = extraArmor;
-            EffectInstance.Duration = duration;
+            Effect.ExtraHealth = extraHealth;
+            Effect.ExtraArmor = extraArmor;
+            Effect.Duration = duration;
         }
 
         public override string Name => "Area Shield";
@@ -23,17 +23,17 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 
                 sb.Append("Adds ");
 
-                if (EffectInstance.ExtraHealth > 0)
+                if (Effect.ExtraHealth > 0)
                 {
-                    sb.Append(EffectInstance.ExtraHealth);
+                    sb.Append(Effect.ExtraHealth);
                     sb.Append(" extra health");
                 }
 
-                if (EffectInstance.ExtraArmor > 0)
+                if (Effect.ExtraArmor > 0)
                 {
-                    if (EffectInstance.ExtraHealth > 0)
+                    if (Effect.ExtraHealth > 0)
                         sb.Append(" and ");
-                    sb.Append(EffectInstance.ExtraArmor);
+                    sb.Append(Effect.ExtraArmor);
                     sb.Append(" extra armor");
                 }
 
@@ -58,7 +58,7 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
                 }
 
                 sb.Append(", for ");
-                sb.Append(EffectInstance.Duration);
+                sb.Append(Effect.Duration);
                 sb.Append(" turns");
 
                 return sb.ToString();

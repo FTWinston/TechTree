@@ -7,7 +7,7 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
         public Cloaking_AOE_Permanent(int radius)
         {
             Radius = radius;
-            EffectInstance = new AreaInvisible();
+            Effect = new AreaInvisible();
 
             // TODO: work out how to actually apply this effect to units
         }
@@ -20,7 +20,7 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 
         public int Radius { get; }
 
-        private AreaInvisible EffectInstance { get; }
+        private AreaInvisible Effect { get; }
 
         /*
         public override bool Validate(EntityType type)

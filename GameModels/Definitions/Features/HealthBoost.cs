@@ -9,9 +9,9 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
         {
             Range = range;
 
-            EffectInstance.Duration = duration;
-            EffectInstance.ExtraHealth = healthBoost;
-            EffectInstance.ExtraArmor = armorBoost;
+            Effect.Duration = duration;
+            Effect.ExtraHealth = healthBoost;
+            Effect.ExtraArmor = armorBoost;
         }
 
         public override string Name => "Health Boost";
@@ -21,7 +21,7 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             get
             {
                 StringBuilder sb = new StringBuilder();
-                sb.Append(EffectInstance.GetDescription());
+                sb.Append(Effect.GetDescription());
                 sb.Append(", to a unit");
 
                 if (Range == 1)

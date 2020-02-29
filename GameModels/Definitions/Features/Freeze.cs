@@ -1,5 +1,4 @@
 ﻿using ObjectiveStrategy.GameModels.Definitions.StatusEffects;
-using System.Linq;
 using System.Text;
 
 namespace ObjectiveStrategy.GameModels.Definitions.Features
@@ -10,7 +9,7 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
         {
             Range = range;
             Radius = radius;
-            EffectInstance.Duration = duration;
+            Effect.Duration = duration;
         }
 
         public override string Name => "Freeze";
@@ -40,10 +39,10 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 
                 sb.Append(" from moving or taking any actions");
 
-                if (EffectInstance.Duration > 0)
+                if (Effect.Duration > 0)
                 {
                     sb.Append(", for ");
-                    sb.Append(EffectInstance.Duration);
+                    sb.Append(Effect.Duration);
                     sb.Append(" turns");
                 }
 

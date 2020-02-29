@@ -7,7 +7,7 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
         public Wall(int range, int duration)
         {
             Range = range;
-            EffectInstance.Duration = duration;
+            Effect.Duration = duration;
         }
 
         public override string Name => "Wall";
@@ -30,7 +30,7 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
                 }
 
                 sb.Append(", for ");
-                sb.Append(EffectInstance.Duration);
+                sb.Append(Effect.Duration);
                 sb.Append(" turns");
 
                 return sb.ToString();

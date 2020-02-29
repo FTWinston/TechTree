@@ -298,18 +298,20 @@ namespace ObjectiveStrategy.GameModels.Definitions
         }
     }
 
-    public abstract class StatusEffectFeature<Effect> : ActivatedFeature
-        where Effect : IStatusEffect
+    public abstract class StatusEffectFeature<TEffect> : ActivatedFeature
+        where TEffect : IStatusEffect, new()
     {
         protected override bool Trigger(Entity entity, Cell target, FeatureData data)
         {
-            entity.AddEffect(Activator.CreateInstance<Effect>());
+            entity.AddEffect(Effect);
             return true;
         }
+
+        protected TEffect Effect { get; } = new TEffect();
     }
 
-    public abstract class TargettedStatusEffectFeature<Effect> : EntityTargettedFeature
-        where Effect : IStatusEffect
+    public abstract class TargettedStatusEffectFeature<TEffect> : EntityTargettedFeature
+        where TEffect : IStatusEffect, new()
     {
         protected override bool Trigger(Entity entity, Cell target, FeatureData data)
         {
@@ -329,14 +331,16 @@ namespace ObjectiveStrategy.GameModels.Definitions
             return true;
         }
 
+        protected TEffect Effect { get; } = new TEffect();
+
         private void ApplyEffect(Entity target)
         {
-            target.AddEffect(Activator.CreateInstance<Effect>());
+            target.AddEffect(Effect);
         }
     }
 
-    public abstract class SelfCellEffectFeature<Effect> : ActivatedFeature
-        where Effect : ICellEffect
+    public abstract class SelfCellEffectFeature<TEffect> : ActivatedFeature
+        where TEffect : ICellEffect, new()
     {
         protected override bool Trigger(Entity entity, Cell target, FeatureData data)
         {
@@ -344,10 +348,12 @@ namespace ObjectiveStrategy.GameModels.Definitions
             // target.AddEffect(Activator.CreateInstance<Effect>());
             return false;
         }
+
+        protected TEffect Effect { get; } = new TEffect();
     }
 
-    public abstract class TargettedCellEffectFeature<Effect> : TargettedFeature
-        where Effect : ICellEffect
+    public abstract class TargettedCellEffectFeature<TEffect> : TargettedFeature
+        where TEffect : ICellEffect, new()
     {
         protected override bool Trigger(Entity entity, Cell target, FeatureData data)
         {
@@ -355,5 +361,7 @@ namespace ObjectiveStrategy.GameModels.Definitions
             // target.AddEffect(Activator.CreateInstance<Effect>())
             return false;
         }
+
+        protected TEffect Effect { get; } = new TEffect();
     }
 }

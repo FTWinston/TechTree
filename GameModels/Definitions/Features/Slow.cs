@@ -10,8 +10,8 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
         {
             Range = range;
             Radius = radius;
-            EffectInstance.Duration = duration;
-            EffectInstance.ReducedPoints = reducedPoints;
+            Effect.Duration = duration;
+            Effect.ReducedPoints = reducedPoints;
         }
 
         public override string Name => "Slow";
@@ -22,7 +22,7 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             {
                 var sb = new StringBuilder();
                 sb.Append("Reduces by ");
-                sb.Append(EffectInstance.ReducedPoints);
+                sb.Append(Effect.ReducedPoints);
                 sb.Append(" the number of action points available to units");
 
                 if (Radius != 1)
@@ -43,10 +43,10 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 
                 sb.Append(" from moving or taking any actions");
 
-                if (EffectInstance.Duration > 0)
+                if (Effect.Duration > 0)
                 {
                     sb.Append(", for ");
-                    sb.Append(EffectInstance.Duration);
+                    sb.Append(Effect.Duration);
                     sb.Append(" turns");
                 }
 

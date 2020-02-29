@@ -11,9 +11,9 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
     {
         public DrainOwnHealth(int duration, int damagePerTurn, float manaPerHitpoint)
         {
-            EffectInstance.Duration = duration;
-            EffectInstance.DamagePerTurn = damagePerTurn;
-            EffectInstance.ManaPerHitpoint = manaPerHitpoint;
+            Effect.Duration = duration;
+            Effect.DamagePerTurn = damagePerTurn;
+            Effect.ManaPerHitpoint = manaPerHitpoint;
         }
 
         public override string Name => "Drain Own Health";
@@ -25,18 +25,18 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
                 var sb = new StringBuilder();
 
                 sb.Append("Drains ");
-                sb.Append(EffectInstance.DamagePerTurn);
+                sb.Append(Effect.DamagePerTurn);
                 sb.Append(" per turn");
 
-                if (EffectInstance.Duration > 1)
+                if (Effect.Duration > 1)
                 {
                     sb.Append(", over ");
-                    sb.Append(EffectInstance.Duration);
+                    sb.Append(Effect.Duration);
                     sb.Append(" turns");
                 }
 
                 sb.Append(", restoring ");
-                sb.Append(EffectInstance.ManaPerHitpoint.ToString("n1"));
+                sb.Append(Effect.ManaPerHitpoint.ToString("n1"));
                 sb.Append(" mana to the caster for each hitpoint drained");
 
                 return sb.ToString();

@@ -8,9 +8,9 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
     {
         public Stim(int duration, int initialHealthDrain, int extraPoints)
         {
-            EffectInstance.Duration = duration;
-            EffectInstance.InitialHealthDrain = initialHealthDrain;
-            EffectInstance.ExtraPoints = extraPoints;
+            Effect.Duration = duration;
+            Effect.InitialHealthDrain = initialHealthDrain;
+            Effect.ExtraPoints = extraPoints;
         }
 
         public override string Name => "Drain Own Health";
@@ -21,12 +21,12 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             {
                 var sb = new StringBuilder();
 
-                sb.Append(EffectInstance.GetDescription());
+                sb.Append(Effect.GetDescription());
 
-                if (EffectInstance.InitialHealthDrain > 0)
+                if (Effect.InitialHealthDrain > 0)
                 {
                     sb.Append(", at the expense of ");
-                    sb.Append(EffectInstance.InitialHealthDrain);
+                    sb.Append(Effect.InitialHealthDrain);
                     sb.Append(" hitpoints");
                 }
 

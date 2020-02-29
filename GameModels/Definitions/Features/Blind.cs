@@ -9,7 +9,7 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
         public Blind(int range, int duration)
         {
             Range = range;
-            EffectInstance.Duration = duration;
+            Effect.Duration = duration;
         }
 
         public override string Name => "Blind";
@@ -29,10 +29,10 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
                     sb.Append(" tiles away");
                 }
 
-                if (EffectInstance.Duration > 0)
+                if (Effect.Duration > 0)
                 {
                     sb.Append(", for ");
-                    sb.Append(EffectInstance.Duration);
+                    sb.Append(Effect.Duration);
                     sb.Append(" turns");
                 }
 

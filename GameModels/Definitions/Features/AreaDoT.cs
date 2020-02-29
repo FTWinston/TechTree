@@ -9,9 +9,9 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
         {
             Range = range;
             Radius = radius;
-            EffectInstance.DamageMin = damageMin;
-            EffectInstance.DamageMax = damageMax;
-            EffectInstance.Duration = duration;
+            Effect.DamageMin = damageMin;
+            Effect.DamageMax = damageMax;
+            Effect.Duration = duration;
         }
 
         public override string Name => "Area DoT";
@@ -23,11 +23,11 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
                 StringBuilder sb = new StringBuilder();
 
                 sb.Append("Deals ");
-                sb.Append(EffectInstance.DamageMin);
-                if (EffectInstance.DamageMin != EffectInstance.DamageMax)
+                sb.Append(Effect.DamageMin);
+                if (Effect.DamageMin != Effect.DamageMax)
                 {
                     sb.Append("-");
-                    sb.Append(EffectInstance.DamageMax);
+                    sb.Append(Effect.DamageMax);
                 }
                 sb.Append(" damage per turn to enemies");
 
@@ -48,7 +48,7 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
                 }
 
                 sb.Append(", for ");
-                sb.Append(EffectInstance.Duration);
+                sb.Append(Effect.Duration);
                 sb.Append(" turns");
 
                 return sb.ToString();

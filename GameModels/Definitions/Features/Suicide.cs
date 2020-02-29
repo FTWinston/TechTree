@@ -8,10 +8,10 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
     {
         public Suicide(int duration, int damageMin, int damageMax, int damageDistance)
         {
-            EffectInstance.Duration = duration;
-            EffectInstance.DamageMin = damageMin;
-            EffectInstance.DamageMax = damageMax;
-            EffectInstance.DamageDistance = damageDistance;
+            Effect.Duration = duration;
+            Effect.DamageMin = damageMin;
+            Effect.DamageMax = damageMax;
+            Effect.DamageDistance = damageDistance;
         }
 
         public override string Name => "Suicide";
@@ -24,24 +24,24 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 
                 sb.Append("Causes this unit to explode");
 
-                if (EffectInstance.Duration > 0)
+                if (Effect.Duration > 0)
                 {
                     sb.Append(" after ");
-                    sb.Append(EffectInstance.Duration);
-                    sb.Append(EffectInstance.Duration == 1 ? " turn" : " turns");
+                    sb.Append(Effect.Duration);
+                    sb.Append(Effect.Duration == 1 ? " turn" : " turns");
                 }
 
                 sb.Append(", dealing ");
-                sb.Append(EffectInstance.DamageMin);
+                sb.Append(Effect.DamageMin);
 
-                if (EffectInstance.DamageMin != EffectInstance.DamageMax)
+                if (Effect.DamageMin != Effect.DamageMax)
                 {
                     sb.Append("-");
-                    sb.Append(EffectInstance.DamageMax);
+                    sb.Append(Effect.DamageMax);
                 }
 
                 sb.Append(" damage to units up to ");
-                sb.Append(EffectInstance.DamageDistance);
+                sb.Append(Effect.DamageDistance);
                 sb.Append(" tiles away");
                 return sb.ToString();
             }

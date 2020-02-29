@@ -9,7 +9,7 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
     {
         public Cloaking_Permanent()
         {
-            EffectInstance = new Invisible();
+            Effect = new Invisible();
 
             // TODO: work out how to actually apply this effect to units
         }
@@ -20,7 +20,7 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 
         public override string Symbol => "☍";
 
-        private Invisible EffectInstance { get; set; }
+        private Invisible Effect { get; set; }
 
         /*
         public override bool Validate(EntityType type)

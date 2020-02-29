@@ -9,7 +9,7 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
         public StealVision(int range, int duration)
         {
             Range = range;
-            EffectInstance.Duration = duration;
+            Effect.Duration = duration;
         }
 
         public override string Name => "Steal Vision";
@@ -30,11 +30,11 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
                     sb.Append(" tiles away");
                 }
 
-                if (EffectInstance.Duration > 0)
+                if (Effect.Duration > 0)
                 {
                     sb.Append(", for ");
-                    sb.Append(EffectInstance.Duration);
-                    sb.Append(EffectInstance.Duration == 1 ? " turn" : " turns");
+                    sb.Append(Effect.Duration);
+                    sb.Append(Effect.Duration == 1 ? " turn" : " turns");
                 }
 
                 return sb.ToString();

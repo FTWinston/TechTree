@@ -10,7 +10,7 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
         {
             Range = range;
             Radius = radius;
-            EffectInstance.Duration = duration;
+            Effect.Duration = duration;
         }
 
         public override string Name => "Immobilize";
@@ -40,10 +40,10 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 
                 sb.Append(" from moving");
 
-                if (EffectInstance.Duration > 0)
+                if (Effect.Duration > 0)
                 {
                     sb.Append(", for ");
-                    sb.Append(EffectInstance.Duration);
+                    sb.Append(Effect.Duration);
                     sb.Append(" turns");
                 }
 

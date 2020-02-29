@@ -46,6 +46,8 @@ namespace ObjectiveStrategy.GameGeneration.TreeGeneration
 
         public List<Feature> Features { get; } = new List<Feature>();
 
+        public List<Feature> LockedFeatures { get; } = new List<Feature>();
+
         public abstract void AllocateName(ICollection<string> usedNames);
 
         protected static string DetermineUniqueName(ICollection<string> usedNames, string baseName)

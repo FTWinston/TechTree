@@ -9,9 +9,9 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
         public TargettedDoT(int range, int duration, int damageMin, int damageMax)
         {
             Range = range;
-            EffectInstance.Duration = duration;
-            EffectInstance.DamageMin = damageMin;
-            EffectInstance.DamageMax = damageMax;
+            Effect.Duration = duration;
+            Effect.DamageMin = damageMin;
+            Effect.DamageMax = damageMax;
         }
         
         public override string Name => "Targetted DoT";
@@ -21,7 +21,7 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             get
             {
                 var sb = new StringBuilder();
-                sb.Append(EffectInstance.GetDescription());
+                sb.Append(Effect.GetDescription());
                 sb.Append(", to an enemy");
 
                 if (Range == 1)

@@ -1,7 +1,4 @@
-﻿using ObjectiveStrategy.GameModels.Definitions.CellEffects;
-using ObjectiveStrategy.GameModels.Definitions.StatusEffects;
-using ObjectiveStrategy.GameModels.Instances;
-using System;
+﻿using ObjectiveStrategy.GameModels.Definitions.StatusEffects;
 using System.Text;
 
 namespace ObjectiveStrategy.GameModels.Definitions.Features
@@ -13,10 +10,10 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             Range = range;
             Radius = radius;
 
-            EffectInstance.Duration = duration;
-            EffectInstance.ReductionMax = hitpointsDrained;
-            EffectInstance.MinRemainingHitpoints = minHitpoints;
-            EffectInstance.HealthDrainPerTurn = drainPerTurn;
+            Effect.Duration = duration;
+            Effect.ReductionMax = hitpointsDrained;
+            Effect.MinRemainingHitpoints = minHitpoints;
+            Effect.HealthDrainPerTurn = drainPerTurn;
         }
 
         public override string Name => "Health Reduction";
@@ -48,20 +45,20 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
                 }
 
                 sb.Append(" by up to ");
-                sb.Append(EffectInstance.ReductionMax);
+                sb.Append(Effect.ReductionMax);
 
-                if (EffectInstance.Duration > 0)
+                if (Effect.Duration > 0)
                 {
                     sb.Append(" for ");
-                    sb.Append(EffectInstance.Duration);
+                    sb.Append(Effect.Duration);
                     sb.Append(" turns");
                 }
 
-                if (EffectInstance.MinRemainingHitpoints > 0)
+                if (Effect.MinRemainingHitpoints > 0)
                 {
                     sb.Append(", never dropping below ");
-                    sb.Append(EffectInstance.MinRemainingHitpoints);
-                    sb.Append(EffectInstance.MinRemainingHitpoints == 1 ? " hitpoint" : " hitpoints");
+                    sb.Append(Effect.MinRemainingHitpoints);
+                    sb.Append(Effect.MinRemainingHitpoints == 1 ? " hitpoint" : " hitpoints");
                 }
                 return sb.ToString();
             }
