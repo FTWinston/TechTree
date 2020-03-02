@@ -1,4 +1,6 @@
-﻿using System.Text;
+﻿using ObjectiveStrategy.GameModels.Serialization;
+using System.Collections.Generic;
+using System.Text;
 
 namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
@@ -8,14 +10,33 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
         {
             Range = range;
             Radius = radius;
+            Effect.Duration = duration;
             Effect.ExtraHealth = extraHealth;
             Effect.ExtraArmor = extraArmor;
-            Effect.Duration = duration;
+        }
+
+        public AreaShield(Dictionary<string, int> data)
+        {
+            Range = data["range"];
+            Radius = data["radius"];
+            Effect.Duration = data["duration"];
+            Effect.ExtraHealth = data["health"];
+            Effect.ExtraArmor = data["armor"];
+        }
+
+        public override FeatureDTO ToDTO()
+        {
+            return new FeatureDTO(TypeID, new Dictionary<string, int>()
+            {
+                { "range", Range },
+                { "radius", Radius },
+                { "duration", Effect.Duration },
+                { "health", Effect.ExtraHealth },
+                { "armor", Effect.ExtraArmor },
+            });
         }
 
         public const string TypeID = "area shield";
-
-        public override string Type => TypeID;
 
         public override string Name => "Area Shield";
 

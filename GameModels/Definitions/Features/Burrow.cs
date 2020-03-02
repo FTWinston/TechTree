@@ -1,11 +1,6 @@
-﻿using ObjectiveStrategy.GameModels.Definitions;
-using ObjectiveStrategy.GameModels.Definitions.StatusEffects;
-using ObjectiveStrategy.GameModels.Instances;
-using System;
+﻿using ObjectiveStrategy.GameModels.Definitions.StatusEffects;
+using ObjectiveStrategy.GameModels.Serialization;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
@@ -16,9 +11,18 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             ActivateManaCost = activateManaCost;
         }
 
-        public const string TypeID = "burrow";
+        public Burrow(Dictionary<string, int> data)
+            : this(data["activateCost"]) { }
 
-        public override string Type => TypeID;
+        public override FeatureDTO ToDTO()
+        {
+            return new FeatureDTO(TypeID, new Dictionary<string, int>()
+            {
+                { "activateCost", ActivateManaCost },
+            });
+        }
+
+        public const string TypeID = "burrow";
 
         public override string Name => "Burrow";
 

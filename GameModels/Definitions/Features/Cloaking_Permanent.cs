@@ -1,7 +1,6 @@
-﻿using ObjectiveStrategy.GameModels.Definitions;
-using ObjectiveStrategy.GameModels.Definitions.StatusEffects;
-using ObjectiveStrategy.GameModels.Instances;
-using System.Linq;
+﻿using ObjectiveStrategy.GameModels.Definitions.StatusEffects;
+using ObjectiveStrategy.GameModels.Serialization;
+using System.Collections.Generic;
 
 namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
@@ -14,9 +13,16 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             // TODO: work out how to actually apply this effect to units
         }
 
-        public const string TypeID = "permanent cloak";
+        public Cloaking_Permanent(Dictionary<string, int> data)
+            : this()
+        { }
 
-        public override string Type => TypeID;
+        public override FeatureDTO ToDTO()
+        {
+            return new FeatureDTO(TypeID, new Dictionary<string, int>());
+        }
+
+        public const string TypeID = "permanent cloak";
 
         public override string Name => "Cloaking";
 

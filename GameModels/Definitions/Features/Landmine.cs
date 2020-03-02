@@ -1,4 +1,5 @@
 ﻿using ObjectiveStrategy.GameModels.Instances;
+using ObjectiveStrategy.GameModels.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -13,9 +14,22 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             DamageMax = damageMax;
         }
 
-        public const string TypeID = "landmine";
+        public Landmine(Dictionary<string, int> data)
+        {
+            DamageMin = data["damageMin"];
+            DamageMax = data["damageMax"];
+        }
 
-        public override string Type => TypeID;
+        public override FeatureDTO ToDTO()
+        {
+            return new FeatureDTO(TypeID, new Dictionary<string, int>()
+            {
+                { "damageMin", DamageMin },
+                { "damageMax", DamageMax },
+            });
+        }
+
+        public const string TypeID = "landmine";
 
         public override string Name => "Landmine";
 

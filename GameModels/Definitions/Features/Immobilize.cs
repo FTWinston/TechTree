@@ -1,4 +1,6 @@
 ﻿using ObjectiveStrategy.GameModels.Definitions.StatusEffects;
+using ObjectiveStrategy.GameModels.Serialization;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
@@ -13,9 +15,24 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             Effect.Duration = duration;
         }
 
-        public const string TypeID = "immobilize";
+        public Immobilize(Dictionary<string, int> data)
+        {
+            Range = data["range"];
+            Radius = data["radius"];
+            Effect.Duration = data["duration"];
+        }
 
-        public override string Type => TypeID;
+        public override FeatureDTO ToDTO()
+        {
+            return new FeatureDTO(TypeID, new Dictionary<string, int>()
+            {
+                { "range", Range },
+                { "radius", Radius },
+                { "duration", Effect.Duration },
+            });
+        }
+
+        public const string TypeID = "immobilize";
 
         public override string Name => "Immobilize";
 

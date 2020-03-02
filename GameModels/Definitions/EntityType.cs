@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using Newtonsoft.Json;
+using ObjectiveStrategy.GameModels.Serialization;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace ObjectiveStrategy.GameModels.Definitions
 {
@@ -41,9 +44,52 @@ namespace ObjectiveStrategy.GameModels.Definitions
 
         public uint? UpgradesFrom { get; }
 
-
+        [JsonIgnore]
         public List<Feature> Features { get; }
-        
+
+        [JsonIgnore]
         public List<Feature> LockedFeatures { get; }
+
+        [JsonProperty(PropertyName = "Features")]
+        public List<FeatureDTO> FeatureDTOs
+        {
+            get
+            {
+                return Features
+                    .Select(f => f.ToDTO())
+                    .ToList();
+            }
+            set
+            {
+                Features.Clear();
+                Features.AddRange
+                (
+                    value
+                        .Select(f => f.ToFeature())
+                        .ToList()
+                );
+            }
+        }
+
+        [JsonProperty(PropertyName = "LockedFeatures")]
+        public List<FeatureDTO> LockedFeatureDTOs
+        {
+            get
+            {
+                return LockedFeatures
+                    .Select(f => f.ToDTO())
+                    .ToList();
+            }
+            set
+            {
+                LockedFeatures.Clear();
+                LockedFeatures.AddRange
+                (
+                    value
+                        .Select(f => f.ToFeature())
+                        .ToList()
+                );
+            }
+        }
     }
 }

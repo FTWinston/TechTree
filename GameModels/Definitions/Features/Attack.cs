@@ -1,6 +1,7 @@
 ﻿using ObjectiveStrategy.GameModels.Definitions;
 using ObjectiveStrategy.GameModels.Definitions.Features;
 using ObjectiveStrategy.GameModels.Instances;
+using ObjectiveStrategy.GameModels.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,9 +19,24 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             DamageMax = damageMax;
         }
 
-        public const string TypeID = "attack";
+        public Attack(Dictionary<string, int> data)
+        {
+            Range = data["range"];
+            DamageMin = data["damageMin"];
+            DamageMax = data["damageMax"];
+        }
 
-        public override string Type => TypeID;
+        public override FeatureDTO ToDTO()
+        {
+            return new FeatureDTO(TypeID, new Dictionary<string, int>()
+            {
+                { "range", Range },
+                { "damageMin", DamageMin },
+                { "damageMax", DamageMax },
+            });
+        }
+
+        public const string TypeID = "attack";
 
         public override string Name => "Attack";
 

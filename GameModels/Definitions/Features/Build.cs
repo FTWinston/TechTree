@@ -3,6 +3,8 @@ using Newtonsoft.Json;
 using ObjectiveStrategy.GameModels.Extensions;
 
 using FeatureData = System.Collections.Generic.Dictionary<string, int>;
+using System.Collections.Generic;
+using ObjectiveStrategy.GameModels.Serialization;
 
 namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
@@ -13,9 +15,21 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             Unit = unit;
         }
 
-        public const string TypeID = "build";
+        public Build(Dictionary<string, int> data)
+        {
+            int unitTypeID = data["unit"];
+            Unit = something();
+        }
 
-        public override string Type => TypeID;
+        public override FeatureDTO ToDTO()
+        {
+            return new FeatureDTO(TypeID, new Dictionary<string, int>
+            {
+                { "unit", (int)Unit.ID }
+            });
+        }
+
+        public const string TypeID = "build";
 
         public override FeatureMode Mode { get { return FeatureMode.Purchased; } }
 

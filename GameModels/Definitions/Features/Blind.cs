@@ -1,4 +1,6 @@
 ﻿using ObjectiveStrategy.GameModels.Definitions.StatusEffects;
+using ObjectiveStrategy.GameModels.Serialization;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
@@ -12,9 +14,22 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             Effect.Duration = duration;
         }
 
-        public const string TypeID = "blind";
+        public Blind(Dictionary<string, int> data)
+        {
+            Range = data["range"];
+            Effect.Duration = data["duration"];
+        }
 
-        public override string Type => TypeID;
+        public override FeatureDTO ToDTO()
+        {
+            return new FeatureDTO(TypeID, new Dictionary<string, int>()
+            {
+                { "range", Range },
+                { "duration", Effect.Duration },
+            });
+        }
+
+        public const string TypeID = "blind";
 
         public override string Name => "Blind";
 

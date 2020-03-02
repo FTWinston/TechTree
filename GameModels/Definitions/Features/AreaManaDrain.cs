@@ -1,18 +1,23 @@
-﻿using ObjectiveStrategy.GameModels.Definitions;
-using ObjectiveStrategy.GameModels.Instances;
+﻿using ObjectiveStrategy.GameModels.Instances;
+using ObjectiveStrategy.GameModels.Serialization;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
     public class AreaManaDrain : TargettedFeature
     {
-        public const string TypeID = "area mana drain";
+        public AreaManaDrain() { }
 
-        public override string Type => TypeID;
+        public AreaManaDrain(Dictionary<string, int> data) { }
+
+        public override FeatureDTO ToDTO()
+        {
+            return new FeatureDTO(TypeID, new Dictionary<string, int>());
+        }
+
+        public const string TypeID = "area mana drain";
 
         public override string Name => "Mana Drain";
 

@@ -1,5 +1,7 @@
 ﻿using ObjectiveStrategy.GameModels.Instances;
+using ObjectiveStrategy.GameModels.Serialization;
 using System;
+using System.Collections.Generic;
 using System.Text;
 
 namespace ObjectiveStrategy.GameModels.Definitions.Features
@@ -12,9 +14,22 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             ActivateManaCost = activateManaCost;
         }
 
-        public const string TypeID = "deployable attack";
+        public DeployableAttack(Dictionary<string, int> data)
+        {
+            ManaCostPerTurn = data["manaCostPerTurn"];
+            ActivateManaCost = data["activateManaCost"];
+        }
 
-        public override string Type => TypeID;
+        public override FeatureDTO ToDTO()
+        {
+            return new FeatureDTO(TypeID, new Dictionary<string, int>()
+            {
+                { "manaCostPerTurn", ManaCostPerTurn },
+                { "activateManaCost", ActivateManaCost },
+            });
+        }
+
+        public const string TypeID = "deployable attack";
 
         public override string Name => "Deploy";
 

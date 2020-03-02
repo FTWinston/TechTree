@@ -1,4 +1,6 @@
 ﻿using ObjectiveStrategy.GameModels.Definitions.StatusEffects;
+using ObjectiveStrategy.GameModels.Serialization;
+using System.Collections.Generic;
 
 namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
@@ -12,9 +14,18 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             // TODO: work out how to actually apply this effect to units
         }
 
-        public const string TypeID = "permanent aoe cloak";
+        public Cloaking_AOE_Permanent(Dictionary<string, int> data)
+            : this(data["radius"]) { }
 
-        public override string Type => TypeID;
+        public override FeatureDTO ToDTO()
+        {
+            return new FeatureDTO(TypeID, new Dictionary<string, int>()
+            {
+                { "radius", Radius },
+            });
+        }
+
+        public const string TypeID = "permanent aoe cloak";
 
         public override string Name => "Cloaking";
 

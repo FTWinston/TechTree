@@ -1,4 +1,5 @@
 ﻿using ObjectiveStrategy.GameModels.Instances;
+using ObjectiveStrategy.GameModels.Serialization;
 using System;
 using System.Linq;
 
@@ -8,7 +9,7 @@ namespace ObjectiveStrategy.GameModels.Definitions
 {
     public abstract class Feature : ISelectable
     {
-        public abstract string Type { get; }
+        public abstract FeatureDTO ToDTO();
 
         public abstract string Name { get; }
         

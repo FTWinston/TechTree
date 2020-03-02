@@ -1,4 +1,6 @@
 ﻿using ObjectiveStrategy.GameModels.Definitions.StatusEffects;
+using ObjectiveStrategy.GameModels.Serialization;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
@@ -14,9 +16,26 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             Effect.DamageDistance = damageDistance;
         }
 
-        public const string TypeID = "suicide";
+        public Suicide(Dictionary<string, int> data)
+        {
+            Effect.Duration = data["duration"];
+            Effect.DamageMin = data["damageMin"];
+            Effect.DamageMax = data["damageMax"];
+            Effect.DamageDistance = data["damageDistance"];
+        }
 
-        public override string Type => TypeID;
+        public override FeatureDTO ToDTO()
+        {
+            return new FeatureDTO(TypeID, new Dictionary<string, int>()
+            {
+                { "duration", Effect.Duration },
+                { "damageMin", Effect.DamageMin },
+                { "damageMax", Effect.DamageMax },
+                { "damageDistance", Effect.DamageDistance },
+            });
+        }
+
+        public const string TypeID = "suicide";
 
         public override string Name => "Suicide";
 

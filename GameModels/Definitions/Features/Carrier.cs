@@ -1,4 +1,7 @@
-﻿namespace ObjectiveStrategy.GameModels.Definitions.Features
+﻿using ObjectiveStrategy.GameModels.Serialization;
+using System.Collections.Generic;
+
+namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
     public class Carrier : PassiveFeature
     {
@@ -7,9 +10,18 @@
             Capacity = capacity;
         }
 
-        public const string TypeID = "transport";
+        public Carrier(Dictionary<string, int> data)
+            : this(data["capacity"]) { }
 
-        public override string Type => TypeID;
+        public override FeatureDTO ToDTO()
+        {
+            return new FeatureDTO(TypeID, new Dictionary<string, int>()
+            {
+                { "capacity", Capacity },
+            });
+        }
+
+        public const string TypeID = "transport";
 
         public override string Name => "Carrier";
 

@@ -1,4 +1,6 @@
 ﻿using ObjectiveStrategy.GameModels.Definitions.StatusEffects;
+using ObjectiveStrategy.GameModels.Serialization;
+using System.Collections.Generic;
 
 namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
@@ -10,9 +12,22 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             ActivateManaCost = activateManaCost;
         }
 
-        public const string TypeID = "toggleable cloak";
+        public Cloaking_ManaDrain(Dictionary<string, int> data)
+        {
+            ManaCostPerTurn = data["manaPerTurn"];
+            ActivateManaCost = data["activateCost"];
+        }
 
-        public override string Type => TypeID;
+        public override FeatureDTO ToDTO()
+        {
+            return new FeatureDTO(TypeID, new Dictionary<string, int>()
+            {
+                { "manaPerTurn", ManaCostPerTurn },
+                { "activateCost", ActivateManaCost },
+            });
+        }
+
+        public const string TypeID = "toggleable cloak";
 
         public override string Name => "Cloaking";
 

@@ -1,4 +1,5 @@
 ﻿using ObjectiveStrategy.GameModels.Instances;
+using ObjectiveStrategy.GameModels.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -12,9 +13,20 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             Range = range;
         }
 
-        public const string TypeID = "personal teleport";
+        public PersonalTeleport(Dictionary<string, int> data)
+        {
+            Range = data["range"];
+        }
 
-        public override string Type => TypeID;
+        public override FeatureDTO ToDTO()
+        {
+            return new FeatureDTO(TypeID, new Dictionary<string, int>()
+            {
+                { "range", Range },
+            });
+        }
+
+        public const string TypeID = "personal teleport";
 
         public override string Name => "Teleport";
 

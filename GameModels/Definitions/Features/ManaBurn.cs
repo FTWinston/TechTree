@@ -1,4 +1,5 @@
 ﻿using ObjectiveStrategy.GameModels.Instances;
+using ObjectiveStrategy.GameModels.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -14,9 +15,24 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             DamagePerMana = damagePerMana;
         }
 
-        public const string TypeID = "mana burn";
+        public ManaBurn(Dictionary<string, int> data)
+        {
+            Range = data["range"];
+            MaxMana = data["maxMana"];
+            DamagePerMana = data["damagePerMana"] / 100f;
+        }
 
-        public override string Type => TypeID;
+        public override FeatureDTO ToDTO()
+        {
+            return new FeatureDTO(TypeID, new Dictionary<string, int>()
+            {
+                { "range", Range },
+                { "maxMana", MaxMana },
+                { "damagePerMana", (int)(DamagePerMana * 100) },
+            });
+        }
+
+        public const string TypeID = "mana burn";
 
         public override string Name => "Mana Burn";
 

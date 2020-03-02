@@ -1,4 +1,6 @@
 ﻿using ObjectiveStrategy.GameModels.Definitions.StatusEffects;
+using ObjectiveStrategy.GameModels.Serialization;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
@@ -14,9 +16,26 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             Effect.ReducedPoints = reducedPoints;
         }
 
-        public const string TypeID = "slow";
+        public Slow(Dictionary<string, int> data)
+        {
+            Range = data["range"];
+            Radius = data["radius"];
+            Effect.Duration = data["duration"];
+            Effect.ReducedPoints = data["reducedPoints"];
+        }
 
-        public override string Type => TypeID;
+        public override FeatureDTO ToDTO()
+        {
+            return new FeatureDTO(TypeID, new Dictionary<string, int>()
+            {
+                { "range", Range },
+                { "radius", Radius },
+                { "duration", Effect.Duration },
+                { "reducedPoints", Effect.ReducedPoints},
+            });
+        }
+
+        public const string TypeID = "slow";
 
         public override string Name => "Slow";
 

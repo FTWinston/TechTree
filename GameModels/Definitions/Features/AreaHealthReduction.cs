@@ -1,4 +1,6 @@
 ﻿using ObjectiveStrategy.GameModels.Definitions.StatusEffects;
+using ObjectiveStrategy.GameModels.Serialization;
+using System.Collections.Generic;
 using System.Text;
 
 namespace ObjectiveStrategy.GameModels.Definitions.Features
@@ -16,9 +18,30 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             Effect.HealthDrainPerTurn = drainPerTurn;
         }
 
-        public const string TypeID = "area health reduction";
+        public AreaHealthReduction(Dictionary<string, int> data)
+        {
+            Range = data["range"];
+            Radius = data["radius"];
+            Effect.Duration = data["duration"];
+            Effect.ReductionMax = data["maxReduction"];
+            Effect.MinRemainingHitpoints = data["minRemainingHp"];
+            Effect.HealthDrainPerTurn = data["hpPerTurn"];
+        }
 
-        public override string Type => TypeID;
+        public override FeatureDTO ToDTO()
+        {
+            return new FeatureDTO(TypeID, new Dictionary<string, int>()
+            {
+                { "range", Range },
+                { "radius", Radius },
+                { "duration", Effect.Duration },
+                { "maxReduction", Effect.ReductionMax },
+                { "minRemainingHp", Effect.MinRemainingHitpoints },
+                { "hpPerTurn", Effect.HealthDrainPerTurn },
+            });
+        }
+
+        public const string TypeID = "area health reduction";
 
         public override string Name => "Health Reduction";
 

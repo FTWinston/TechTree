@@ -1,4 +1,6 @@
 ﻿using ObjectiveStrategy.GameModels.Definitions.CellEffects;
+using ObjectiveStrategy.GameModels.Serialization;
+using System.Collections.Generic;
 using System.Text;
 
 namespace ObjectiveStrategy.GameModels.Definitions.Features
@@ -14,9 +16,28 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             Effect.Duration = duration;
         }
 
-        public const string TypeID = "area dot";
+        public AreaDoT(Dictionary<string, int> data)
+        {
+            Range = data["range"];
+            Radius = data["radius"];
+            Effect.Duration = data["duration"];
+            Effect.DamageMin = data["damageMin"];
+            Effect.DamageMax = data["damageMax"];
+        }
 
-        public override string Type => TypeID;
+        public override FeatureDTO ToDTO()
+        {
+            return new FeatureDTO(TypeID, new Dictionary<string, int>()
+            {
+                { "range", Range },
+                { "radius", Radius },
+                { "duration", Effect.Duration },
+                { "damageMin", Effect.DamageMin },
+                { "damageMax", Effect.DamageMax },
+            });
+        }
+
+        public const string TypeID = "area dot";
 
         public override string Name => "Area DoT";
 

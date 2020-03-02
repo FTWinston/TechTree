@@ -1,4 +1,6 @@
 ﻿using ObjectiveStrategy.GameModels.Definitions.StatusEffects;
+using ObjectiveStrategy.GameModels.Serialization;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
@@ -13,9 +15,24 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             Effect.ExtraPoints = extraPoints;
         }
 
-        public const string TypeID = "own health drain";
+        public Stim(Dictionary<string, int> data)
+        {
+            Effect.Duration = data["duration"];
+            Effect.InitialHealthDrain = data["initialDrain"];
+            Effect.ExtraPoints = data["extraPoints"];
+        }
 
-        public override string Type => TypeID;
+        public override FeatureDTO ToDTO()
+        {
+            return new FeatureDTO(TypeID, new Dictionary<string, int>()
+            {
+                { "duration", Effect.Duration },
+                { "initialDrain", Effect.InitialHealthDrain },
+                { "extraPoints", Effect.ExtraPoints },
+            });
+        }
+
+        public const string TypeID = "own health drain";
 
         public override string Name => "Drain Own Health";
 

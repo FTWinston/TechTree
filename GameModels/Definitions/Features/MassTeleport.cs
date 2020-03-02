@@ -1,13 +1,22 @@
 ﻿using ObjectiveStrategy.GameModels.Definitions.StatusEffects;
+using ObjectiveStrategy.GameModels.Serialization;
+using System.Collections.Generic;
 using System.Text;
 
 namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
     public class MassTeleport : TargettedStatusEffectFeature<Teleporting>
     {
-        public const string TypeID = "mass teleport";
+        public MassTeleport() { }
 
-        public override string Type => TypeID;
+        public MassTeleport(Dictionary<string, int> data) { }
+
+        public override FeatureDTO ToDTO()
+        {
+            return new FeatureDTO(TypeID, new Dictionary<string, int>());
+        }
+
+        public const string TypeID = "mass teleport";
 
         public override string Name => "Mass Teleport";
 

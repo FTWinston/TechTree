@@ -1,10 +1,7 @@
-﻿using ObjectiveStrategy.GameModels.Definitions;
-using ObjectiveStrategy.GameModels.Instances;
-using System;
+﻿using ObjectiveStrategy.GameModels.Instances;
+using ObjectiveStrategy.GameModels.Serialization;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
@@ -15,9 +12,20 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             Range = range;
         }
 
-        public const string TypeID = "remove effects";
+        public RemoveEffects(Dictionary<string, int> data)
+        {
+            Range = data["range"];
+        }
 
-        public override string Type => TypeID;
+        public override FeatureDTO ToDTO()
+        {
+            return new FeatureDTO(TypeID, new Dictionary<string, int>()
+            {
+                { "range", Range },
+            });
+        }
+
+        public const string TypeID = "remove effects";
 
         public override string Name => "Remove Effects";
 

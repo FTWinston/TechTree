@@ -1,5 +1,7 @@
 ﻿using ObjectiveStrategy.GameModels.Definitions.StatusEffects;
+using ObjectiveStrategy.GameModels.Serialization;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
@@ -15,9 +17,26 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             Effect.DamageMax = damageMax;
         }
 
-        public const string TypeID = "heal over time";
+        public HealOverTime(Dictionary<string, int> data)
+        {
+            Range = data["range"];
+            Effect.Duration = data["duration"];
+            Effect.DamageMin = data["damageMin"];
+            Effect.DamageMax = data["damageMax"];
+        }
 
-        public override string Type => TypeID;
+        public override FeatureDTO ToDTO()
+        {
+            return new FeatureDTO(TypeID, new Dictionary<string, int>()
+            {
+                { "range", Range },
+                { "duration", Effect.Duration },
+                { "damageMin", Effect.DamageMin },
+                { "damageMax", Effect.DamageMax },
+            });
+        }
+
+        public const string TypeID = "heal over time";
 
         public override string Name => "Healing over Time";
 

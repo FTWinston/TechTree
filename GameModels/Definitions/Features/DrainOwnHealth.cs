@@ -1,5 +1,6 @@
 ﻿using ObjectiveStrategy.GameModels.Definitions.StatusEffects;
 using ObjectiveStrategy.GameModels.Instances;
+using ObjectiveStrategy.GameModels.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,9 +17,24 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             Effect.ManaPerHitpoint = manaPerHitpoint;
         }
 
-        public const string TypeID = "drain own health";
+        public DrainOwnHealth(Dictionary<string, int> data)
+        {
+            Effect.Duration = data["range"];
+            Effect.DamagePerTurn = data["damagePerTurn"];
+            Effect.ManaPerHitpoint = data["manaPerHp"] / 100f;
+        }
 
-        public override string Type => TypeID;
+        public override FeatureDTO ToDTO()
+        {
+            return new FeatureDTO(TypeID, new Dictionary<string, int>()
+            {
+                { "duration", Effect.Duration },
+                { "damagePerTurn", Effect.DamagePerTurn },
+                { "manaPerHp", (int)(Effect.ManaPerHitpoint * 100) },
+            });
+        }
+
+        public const string TypeID = "drain own health";
 
         public override string Name => "Drain Own Health";
 

@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using ObjectiveStrategy.GameModels.Serialization;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace ObjectiveStrategy.GameModels.Definitions.Features
@@ -14,9 +16,26 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             Effect.ExtraArmor = armorBoost;
         }
 
-        public const string TypeID = "health boost";
+        public HealthBoost(Dictionary<string, int> data)
+        {
+            Range = data["range"];
+            Effect.Duration = data["duration"];
+            Effect.ExtraHealth = data["health"];
+            Effect.ExtraArmor = data["armor"];
+        }
 
-        public override string Type => TypeID;
+        public override FeatureDTO ToDTO()
+        {
+            return new FeatureDTO(TypeID, new Dictionary<string, int>()
+            {
+                { "range", Range },
+                { "duration", Effect.Duration },
+                { "health", Effect.ExtraHealth },
+                { "armor", Effect.ExtraArmor },
+            });
+        }
+
+        public const string TypeID = "health boost";
 
         public override string Name => "Health Boost";
 

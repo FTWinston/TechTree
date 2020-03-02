@@ -1,4 +1,5 @@
 ﻿using ObjectiveStrategy.GameModels.Instances;
+using ObjectiveStrategy.GameModels.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -7,16 +8,37 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
     public class AreaDetection : TargettedFeature
     {
-        public AreaDetection(int range, int radius, int duration)
+        public AreaDetection(int? range, int radius, int duration)
         {
             Range = range;
             Radius = radius;
             Duration = duration;
         }
 
-        public const string TypeID = "reveal";
+        public AreaDetection(Dictionary<string, int> data)
+        {
+            if (data.TryGetValue("range", out var range))
+                Range = range;
 
-        public override string Type => TypeID;
+            Radius = data["radius"];
+            Duration = data["duration"];
+        }
+
+        public override FeatureDTO ToDTO()
+        {
+            var data = new Dictionary<string, int>()
+            {
+                { "radius", Radius},
+                { "duration", Duration},
+            };
+
+            if (Range.HasValue)
+                data.Add("range", Range.Value);
+
+            return new FeatureDTO(TypeID, data);
+        }
+
+        public const string TypeID = "reveal";
 
         public override string Name => "Detection";
 

@@ -1,4 +1,5 @@
 ﻿using ObjectiveStrategy.GameModels.Instances;
+using ObjectiveStrategy.GameModels.Serialization;
 using System;
 using System.Collections.Generic;
 
@@ -6,9 +7,15 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
     public class Construction : ActivatedFeature
     {
-        public const string TypeID = "construct";
+        public Construction() { }
+        public Construction(Dictionary<string, int> data) { }
 
-        public override string Type => TypeID;
+        public override FeatureDTO ToDTO()
+        {
+            return new FeatureDTO(TypeID, new Dictionary<string, int>());
+        }
+
+        public const string TypeID = "construct";
 
         public override string Name => "Build";
 

@@ -1,4 +1,5 @@
 ﻿using ObjectiveStrategy.GameModels.Instances;
+using ObjectiveStrategy.GameModels.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -13,9 +14,22 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             ManaPerHitpoint = manaPerHitpoint;
         }
 
-        public const string TypeID = "kill for mana";
+        public KillForMana(Dictionary<string, int> data)
+        {
+            Range = data["range"];
+            ManaPerHitpoint = data["manaPerHp"] / 100f;
+        }
 
-        public override string Type => TypeID;
+        public override FeatureDTO ToDTO()
+        {
+            return new FeatureDTO(TypeID, new Dictionary<string, int>()
+            {
+                { "range", Range },
+                { "manaPerHp", (int)(ManaPerHitpoint * 100)},
+            });
+        }
+
+        public const string TypeID = "kill for mana";
 
         public override string Name => "Kill for Mana";
 

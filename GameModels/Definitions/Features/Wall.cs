@@ -1,4 +1,6 @@
-﻿using System.Text;
+﻿using ObjectiveStrategy.GameModels.Serialization;
+using System.Collections.Generic;
+using System.Text;
 
 namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
@@ -10,9 +12,20 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             Effect.Duration = duration;
         }
 
-        public const string TypeID = "wall";
+        public Wall(Dictionary<string, int> data)
+        {
+            Effect.Duration = data["duration"];
+        }
 
-        public override string Type => TypeID;
+        public override FeatureDTO ToDTO()
+        {
+            return new FeatureDTO(TypeID, new Dictionary<string, int>()
+            {
+                { "duration", Effect.Duration},
+            });
+        }
+
+        public const string TypeID = "wall";
 
         public override string Name => "Wall";
 

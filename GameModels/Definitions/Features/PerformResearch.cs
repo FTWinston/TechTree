@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using ObjectiveStrategy.GameModels.Extensions;
+using ObjectiveStrategy.GameModels.Serialization;
 
 namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
@@ -12,9 +13,21 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             Research = research;
         }
 
-        public const string TypeID = "research";
+        public PerformResearch(Dictionary<string, int> data)
+        {
+            int researchID = data["research"];
+            Research = something;
+        }
 
-        public override string Type => TypeID;
+        public override FeatureDTO ToDTO()
+        {
+            return new FeatureDTO(TypeID, new Dictionary<string, int>()
+            {
+                { "research", Research.ID },
+            });
+        }
+
+        public const string TypeID = "research";
 
         public override FeatureMode Mode => FeatureMode.Purchased;
 

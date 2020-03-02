@@ -1,4 +1,5 @@
 ﻿using ObjectiveStrategy.GameModels.Instances;
+using ObjectiveStrategy.GameModels.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -7,16 +8,31 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
     public class MindControl : EntityTargettedFeature
     {
-        public MindControl(int range, int duration, int maxControlRange)
+        public MindControl(int range, int? duration, int? maxControlRange)
         {
             Range = range;
             Duration = duration;
             MaxControlRange = maxControlRange;
         }
 
-        public const string TypeID = "mind control";
+        public MindControl(Dictionary<string, int> data)
+        {
+            Range = data["range"];
+            Duration = data["duration"];
+            MaxControlRange = data["controlRange"];
+        }
 
-        public override string Type => TypeID;
+        public override FeatureDTO ToDTO()
+        {
+            return new FeatureDTO(TypeID, new Dictionary<string, int>()
+            {
+                { "range", Range },
+                { "duration", Duration },
+                { "controlRange", MaxControlRange },
+            });
+        }
+
+        public const string TypeID = "mind control";
 
         public override string Name => "Mind Control";
 
@@ -57,9 +73,9 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 
         public override string Symbol => "♍";
 
-        public int Duration { get; }
+        public int? Duration { get; }
 
-        public int MaxControlRange { get; }
+        public int? MaxControlRange { get; }
 
         public override TargetingOptions AllowedTargets => TargetingOptions.Units | TargetingOptions.Enemies;
 

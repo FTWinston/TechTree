@@ -1,5 +1,7 @@
 ﻿using ObjectiveStrategy.GameModels.Extensions;
 using ObjectiveStrategy.GameModels.Instances;
+using ObjectiveStrategy.GameModels.Serialization;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace ObjectiveStrategy.GameModels.Definitions.Features
@@ -11,9 +13,20 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             ExtraPoints = extraPoints;
         }
 
-        public const string TypeID = "passive health";
+        public HigherHealth(Dictionary<string, int> data)
+        {
+            ExtraPoints = data["points"];
+        }
 
-        public override string Type => TypeID;
+        public override FeatureDTO ToDTO()
+        {
+            return new FeatureDTO(TypeID, new Dictionary<string, int>()
+            {
+                { "points", ExtraPoints },
+            });
+        }
+
+        public const string TypeID = "passive health";
 
         public override string Name => "More Health";
 
@@ -41,9 +54,20 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             ExtraPoints = extraPoints;
         }
 
-        public const string TypeID = "passive armor";
+        public Armored(Dictionary<string, int> data)
+        {
+            ExtraPoints = data["points"];
+        }
 
-        public override string Type => TypeID;
+        public override FeatureDTO ToDTO()
+        {
+            return new FeatureDTO(TypeID, new Dictionary<string, int>()
+            {
+                { "points", ExtraPoints },
+            });
+        }
+
+        public const string TypeID = "passive armor";
 
         public override string Name => "Armored";
 
@@ -66,9 +90,20 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             ExtraPoints = extraPoints;
         }
 
-        public const string TypeID = "passive movement";
+        public GreaterMobility(Dictionary<string, int> data)
+        {
+            ExtraPoints = data["points"];
+        }
 
-        public override string Type => TypeID;
+        public override FeatureDTO ToDTO()
+        {
+            return new FeatureDTO(TypeID, new Dictionary<string, int>()
+            {
+                { "points", ExtraPoints },
+            });
+        }
+
+        public const string TypeID = "passive movement";
 
         public override string Name => "Greater Mobility";
 
@@ -99,9 +134,20 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             ExtraPoints = extraPoints;
         }
 
-        public const string TypeID = "passive vision";
+        public GreaterVisibility(Dictionary<string, int> data)
+        {
+            ExtraPoints = data["points"];
+        }
 
-        public override string Type => TypeID;
+        public override FeatureDTO ToDTO()
+        {
+            return new FeatureDTO(TypeID, new Dictionary<string, int>()
+            {
+                { "points", ExtraPoints },
+            });
+        }
+
+        public const string TypeID = "passive vision";
 
         public override string Name => "Greater Visibility";
 
@@ -124,9 +170,20 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             ExtraPoints = extraPoints;
         }
 
-        public const string TypeID = "passive mana";
+        public HigherMana(Dictionary<string, int> data)
+        {
+            ExtraPoints = data["points"];
+        }
 
-        public override string Type => TypeID;
+        public override FeatureDTO ToDTO()
+        {
+            return new FeatureDTO(TypeID, new Dictionary<string, int>()
+            {
+                { "points", ExtraPoints },
+            });
+        }
+
+        public const string TypeID = "passive mana";
 
         public override string Name => "Potency";
 
@@ -151,9 +208,16 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 
     public class Detector : PassiveFeature
     {
-        public const string TypeID = "detector";
+        public Detector() { }
 
-        public override string Type => TypeID;
+        public Detector(Dictionary<string, int> data) { }
+
+        public override FeatureDTO ToDTO()
+        {
+            return new FeatureDTO(TypeID, new Dictionary<string, int>());
+        }
+
+        public const string TypeID = "detector";
 
         public override string Name => "Awareness";
 
@@ -181,9 +245,20 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             Points = points;
         }
 
-        public const string TypeID = "supply";
+        public Supply(Dictionary<string, int> data)
+        {
+            Points = data["points"];
+        }
 
-        public override string Type => TypeID;
+        public override FeatureDTO ToDTO()
+        {
+            return new FeatureDTO(TypeID, new Dictionary<string, int>()
+            {
+                { "points", Points },
+            });
+        }
+
+        public const string TypeID = "supply";
 
         public override string Name => "Supply";
 
@@ -212,9 +287,20 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             ExtraPoints = extraPoints;
         }
 
-        public const string TypeID = "passive attack range";
+        public LongerRange(Dictionary<string, int> data)
+        {
+            ExtraPoints = data["points"];
+        }
 
-        public override string Type => TypeID;
+        public override FeatureDTO ToDTO()
+        {
+            return new FeatureDTO(TypeID, new Dictionary<string, int>()
+            {
+                { "points", ExtraPoints },
+            });
+        }
+
+        public const string TypeID = "passive attack range";
 
         public override string Name => "Range";
 

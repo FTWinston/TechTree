@@ -1,4 +1,6 @@
 ﻿using ObjectiveStrategy.GameModels.Definitions.StatusEffects;
+using ObjectiveStrategy.GameModels.Serialization;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
@@ -13,10 +15,26 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             Effect.DamageMin = damageMin;
             Effect.DamageMax = damageMax;
         }
+        public TargettedDoT(Dictionary<string, int> data)
+        {
+            Range = data["range"];
+            Effect.Duration = data["duration"];
+            Effect.DamageMin = data["damageMin"];
+            Effect.DamageMax = data["damageMax"];
+        }
+
+        public override FeatureDTO ToDTO()
+        {
+            return new FeatureDTO(TypeID, new Dictionary<string, int>()
+            {
+                { "range", Range },
+                { "duration", Effect.Duration },
+                { "damageMin", Effect.DamageMin },
+                { "damageMax", Effect.DamageMax },
+            });
+        }
 
         public const string TypeID = "targetted dot";
-
-        public override string Type => TypeID;
 
         public override string Name => "Targetted DoT";
 
