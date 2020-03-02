@@ -12,7 +12,11 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             Research = research;
         }
 
-        public override FeatureType Type => FeatureType.Purchased;
+        public const string TypeID = "research";
+
+        public override string Type => TypeID;
+
+        public override FeatureMode Mode => FeatureMode.Purchased;
 
         public override string Name => "Research: " + Research.Name;
 

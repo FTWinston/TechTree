@@ -13,6 +13,10 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             Effect.Duration = duration;
         }
 
+        public const string TypeID = "immobilize";
+
+        public override string Type => TypeID;
+
         public override string Name => "Immobilize";
 
         public override string Description

@@ -14,6 +14,10 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             Effect.DamageDistance = damageDistance;
         }
 
+        public const string TypeID = "suicide";
+
+        public override string Type => TypeID;
+
         public override string Name => "Suicide";
 
         public override string Description

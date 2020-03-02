@@ -13,6 +13,10 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             DamageMax = damageMax;
         }
 
+        public const string TypeID = "landmine";
+
+        public override string Type => TypeID;
+
         public override string Name => "Landmine";
 
         public override string Description

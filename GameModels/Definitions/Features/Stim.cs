@@ -13,6 +13,10 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             Effect.ExtraPoints = extraPoints;
         }
 
+        public const string TypeID = "own health drain";
+
+        public override string Type => TypeID;
+
         public override string Name => "Drain Own Health";
 
         public override string Description

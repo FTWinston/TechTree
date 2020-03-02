@@ -14,6 +14,10 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             DamageMax = damageMax;
         }
 
+        public const string TypeID = "targetted instant";
+
+        public override string Type => TypeID;
+
         public override string Name => "Targetted Instant";
 
         public override string Description

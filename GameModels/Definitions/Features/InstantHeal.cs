@@ -14,6 +14,10 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             DamageMax = damageMax;
         }
 
+        public const string TypeID = "instant heal";
+
+        public override string Type => TypeID;
+
         public override string Name => "Instant Healing";
 
         public override string Description

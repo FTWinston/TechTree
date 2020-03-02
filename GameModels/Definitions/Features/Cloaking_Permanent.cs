@@ -14,6 +14,10 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             // TODO: work out how to actually apply this effect to units
         }
 
+        public const string TypeID = "permanent cloak";
+
+        public override string Type => TypeID;
+
         public override string Name => "Cloaking";
 
         public override string Description => "Prevents this unit from being seen by enemy units that lack the [detector] feature";

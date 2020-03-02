@@ -11,6 +11,10 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             ExtraPoints = extraPoints;
         }
 
+        public const string TypeID = "passive health";
+
+        public override string Type => TypeID;
+
         public override string Name => "More Health";
 
         public override string Description => $"Adds {ExtraPoints} hitpoints";
@@ -37,6 +41,10 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             ExtraPoints = extraPoints;
         }
 
+        public const string TypeID = "passive armor";
+
+        public override string Type => TypeID;
+
         public override string Name => "Armored";
 
         public override string Description => $"Adds {ExtraPoints} armor points";
@@ -58,9 +66,13 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             ExtraPoints = extraPoints;
         }
 
+        public const string TypeID = "passive movement";
+
+        public override string Type => TypeID;
+
         public override string Name => "Greater Mobility";
 
-        public override string Description => $"Adds {ExtraPoints} action points";
+        public override string Description => $"Increases movement range by {ExtraPoints} cells";
 
         public override string Symbol => "♒";
 
@@ -87,6 +99,10 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             ExtraPoints = extraPoints;
         }
 
+        public const string TypeID = "passive vision";
+
+        public override string Type => TypeID;
+
         public override string Name => "Greater Visibility";
 
         public override string Description => $"Increases vision range by {ExtraPoints} tiles";
@@ -107,6 +123,10 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
         {
             ExtraPoints = extraPoints;
         }
+
+        public const string TypeID = "passive mana";
+
+        public override string Type => TypeID;
 
         public override string Name => "Potency";
 
@@ -131,6 +151,10 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 
     public class Detector : PassiveFeature
     {
+        public const string TypeID = "detector";
+
+        public override string Type => TypeID;
+
         public override string Name => "Awareness";
 
         public override string Description => "Allows detection of invisible units";
@@ -156,6 +180,10 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
         {
             Points = points;
         }
+
+        public const string TypeID = "supply";
+
+        public override string Type => TypeID;
 
         public override string Name => "Supply";
 
@@ -183,6 +211,10 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
         {
             ExtraPoints = extraPoints;
         }
+
+        public const string TypeID = "passive attack range";
+
+        public override string Type => TypeID;
 
         public override string Name => "Range";
 

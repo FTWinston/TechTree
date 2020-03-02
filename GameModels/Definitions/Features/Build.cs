@@ -13,7 +13,11 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             Unit = unit;
         }
 
-        public override FeatureType Type { get { return FeatureType.Purchased; } }
+        public const string TypeID = "build";
+
+        public override string Type => TypeID;
+
+        public override FeatureMode Mode { get { return FeatureMode.Purchased; } }
 
         public override FeatureState DetermineState(Entity entity)
         {

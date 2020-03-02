@@ -15,6 +15,10 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             Range = range;
         }
 
+        public const string TypeID = "remove effects";
+
+        public override string Type => TypeID;
+
         public override string Name => "Remove Effects";
 
         public override string Description

@@ -18,6 +18,10 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             DamageMax = damageMax;
         }
 
+        public const string TypeID = "attack";
+
+        public override string Type => TypeID;
+
         public override string Name => "Attack";
 
         public override string Description

@@ -13,7 +13,11 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             Effect.DamageMin = damageMin;
             Effect.DamageMax = damageMax;
         }
-        
+
+        public const string TypeID = "targetted dot";
+
+        public override string Type => TypeID;
+
         public override string Name => "Targetted DoT";
 
         public override string Description

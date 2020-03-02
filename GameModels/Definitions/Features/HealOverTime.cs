@@ -15,6 +15,10 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             Effect.DamageMax = damageMax;
         }
 
+        public const string TypeID = "heal over time";
+
+        public override string Type => TypeID;
+
         public override string Name => "Healing over Time";
 
         public override string Description

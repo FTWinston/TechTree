@@ -14,6 +14,10 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             DamagePerMana = damagePerMana;
         }
 
+        public const string TypeID = "mana burn";
+
+        public override string Type => TypeID;
+
         public override string Name => "Mana Burn";
 
         public override string Description

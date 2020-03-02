@@ -16,6 +16,10 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             Effect.ManaPerHitpoint = manaPerHitpoint;
         }
 
+        public const string TypeID = "drain own health";
+
+        public override string Type => TypeID;
+
         public override string Name => "Drain Own Health";
 
         public override string Description

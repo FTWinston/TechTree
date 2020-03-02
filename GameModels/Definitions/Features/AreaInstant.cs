@@ -15,6 +15,10 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             DamageMax = damageMax;
         }
 
+        public const string TypeID = "area damage";
+
+        public override string Type => TypeID;
+
         public override string Name => "Area Instant";
 
         public override string Description

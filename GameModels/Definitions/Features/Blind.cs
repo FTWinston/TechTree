@@ -12,6 +12,10 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             Effect.Duration = duration;
         }
 
+        public const string TypeID = "blind";
+
+        public override string Type => TypeID;
+
         public override string Name => "Blind";
 
         public override string Description

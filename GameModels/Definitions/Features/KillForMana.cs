@@ -13,6 +13,10 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             ManaPerHitpoint = manaPerHitpoint;
         }
 
+        public const string TypeID = "kill for mana";
+
+        public override string Type => TypeID;
+
         public override string Name => "Kill for Mana";
 
         public override string Description

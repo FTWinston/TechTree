@@ -10,6 +10,10 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             Effect.Duration = duration;
         }
 
+        public const string TypeID = "wall";
+
+        public override string Type => TypeID;
+
         public override string Name => "Wall";
 
         public override string Description

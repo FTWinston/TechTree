@@ -12,6 +12,10 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             Effect.Duration = duration;
         }
 
+        public const string TypeID = "steal vision";
+
+        public override string Type => TypeID;
+
         public override string Name => "Steal Vision";
 
         public override string Description

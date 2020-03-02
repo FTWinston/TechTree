@@ -14,6 +14,10 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             Effect.ExtraArmor = armorBoost;
         }
 
+        public const string TypeID = "health boost";
+
+        public override string Type => TypeID;
+
         public override string Name => "Health Boost";
 
         public override string Description

@@ -1,16 +1,14 @@
-﻿using ObjectiveStrategy.GameModels.Definitions;
-using ObjectiveStrategy.GameModels.Definitions.StatusEffects;
-using ObjectiveStrategy.GameModels.Instances;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using ObjectiveStrategy.GameModels.Definitions.StatusEffects;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
     public class MassTeleport : TargettedStatusEffectFeature<Teleporting>
     {
+        public const string TypeID = "mass teleport";
+
+        public override string Type => TypeID;
+
         public override string Name => "Mass Teleport";
 
         public override string Description

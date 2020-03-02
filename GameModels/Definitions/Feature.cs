@@ -8,13 +8,15 @@ namespace ObjectiveStrategy.GameModels.Definitions
 {
     public abstract class Feature : ISelectable
     {
+        public abstract string Type { get; }
+
         public abstract string Name { get; }
         
         public abstract string Description { get; }
         
         public abstract string Symbol { get; }
 
-        public abstract FeatureType Type { get; }
+        public abstract FeatureMode Mode { get; }
 
         public virtual Research? UnlockedBy { get; internal set; }
 
@@ -69,7 +71,7 @@ namespace ObjectiveStrategy.GameModels.Definitions
 
     public abstract class PassiveFeature : Feature
     {
-        public override FeatureType Type => FeatureType.Passive;
+        public override FeatureMode Mode => FeatureMode.Passive;
 
         public override FeatureState DetermineState(Entity entity)
         {
@@ -89,7 +91,7 @@ namespace ObjectiveStrategy.GameModels.Definitions
 
     public abstract class ActivatedFeature : Feature
     {
-        public override FeatureType Type => FeatureType.Triggered;
+        public override FeatureMode Mode => FeatureMode.Triggered;
 
         public virtual int ManaCost { get; set; } = 0;
 
@@ -213,7 +215,7 @@ namespace ObjectiveStrategy.GameModels.Definitions
 
     public abstract class ToggleFeature : Feature
     {
-        public override FeatureType Type => FeatureType.Toggled;
+        public override FeatureMode Mode => FeatureMode.Toggled;
 
         public abstract void Enable(Entity entity);
 

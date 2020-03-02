@@ -6,6 +6,10 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
     public class Construction : ActivatedFeature
     {
+        public const string TypeID = "construct";
+
+        public override string Type => TypeID;
+
         public override string Name => "Build";
 
         public override string Description => "Constructs buildings";

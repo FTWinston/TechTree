@@ -7,6 +7,10 @@
             Capacity = capacity;
         }
 
+        public const string TypeID = "transport";
+
+        public override string Type => TypeID;
+
         public override string Name => "Carrier";
 
         public override string Description => $"Carries up to {Capacity} units";

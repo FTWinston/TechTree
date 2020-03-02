@@ -14,6 +14,10 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             Duration = duration;
         }
 
+        public const string TypeID = "reveal";
+
+        public override string Type => TypeID;
+
         public override string Name => "Detection";
 
         public override string Description

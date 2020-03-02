@@ -12,6 +12,10 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             Range = range;
         }
 
+        public const string TypeID = "possession";
+
+        public override string Type => TypeID;
+
         public override string Name => "Possession";
 
         public override string Description

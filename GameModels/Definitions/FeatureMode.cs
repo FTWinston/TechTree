@@ -1,8 +1,6 @@
-﻿using System;
-
-namespace ObjectiveStrategy.GameModels.Definitions
+﻿namespace ObjectiveStrategy.GameModels.Definitions
 {
-    public enum FeatureType
+    public enum FeatureMode
     {
         Passive, // Always on.
         Toggled, // Clicking it toggles it on/off.

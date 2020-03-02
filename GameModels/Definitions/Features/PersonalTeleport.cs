@@ -12,6 +12,10 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             Range = range;
         }
 
+        public const string TypeID = "personal teleport";
+
+        public override string Type => TypeID;
+
         public override string Name => "Teleport";
 
         public override string Description

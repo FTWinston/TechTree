@@ -12,6 +12,10 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             ActivateManaCost = activateManaCost;
         }
 
+        public const string TypeID = "deployable attack";
+
+        public override string Type => TypeID;
+
         public override string Name => "Deploy";
 
         public override string Description

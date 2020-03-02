@@ -14,6 +14,10 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             Effect.Duration = duration;
         }
 
+        public const string TypeID = "area dot";
+
+        public override string Type => TypeID;
+
         public override string Name => "Area DoT";
 
         public override string Description

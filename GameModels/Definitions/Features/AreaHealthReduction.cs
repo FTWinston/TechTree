@@ -16,6 +16,10 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             Effect.HealthDrainPerTurn = drainPerTurn;
         }
 
+        public const string TypeID = "area health reduction";
+
+        public override string Type => TypeID;
+
         public override string Name => "Health Reduction";
 
         public override string Description

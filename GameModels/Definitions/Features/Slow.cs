@@ -14,6 +14,10 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             Effect.ReducedPoints = reducedPoints;
         }
 
+        public const string TypeID = "slow";
+
+        public override string Type => TypeID;
+
         public override string Name => "Slow";
 
         public override string Description

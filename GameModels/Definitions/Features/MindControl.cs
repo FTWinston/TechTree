@@ -14,6 +14,10 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             MaxControlRange = maxControlRange;
         }
 
+        public const string TypeID = "mind control";
+
+        public override string Type => TypeID;
+
         public override string Name => "Mind Control";
 
         public override string Description

@@ -10,6 +10,10 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
     public class AreaManaDrain : TargettedFeature
     {
+        public const string TypeID = "area mana drain";
+
+        public override string Type => TypeID;
+
         public override string Name => "Mana Drain";
 
         public override string Description
