@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace ObjectiveStrategy.ClientModels.Models
 {
-    public class SelectableView<TSelectable>
+    public abstract class SelectableView<TSelectable>
         where TSelectable : ISelectable
     {
         public SelectableView(TSelectable item)

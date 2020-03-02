@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace ObjectiveStrategy.ClientModels.Models
 {
-    public class PurchasableView<TPurchasable> : SelectableView<TPurchasable>
+    public abstract class PurchasableView<TPurchasable> : SelectableView<TPurchasable>
         where TPurchasable : Purchasable
     {
         public PurchasableView(TPurchasable item)

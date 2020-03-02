@@ -2,7 +2,7 @@
 
 namespace ObjectiveStrategy.ClientModels.Models
 {
-    public class TreeEntityView<TEntityType> : PurchasableView<TEntityType>
+    public abstract class TreeEntityView<TEntityType> : PurchasableView<TEntityType>
         where TEntityType : EntityType
     {
         public TreeEntityView(TEntityType entityType)
