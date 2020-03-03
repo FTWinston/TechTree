@@ -8,30 +8,30 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
     public class Blind : TargettedStatusEffectFeature<Blinded>
     {
-        public Blind(int range, int duration)
+        public Blind(string name, string symbol, int manaCost, int? limitedUses, int? cooldown, int? range, int duration)
+            : base(name, symbol, manaCost, limitedUses, cooldown, range)
         {
             Range = range;
             Effect.Duration = duration;
         }
 
-        public Blind(Dictionary<string, int> data)
+        public Blind(string name, string symbol, Dictionary<string, int> data)
+            : base(name, symbol, data)
         {
             Range = data["range"];
             Effect.Duration = data["duration"];
         }
 
-        public override FeatureDTO ToDTO()
+        protected override Dictionary<string, int> SerializeData()
         {
-            return new FeatureDTO(TypeID, new Dictionary<string, int>()
-            {
-                { "range", Range },
-                { "duration", Effect.Duration },
-            });
+            var data = base.SerializeData();
+            data.Add("duration", Effect.Duration);
+            return data;
         }
 
         public const string TypeID = "blind";
 
-        public override string Name => "Blind";
+        protected override string Identifier => TypeID;
 
         public override string Description
         {
@@ -58,8 +58,6 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
                 return sb.ToString();
             }
         }
-
-        public override string Symbol => "☊";
 
         public override TargetingOptions AllowedTargets => TargetingOptions.Enemies | TargetingOptions.Units;
     }

@@ -6,7 +6,8 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
     public class Cloaking_AOE_Permanent : PassiveFeature
     {
-        public Cloaking_AOE_Permanent(int radius)
+        public Cloaking_AOE_Permanent(string name, string symbol, int radius)
+            : base(name, symbol)
         {
             Radius = radius;
             Effect = new AreaInvisible();
@@ -14,24 +15,27 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             // TODO: work out how to actually apply this effect to units
         }
 
-        public Cloaking_AOE_Permanent(Dictionary<string, int> data)
-            : this(data["radius"]) { }
-
-        public override FeatureDTO ToDTO()
+        public Cloaking_AOE_Permanent(string name, string symbol, Dictionary<string, int> data)
+            : base(name, symbol)
         {
-            return new FeatureDTO(TypeID, new Dictionary<string, int>()
-            {
-                { "radius", Radius },
-            });
+            Radius = data["radius"];
+            Effect = new AreaInvisible();
+
+            // TODO: work out how to actually apply this effect to units
+        }
+
+        protected override Dictionary<string, int> SerializeData()
+        {
+            var data = base.SerializeData();
+            data.Add("radius", Radius);
+            return data;
         }
 
         public const string TypeID = "permanent aoe cloak";
 
-        public override string Name => "Cloaking";
+        protected override string Identifier => TypeID;
 
         public override string Description => "Prevents this unit from being seen by enemy units that lack the [detector] feature";
-
-        public override string Symbol => "⚶";
 
         public int Radius { get; }
 

@@ -16,7 +16,7 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             Effect.DamageDistance = damageDistance;
         }
 
-        public Suicide(Dictionary<string, int> data)
+        public Suicide(string name, string symbol, Dictionary<string, int> data)
         {
             Effect.Duration = data["duration"];
             Effect.DamageMin = data["damageMin"];
@@ -24,9 +24,9 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             Effect.DamageDistance = data["damageDistance"];
         }
 
-        public override FeatureDTO ToDTO()
+        protected override Dictionary<string, int> SerializeData()
         {
-            return new FeatureDTO(TypeID, new Dictionary<string, int>()
+            var data = base.SerializeData()
             {
                 { "duration", Effect.Duration },
                 { "damageMin", Effect.DamageMin },
@@ -37,7 +37,7 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 
         public const string TypeID = "suicide";
 
-        public override string Name => "Suicide";
+        protected override string Identifier => TypeID;
 
         public override string Description
         {
@@ -69,7 +69,5 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
                 return sb.ToString();
             }
         }
-
-        public override string Symbol => "♄";
     }
 }

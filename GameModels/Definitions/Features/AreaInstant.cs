@@ -8,36 +8,34 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
     public class AreaInstant : TargettedFeature
     {
-        public AreaInstant(int range, int radius, int damageMin, int damageMax)
+        public AreaInstant(string name, string symbol, int manaCost, int? limitedUses, int? cooldown, int range, int radius, int damageMin, int damageMax)
+            : base(name, symbol, manaCost, limitedUses, cooldown, range)
         {
-            Range = range;
             Radius = radius;
             DamageMin = damageMin;
             DamageMax = damageMax;
         }
 
-        public AreaInstant(Dictionary<string, int> data)
+        public AreaInstant(string name, string symbol, Dictionary<string, int> data)
+            : base(name, symbol, data)
         {
-            Range = data["range"];
             Radius = data["radius"];
             DamageMin = data["damageMin"];
             DamageMax = data["damageMax"];
         }
 
-        public override FeatureDTO ToDTO()
+        protected override Dictionary<string, int> SerializeData()
         {
-            return new FeatureDTO(TypeID, new Dictionary<string, int>()
-            {
-                { "range", Range },
-                { "radius", Radius },
-                { "damageMin", DamageMin },
-                { "damageMax", DamageMax },
-            });
+            var data = base.SerializeData();
+            data.Add("radius", Radius);
+            data.Add("damageMin", DamageMin);
+            data.Add("damageMax", DamageMax);
+            return data;
         }
 
         public const string TypeID = "area damage";
 
-        public override string Name => "Area Instant";
+        protected override string Identifier => TypeID;
 
         public override string Description
         {
@@ -73,8 +71,6 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
                 return sb.ToString();
             }
         }
-
-        public override string Symbol => "⚵";
 
         public int Radius { get; }
 

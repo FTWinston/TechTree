@@ -1,34 +1,21 @@
 ﻿using ObjectiveStrategy.GameModels.Definitions.StatusEffects;
-using ObjectiveStrategy.GameModels.Serialization;
 using System.Collections.Generic;
 
 namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
     public class Burrow : EffectToggleFeature<Burrowed>
     {
-        public Burrow(int activateManaCost)
-        {
-            ActivateManaCost = activateManaCost;
-        }
+        public Burrow(string name, string symbol, int activatedManaCost, int manaCostPerTurn)
+            : base(name, symbol, activatedManaCost, manaCostPerTurn) { }
 
-        public Burrow(Dictionary<string, int> data)
-            : this(data["activateCost"]) { }
-
-        public override FeatureDTO ToDTO()
-        {
-            return new FeatureDTO(TypeID, new Dictionary<string, int>()
-            {
-                { "activateCost", ActivateManaCost },
-            });
-        }
+        public Burrow(string name, string symbol, Dictionary<string, int> data)
+            : base(name, symbol, data) { }
 
         public const string TypeID = "burrow";
 
-        public override string Name => "Burrow";
+        protected override string Identifier => TypeID;
 
         public override string Description => "Prevents this unit from moving, attacking, or being seen by enemy units that lack the [detector] feature";
-
-        public override string Symbol => "♉";
 
         /*
         public override bool Validate(EntityType type)

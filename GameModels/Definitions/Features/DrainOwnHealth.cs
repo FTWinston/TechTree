@@ -10,33 +10,34 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
     public class DrainOwnHealth : StatusEffectFeature<HealthDrain>
     {
-        public DrainOwnHealth(int duration, int damagePerTurn, float manaPerHitpoint)
+        public DrainOwnHealth(string name, string symbol, int? limitedUses, int? cooldown, int duration, int damagePerTurn, float manaPerHitpoint)
+            : base(name, symbol, 0, limitedUses, cooldown)
         {
             Effect.Duration = duration;
             Effect.DamagePerTurn = damagePerTurn;
             Effect.ManaPerHitpoint = manaPerHitpoint;
         }
 
-        public DrainOwnHealth(Dictionary<string, int> data)
+        public DrainOwnHealth(string name, string symbol, Dictionary<string, int> data)
+            : base(name, symbol, data)
         {
             Effect.Duration = data["range"];
             Effect.DamagePerTurn = data["damagePerTurn"];
             Effect.ManaPerHitpoint = data["manaPerHp"] / 100f;
         }
 
-        public override FeatureDTO ToDTO()
+        protected override Dictionary<string, int> SerializeData()
         {
-            return new FeatureDTO(TypeID, new Dictionary<string, int>()
-            {
-                { "duration", Effect.Duration },
-                { "damagePerTurn", Effect.DamagePerTurn },
-                { "manaPerHp", (int)(Effect.ManaPerHitpoint * 100) },
-            });
+            var data = base.SerializeData();
+            data.Add("duration", Effect.Duration);
+            data.Add("damagePerTurn", Effect.DamagePerTurn);
+            data.Add("manaPerHp", (int)(Effect.ManaPerHitpoint * 100));
+            return data;
         }
 
         public const string TypeID = "drain own health";
 
-        public override string Name => "Drain Own Health";
+        protected override string Identifier => TypeID;
 
         public override string Description
         {
@@ -62,8 +63,6 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
                 return sb.ToString();
             }
         }
-
-        public override string Symbol => "♃";
 
         protected override bool Trigger(Entity entity, Cell target, Dictionary<string, int> data)
         {

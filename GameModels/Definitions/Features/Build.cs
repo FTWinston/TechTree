@@ -1,35 +1,37 @@
 ﻿using ObjectiveStrategy.GameModels.Instances;
 using Newtonsoft.Json;
 using ObjectiveStrategy.GameModels.Extensions;
+using System.Collections.Generic;
 
 using FeatureData = System.Collections.Generic.Dictionary<string, int>;
-using System.Collections.Generic;
-using ObjectiveStrategy.GameModels.Serialization;
 
 namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
     public class Build : Feature
     {
-        public Build(UnitType unit)
+        public Build(string name, string symbol, UnitType unit)
+            : base(name, symbol)
         {
             Unit = unit;
         }
 
-        public Build(Dictionary<string, int> data)
+        public Build(string name, string symbol, Dictionary<string, int> data)
+            : base(name, symbol)
         {
             int unitTypeID = data["unit"];
             Unit = something();
         }
 
-        public override FeatureDTO ToDTO()
+        protected override Dictionary<string, int> SerializeData()
         {
-            return new FeatureDTO(TypeID, new Dictionary<string, int>
-            {
-                { "unit", (int)Unit.ID }
-            });
+            var data = base.SerializeData();
+            data.Add("unit", (int)Unit.ID);
+            return data;
         }
 
         public const string TypeID = "build";
+
+        protected override string Identifier => TypeID;
 
         public override FeatureMode Mode { get { return FeatureMode.Purchased; } }
 
@@ -39,9 +41,6 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
                 ? FeatureState.CanTrigger
                 : FeatureState.Disabled;
         }
-
-        public override string Name { get { return "Build: " + Unit.Name; } }
-        public override string Symbol { get { return Unit.Symbol; } }
 
         public override string Description => Unit.WriteCost();
         
@@ -74,7 +73,7 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 
         public override void StartTurn(Entity entity)
         {
-            var data = GetData(entity);
+            var data = GetEntityData(entity);
             if (!data.TryGetValue(buildingFeatureKey, out var turnsLeft))
                 return;
 

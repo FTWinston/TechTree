@@ -8,33 +8,34 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
     public class Stim : StatusEffectFeature<Stimmed>
     {
-        public Stim(int duration, int initialHealthDrain, int extraPoints)
+        public Stim(string name, string symbol, int manaCost, int? limitedUses, int? cooldown, int duration, int initialHealthDrain, int extraPoints)
+            : base(name, symbol, manaCost, limitedUses, cooldown)
         {
             Effect.Duration = duration;
             Effect.InitialHealthDrain = initialHealthDrain;
             Effect.ExtraPoints = extraPoints;
         }
 
-        public Stim(Dictionary<string, int> data)
+        public Stim(string name, string symbol, Dictionary<string, int> data)
+            : base(name, symbol, data)
         {
             Effect.Duration = data["duration"];
             Effect.InitialHealthDrain = data["initialDrain"];
             Effect.ExtraPoints = data["extraPoints"];
         }
 
-        public override FeatureDTO ToDTO()
+        protected override Dictionary<string, int> SerializeData()
         {
-            return new FeatureDTO(TypeID, new Dictionary<string, int>()
-            {
-                { "duration", Effect.Duration },
-                { "initialDrain", Effect.InitialHealthDrain },
-                { "extraPoints", Effect.ExtraPoints },
-            });
+            var data = base.SerializeData();
+            data.Add("duration", Effect.Duration);
+            data.Add("initialDrain", Effect.InitialHealthDrain);
+            data.Add("extraPoints", Effect.ExtraPoints);
+            return data;
         }
 
         public const string TypeID = "own health drain";
 
-        public override string Name => "Drain Own Health";
+        protected override string Identifier => TypeID;
 
         public override string Description
         {
@@ -54,7 +55,5 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
                 return sb.ToString();
             }
         }
-
-        public override string Symbol => "⚷";
     }
 }

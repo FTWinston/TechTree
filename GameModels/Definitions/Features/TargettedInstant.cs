@@ -8,33 +8,31 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
     public class TargettedInstant : EntityTargettedFeature
     {
-        public TargettedInstant(int range, int damageMin, int damageMax)
+        public TargettedInstant(string name, string symbol, int manaCost, int? limitedUses, int? cooldown, int range, int damageMin, int damageMax)
+            : base(name, symbol, manaCost, limitedUses, cooldown, range)
         {
-            Range = range;
             DamageMin = damageMin;
             DamageMax = damageMax;
         }
 
-        public TargettedInstant(Dictionary<string, int> data)
+        public TargettedInstant(string name, string symbol, Dictionary<string, int> data)
+            : base(name, symbol, data)
         {
-            Range = data["range"];
             DamageMin = data["damageMin"];
             DamageMax = data["damageMax"];
         }
 
-        public override FeatureDTO ToDTO()
+        protected override Dictionary<string, int> SerializeData()
         {
-            return new FeatureDTO(TypeID, new Dictionary<string, int>()
-            {
-                { "range", Range },
-                { "damageMin", DamageMin },
-                { "damageMax", DamageMax },
-            });
+            var data = base.SerializeData();
+            data.Add("damageMin", DamageMin);
+            data.Add("damageMax", DamageMax);
+            return data;
         }
 
         public const string TypeID = "targetted instant";
 
-        public override string Name => "Targetted Instant";
+        protected override string Identifier => TypeID;
 
         public override string Description
         {
@@ -63,8 +61,6 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
                 return sb.ToString();
             }
         }
-
-        public override string Symbol => "♆";
 
         public int DamageMin { get; }
 

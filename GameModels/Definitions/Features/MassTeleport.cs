@@ -7,18 +7,22 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
     public class MassTeleport : TargettedStatusEffectFeature<Teleporting>
     {
-        public MassTeleport() { }
-
-        public MassTeleport(Dictionary<string, int> data) { }
-
-        public override FeatureDTO ToDTO()
+        public MassTeleport(int range, int radius)
         {
-            return new FeatureDTO(TypeID, new Dictionary<string, int>());
+            Range = range;
+            Radius = radius;
+        }
+
+        public MassTeleport(string name, string symbol, Dictionary<string, int> data) { }
+
+        protected override Dictionary<string, int> SerializeData()
+        {
+            var data = base.SerializeData());
         }
 
         public const string TypeID = "mass teleport";
 
-        public override string Name => "Mass Teleport";
+        protected override string Identifier => TypeID;
 
         public override string Description
         {
@@ -46,15 +50,7 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             }
         }
 
-        public override string Symbol => "⚝";
-
         public int Radius { get; }
-
-        public MassTeleport(int range, int radius)
-        {
-            Range = range;
-            Radius = radius;
-        }
 
         public override TargetingOptions AllowedTargets => TargetingOptions.SameOwner | TargetingOptions.Units | TargetingOptions.Self;
     }

@@ -44,12 +44,6 @@ namespace ObjectiveStrategy.GameModels.Instances
             StatusEffects.RemoveAll(e => e.Item1 == effect);
         }
 
-        public void RemoveEffect<TEffect>()
-            where TEffect : IStatusEffect
-        {
-            StatusEffects.RemoveAll(e => e.Item1.GetType() == typeof(TEffect));
-        }
-
         public void RemoveAllEffects()
         {
             StatusEffects.Clear();

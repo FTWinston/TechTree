@@ -13,15 +13,15 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             Research = research;
         }
 
-        public PerformResearch(Dictionary<string, int> data)
+        public PerformResearch(string name, string symbol, Dictionary<string, int> data)
         {
             int researchID = data["research"];
             Research = something;
         }
 
-        public override FeatureDTO ToDTO()
+        protected override Dictionary<string, int> SerializeData()
         {
-            return new FeatureDTO(TypeID, new Dictionary<string, int>()
+            var data = base.SerializeData()
             {
                 { "research", Research.ID },
             });
@@ -29,11 +29,9 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 
         public const string TypeID = "research";
 
+        protected override string Identifier => TypeID;
+
         public override FeatureMode Mode => FeatureMode.Purchased;
-
-        public override string Name => "Research: " + Research.Name;
-
-        public override string Symbol => Research.Symbol;
 
         public override string Description => Research.Description;
 
@@ -42,7 +40,7 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 
         public override FeatureState DetermineState(Entity entity)
         {
-            var data = GetData(entity);
+            var data = GetEntityData(entity);
 
             return CanTrigger(entity, entity.Location, data)
                 ? FeatureState.CanTrigger
@@ -76,7 +74,7 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 
         public override void StartTurn(Entity entity)
         {
-            var data = GetData(entity);
+            var data = GetEntityData(entity);
             if (!data.TryGetValue(researchingFeatureKey, out var turnsLeft))
                 return;
 

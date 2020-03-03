@@ -16,7 +16,7 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             Effect.ReducedPoints = reducedPoints;
         }
 
-        public Slow(Dictionary<string, int> data)
+        public Slow(string name, string symbol, Dictionary<string, int> data)
         {
             Range = data["range"];
             Radius = data["radius"];
@@ -24,9 +24,9 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             Effect.ReducedPoints = data["reducedPoints"];
         }
 
-        public override FeatureDTO ToDTO()
+        protected override Dictionary<string, int> SerializeData()
         {
-            return new FeatureDTO(TypeID, new Dictionary<string, int>()
+            var data = base.SerializeData()
             {
                 { "range", Range },
                 { "radius", Radius },
@@ -37,7 +37,7 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 
         public const string TypeID = "slow";
 
-        public override string Name => "Slow";
+        protected override string Identifier => TypeID;
 
         public override string Description
         {
@@ -76,8 +76,6 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
                 return sb.ToString();
             }
         }
-
-        public override string Symbol => "♑";
 
         public int Radius { get; }
 

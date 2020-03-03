@@ -1,5 +1,4 @@
 ﻿using ObjectiveStrategy.GameModels.Instances;
-using ObjectiveStrategy.GameModels.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -8,30 +7,15 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
     public class DeployableAttack : ToggleFeature
     {
-        public DeployableAttack(int manaCostPerTurn, int activateManaCost)
-        {
-            ManaCostPerTurn = manaCostPerTurn;
-            ActivateManaCost = activateManaCost;
-        }
+        public DeployableAttack(string name, string symbol, int activateManaCost, int manaCostPerTurn)
+            : base(name, symbol, activateManaCost, manaCostPerTurn) { }
 
-        public DeployableAttack(Dictionary<string, int> data)
-        {
-            ManaCostPerTurn = data["manaCostPerTurn"];
-            ActivateManaCost = data["activateManaCost"];
-        }
-
-        public override FeatureDTO ToDTO()
-        {
-            return new FeatureDTO(TypeID, new Dictionary<string, int>()
-            {
-                { "manaCostPerTurn", ManaCostPerTurn },
-                { "activateManaCost", ActivateManaCost },
-            });
-        }
+        public DeployableAttack(string name, string symbol, Dictionary<string, int> data) 
+            : base(name, symbol, data) { }
 
         public const string TypeID = "deployable attack";
 
-        public override string Name => "Deploy";
+        protected override string Identifier => TypeID;
 
         public override string Description
         {
@@ -42,8 +26,6 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
                 return sb.ToString();
             }
         }
-
-        public override string Symbol => "⚗";
 
         public override void Enable(Entity entity)
         {

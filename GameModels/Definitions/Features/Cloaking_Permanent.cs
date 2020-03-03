@@ -6,29 +6,27 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
     public class Cloaking_Permanent : PassiveFeature
     {
-        public Cloaking_Permanent()
+        public Cloaking_Permanent(string name, string symbol)
+            : base(name, symbol)
         {
             Effect = new Invisible();
 
             // TODO: work out how to actually apply this effect to units
         }
 
-        public Cloaking_Permanent(Dictionary<string, int> data)
-            : this()
-        { }
-
-        public override FeatureDTO ToDTO()
+        public Cloaking_Permanent(string name, string symbol, Dictionary<string, int> data)
+            : base(name, symbol)
         {
-            return new FeatureDTO(TypeID, new Dictionary<string, int>());
+            Effect = new Invisible();
+
+            // TODO: work out how to actually apply this effect to units}
         }
 
         public const string TypeID = "permanent cloak";
 
-        public override string Name => "Cloaking";
+        protected override string Identifier => TypeID;
 
         public override string Description => "Prevents this unit from being seen by enemy units that lack the [detector] feature";
-
-        public override string Symbol => "☍";
 
         private Invisible Effect { get; set; }
 

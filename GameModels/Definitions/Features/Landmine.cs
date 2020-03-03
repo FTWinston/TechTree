@@ -14,15 +14,15 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             DamageMax = damageMax;
         }
 
-        public Landmine(Dictionary<string, int> data)
+        public Landmine(string name, string symbol, Dictionary<string, int> data)
         {
             DamageMin = data["damageMin"];
             DamageMax = data["damageMax"];
         }
 
-        public override FeatureDTO ToDTO()
+        protected override Dictionary<string, int> SerializeData()
         {
-            return new FeatureDTO(TypeID, new Dictionary<string, int>()
+            var data = base.SerializeData()
             {
                 { "damageMin", DamageMin },
                 { "damageMax", DamageMax },
@@ -31,7 +31,7 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 
         public const string TypeID = "landmine";
 
-        public override string Name => "Landmine";
+        protected override string Identifier => TypeID;
 
         public override string Description
         {
@@ -51,8 +51,6 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
                 return sb.ToString();
             }
         }
-
-        public override string Symbol => "☌";
 
         public int DamageMin { get; }
 

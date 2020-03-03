@@ -1,5 +1,4 @@
 ﻿using ObjectiveStrategy.GameModels.Instances;
-using ObjectiveStrategy.GameModels.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -8,39 +7,33 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
     public class AreaDetection : TargettedFeature
     {
-        public AreaDetection(int? range, int radius, int duration)
+        public AreaDetection(string name, string symbol, int manaCost, int? limitedUses, int? cooldown, int? range, int radius, int duration)
+            : base(name, symbol, manaCost, limitedUses, cooldown, range)
         {
-            Range = range;
             Radius = radius;
             Duration = duration;
         }
 
-        public AreaDetection(Dictionary<string, int> data)
+        public AreaDetection(string name, string symbol, Dictionary<string, int> data)
+            : base(name, symbol, data)
         {
-            if (data.TryGetValue("range", out var range))
-                Range = range;
-
             Radius = data["radius"];
             Duration = data["duration"];
         }
 
-        public override FeatureDTO ToDTO()
+        protected override Dictionary<string, int> SerializeData()
         {
-            var data = new Dictionary<string, int>()
-            {
-                { "radius", Radius},
-                { "duration", Duration},
-            };
+            var data = base.SerializeData();
 
-            if (Range.HasValue)
-                data.Add("range", Range.Value);
+            data.Add("radius", Radius);
+            data.Add("duration", Duration);
 
-            return new FeatureDTO(TypeID, data);
+            return data;
         }
 
         public const string TypeID = "reveal";
-
-        public override string Name => "Detection";
+        
+        protected override string Identifier => TypeID;
 
         public override string Description
         {
@@ -78,8 +71,6 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
                 return sb.ToString();
             }
         }
-
-        public override string Symbol => "☼";
 
         public int Radius { get; }
 

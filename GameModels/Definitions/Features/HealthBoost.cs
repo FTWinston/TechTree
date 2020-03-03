@@ -16,7 +16,7 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             Effect.ExtraArmor = armorBoost;
         }
 
-        public HealthBoost(Dictionary<string, int> data)
+        public HealthBoost(string name, string symbol, Dictionary<string, int> data)
         {
             Range = data["range"];
             Effect.Duration = data["duration"];
@@ -24,9 +24,9 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             Effect.ExtraArmor = data["armor"];
         }
 
-        public override FeatureDTO ToDTO()
+        protected override Dictionary<string, int> SerializeData()
         {
-            return new FeatureDTO(TypeID, new Dictionary<string, int>()
+            var data = base.SerializeData()
             {
                 { "range", Range },
                 { "duration", Effect.Duration },
@@ -37,7 +37,7 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 
         public const string TypeID = "health boost";
 
-        public override string Name => "Health Boost";
+        protected override string Identifier => TypeID;
 
         public override string Description
         {
@@ -59,8 +59,6 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
                 return sb.ToString();
             }
         }
-
-        public override string Symbol => "⚚";
 
         public override TargetingOptions AllowedTargets => TargetingOptions.FriendlyOwner | TargetingOptions.Units;
     }

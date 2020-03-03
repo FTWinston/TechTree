@@ -7,37 +7,30 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
     public class Cloaking_AOE_ManaDrain : EffectToggleFeature<AreaInvisible>
     {
-        public Cloaking_AOE_ManaDrain(int manaCostPerTurn, int activateManaCost, int radius)
+        public Cloaking_AOE_ManaDrain(string name, string symbol, int activateManaCost, int manaCostPerTurn, int radius)
+            : base(name, symbol, activateManaCost, manaCostPerTurn)
         {
             Radius = radius;
-            ManaCostPerTurn = manaCostPerTurn;
-            ActivateManaCost = activateManaCost;
         }
 
-        public Cloaking_AOE_ManaDrain(Dictionary<string, int> data)
+        public Cloaking_AOE_ManaDrain(string name, string symbol, Dictionary<string, int> data)
+            : base(name, symbol, data)
         {
             Radius = data["radius"];
-            ManaCostPerTurn = data["manaPerTurn"];
-            ActivateManaCost = data["activateCost"];
         }
 
-        public override FeatureDTO ToDTO()
+        protected override Dictionary<string, int> SerializeData()
         {
-            return new FeatureDTO(TypeID, new Dictionary<string, int>()
-            {
-                { "radius", Radius },
-                { "manaPerTurn", ManaCostPerTurn },
-                { "activateCost", ActivateManaCost },
-            });
+            var data = base.SerializeData();
+            data.Add("radius", Radius);
+            return data;
         }
 
         public const string TypeID = "toggleable aoe cloak";
 
-        public override string Name => "AOE Cloaking";
+        protected override string Identifier => TypeID;
 
         public override string Description => "Prevents this unit from being seen by enemy units that lack the [detector] feature";
-
-        public override string Symbol => "⛲";
 
         public int Radius { get; }
 

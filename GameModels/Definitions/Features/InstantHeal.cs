@@ -15,16 +15,16 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             DamageMax = damageMax;
         }
 
-        public InstantHeal(Dictionary<string, int> data)
+        public InstantHeal(string name, string symbol, Dictionary<string, int> data)
         {
             Range = data["range"];
             DamageMin = data["damageMin"];
             DamageMax = data["damageMax"];
         }
 
-        public override FeatureDTO ToDTO()
+        protected override Dictionary<string, int> SerializeData()
         {
-            return new FeatureDTO(TypeID, new Dictionary<string, int>()
+            var data = base.SerializeData()
             {
                 { "range", Range },
                 { "damageMin", DamageMin },
@@ -34,7 +34,7 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 
         public const string TypeID = "instant heal";
 
-        public override string Name => "Instant Healing";
+        protected override string Identifier => TypeID;
 
         public override string Description
         {
@@ -64,8 +64,6 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             }
 
         }
-
-        public override string Symbol => "☤";
 
         public int DamageMin { get; }
 

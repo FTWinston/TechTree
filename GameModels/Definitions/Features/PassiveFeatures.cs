@@ -13,14 +13,14 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             ExtraPoints = extraPoints;
         }
 
-        public HigherHealth(Dictionary<string, int> data)
+        public HigherHealth(string name, string symbol, Dictionary<string, int> data)
         {
             ExtraPoints = data["points"];
         }
 
-        public override FeatureDTO ToDTO()
+        protected override Dictionary<string, int> SerializeData()
         {
-            return new FeatureDTO(TypeID, new Dictionary<string, int>()
+            var data = base.SerializeData()
             {
                 { "points", ExtraPoints },
             });
@@ -28,11 +28,9 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 
         public const string TypeID = "passive health";
 
-        public override string Name => "More Health";
+        protected override string Identifier => TypeID;
 
         public override string Description => $"Adds {ExtraPoints} hitpoints";
-
-        public override string Symbol => "☥";
 
         private int ExtraPoints { get; set; }
 
@@ -54,14 +52,14 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             ExtraPoints = extraPoints;
         }
 
-        public Armored(Dictionary<string, int> data)
+        public Armored(string name, string symbol, Dictionary<string, int> data)
         {
             ExtraPoints = data["points"];
         }
 
-        public override FeatureDTO ToDTO()
+        protected override Dictionary<string, int> SerializeData()
         {
-            return new FeatureDTO(TypeID, new Dictionary<string, int>()
+            var data = base.SerializeData()
             {
                 { "points", ExtraPoints },
             });
@@ -69,11 +67,9 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 
         public const string TypeID = "passive armor";
 
-        public override string Name => "Armored";
+        protected override string Identifier => TypeID;
 
         public override string Description => $"Adds {ExtraPoints} armor points";
-
-        public override string Symbol => "♈";
 
         private int ExtraPoints { get; set; }
 
@@ -90,14 +86,14 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             ExtraPoints = extraPoints;
         }
 
-        public GreaterMobility(Dictionary<string, int> data)
+        public GreaterMobility(string name, string symbol, Dictionary<string, int> data)
         {
             ExtraPoints = data["points"];
         }
 
-        public override FeatureDTO ToDTO()
+        protected override Dictionary<string, int> SerializeData()
         {
-            return new FeatureDTO(TypeID, new Dictionary<string, int>()
+            var data = base.SerializeData()
             {
                 { "points", ExtraPoints },
             });
@@ -105,11 +101,9 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 
         public const string TypeID = "passive movement";
 
-        public override string Name => "Greater Mobility";
+        protected override string Identifier => TypeID;
 
         public override string Description => $"Increases movement range by {ExtraPoints} cells";
-
-        public override string Symbol => "♒";
 
         private int ExtraPoints { get; set; }
 
@@ -134,14 +128,14 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             ExtraPoints = extraPoints;
         }
 
-        public GreaterVisibility(Dictionary<string, int> data)
+        public GreaterVisibility(string name, string symbol, Dictionary<string, int> data)
         {
             ExtraPoints = data["points"];
         }
 
-        public override FeatureDTO ToDTO()
+        protected override Dictionary<string, int> SerializeData()
         {
-            return new FeatureDTO(TypeID, new Dictionary<string, int>()
+            var data = base.SerializeData()
             {
                 { "points", ExtraPoints },
             });
@@ -149,11 +143,9 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 
         public const string TypeID = "passive vision";
 
-        public override string Name => "Greater Visibility";
+        protected override string Identifier => TypeID;
 
         public override string Description => $"Increases vision range by {ExtraPoints} tiles";
-
-        public override string Symbol => "⚙";
 
         private int ExtraPoints { get; set; }
 
@@ -170,14 +162,14 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             ExtraPoints = extraPoints;
         }
 
-        public HigherMana(Dictionary<string, int> data)
+        public HigherMana(string name, string symbol, Dictionary<string, int> data)
         {
             ExtraPoints = data["points"];
         }
 
-        public override FeatureDTO ToDTO()
+        protected override Dictionary<string, int> SerializeData()
         {
-            return new FeatureDTO(TypeID, new Dictionary<string, int>()
+            var data = base.SerializeData()
             {
                 { "points", ExtraPoints },
             });
@@ -185,11 +177,9 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 
         public const string TypeID = "passive mana";
 
-        public override string Name => "Potency";
+        protected override string Identifier => TypeID;
 
         public override string Description => $"Adds {ExtraPoints} mana points";
-
-        public override string Symbol => "⚛";
 
         private int ExtraPoints { get; set; }
 
@@ -210,20 +200,18 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
     {
         public Detector() { }
 
-        public Detector(Dictionary<string, int> data) { }
+        public Detector(string name, string symbol, Dictionary<string, int> data) { }
 
-        public override FeatureDTO ToDTO()
+        protected override Dictionary<string, int> SerializeData()
         {
-            return new FeatureDTO(TypeID, new Dictionary<string, int>());
+            var data = base.SerializeData());
         }
 
         public const string TypeID = "detector";
 
-        public override string Name => "Awareness";
+        protected override string Identifier => TypeID;
 
         public override string Description => "Allows detection of invisible units";
-
-        public override string Symbol => "☉";
 
         public override void Initialize(EntityType type)
         {
@@ -245,14 +233,14 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             Points = points;
         }
 
-        public Supply(Dictionary<string, int> data)
+        public Supply(string name, string symbol, Dictionary<string, int> data)
         {
             Points = data["points"];
         }
 
-        public override FeatureDTO ToDTO()
+        protected override Dictionary<string, int> SerializeData()
         {
-            return new FeatureDTO(TypeID, new Dictionary<string, int>()
+            var data = base.SerializeData()
             {
                 { "points", Points },
             });
@@ -260,12 +248,10 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 
         public const string TypeID = "supply";
 
-        public override string Name => "Supply";
+        protected override string Identifier => TypeID;
 
         public override string Description => $"Provides {Points} supply points, allowing units to be built";
         
-        public override string Symbol => "⛽";
-
         private int Points { get; set; }
 
         public override void Initialize(EntityType type)
@@ -287,14 +273,14 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             ExtraPoints = extraPoints;
         }
 
-        public LongerRange(Dictionary<string, int> data)
+        public LongerRange(string name, string symbol, Dictionary<string, int> data)
         {
             ExtraPoints = data["points"];
         }
 
-        public override FeatureDTO ToDTO()
+        protected override Dictionary<string, int> SerializeData()
         {
-            return new FeatureDTO(TypeID, new Dictionary<string, int>()
+            var data = base.SerializeData()
             {
                 { "points", ExtraPoints },
             });
@@ -302,11 +288,9 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 
         public const string TypeID = "passive attack range";
 
-        public override string Name => "Range";
+        protected override string Identifier => TypeID;
 
         public override string Description => $"Increases attack range by {ExtraPoints} tiles";
-
-        public override string Symbol => "♐";
 
         private int ExtraPoints { get; set; }
 

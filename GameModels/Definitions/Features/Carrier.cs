@@ -1,33 +1,33 @@
-﻿using ObjectiveStrategy.GameModels.Serialization;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
     public class Carrier : PassiveFeature
     {
-        public Carrier(int capacity)
+        public Carrier(string name, string symbol, int capacity)
+            : base(name, symbol)
         {
             Capacity = capacity;
         }
 
-        public Carrier(Dictionary<string, int> data)
-            : this(data["capacity"]) { }
-
-        public override FeatureDTO ToDTO()
+        public Carrier(string name, string symbol, Dictionary<string, int> data)
+            : base(name, symbol)
         {
-            return new FeatureDTO(TypeID, new Dictionary<string, int>()
-            {
-                { "capacity", Capacity },
-            });
+            Capacity = data["capacity"];
+        }
+
+        protected override Dictionary<string, int> SerializeData()
+        {
+            var data = base.SerializeData();
+            data.Add("capacity", Capacity);
+            return data;
         }
 
         public const string TypeID = "transport";
 
-        public override string Name => "Carrier";
+        protected override string Identifier => TypeID;
 
         public override string Description => $"Carries up to {Capacity} units";
-
-        public override string Symbol => "⚖";
 
         private int Capacity { get; }
     }

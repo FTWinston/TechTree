@@ -13,14 +13,14 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             Range = range;
         }
 
-        public PersonalTeleport(Dictionary<string, int> data)
+        public PersonalTeleport(string name, string symbol, Dictionary<string, int> data)
         {
             Range = data["range"];
         }
 
-        public override FeatureDTO ToDTO()
+        protected override Dictionary<string, int> SerializeData()
         {
-            return new FeatureDTO(TypeID, new Dictionary<string, int>()
+            var data = base.SerializeData()
             {
                 { "range", Range },
             });
@@ -28,7 +28,7 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 
         public const string TypeID = "personal teleport";
 
-        public override string Name => "Teleport";
+        protected override string Identifier => TypeID;
 
         public override string Description
         {
@@ -50,8 +50,6 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
                 return sb.ToString();
             }
         }
-
-        public override string Symbol => "☆";
 
         protected override bool Trigger(Entity entity, Cell target, Dictionary<string, int> data)
         {

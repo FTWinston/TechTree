@@ -12,14 +12,14 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             Range = range;
         }
 
-        public RemoveEffects(Dictionary<string, int> data)
+        public RemoveEffects(string name, string symbol, Dictionary<string, int> data)
         {
             Range = data["range"];
         }
 
-        public override FeatureDTO ToDTO()
+        protected override Dictionary<string, int> SerializeData()
         {
-            return new FeatureDTO(TypeID, new Dictionary<string, int>()
+            var data = base.SerializeData()
             {
                 { "range", Range },
             });
@@ -27,7 +27,7 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 
         public const string TypeID = "remove effects";
 
-        public override string Name => "Remove Effects";
+        protected override string Identifier => TypeID;
 
         public override string Description
         {
@@ -49,8 +49,6 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
                 return sb.ToString();
             }
         }
-
-        public override string Symbol => "⚜";
 
         public override TargetingOptions AllowedTargets => TargetingOptions.AnyOwner | TargetingOptions.Units;
 

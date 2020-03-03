@@ -1,5 +1,4 @@
 ﻿using ObjectiveStrategy.GameModels.Instances;
-using ObjectiveStrategy.GameModels.Serialization;
 using System;
 using System.Collections.Generic;
 
@@ -7,21 +6,17 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
     public class Construction : ActivatedFeature
     {
-        public Construction() { }
-        public Construction(Dictionary<string, int> data) { }
+        public Construction(string name, string symbol)
+            : base(name, symbol, 0, null, null) { }
 
-        public override FeatureDTO ToDTO()
-        {
-            return new FeatureDTO(TypeID, new Dictionary<string, int>());
-        }
+        public Construction(string name, string symbol, Dictionary<string, int> data)
+            : base(name, symbol, data) { }
 
         public const string TypeID = "construct";
 
-        public override string Name => "Build";
+        protected override string Identifier => TypeID;
 
         public override string Description => "Constructs buildings";
-
-        public override string Symbol => "⚒";
 
         protected override bool Trigger(Entity entity, Cell target, Dictionary<string, int> data)
         {

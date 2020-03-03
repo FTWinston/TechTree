@@ -7,39 +7,37 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
     public class AreaDoT : TargettedCellEffectFeature<DamageOverTime>
     {
-        public AreaDoT(int range, int radius, int duration, int damageMin, int damageMax)
+        public AreaDoT(string name, string symbol, int manaCost, int? limitedUses, int? cooldown, int range, int radius, int duration, int damageMin, int damageMax)
+            : base(name, symbol, manaCost, limitedUses, cooldown, range)
         {
-            Range = range;
             Radius = radius;
             Effect.DamageMin = damageMin;
             Effect.DamageMax = damageMax;
             Effect.Duration = duration;
         }
 
-        public AreaDoT(Dictionary<string, int> data)
+        public AreaDoT(string name, string symbol, Dictionary<string, int> data)
+            : base(name, symbol, data)
         {
-            Range = data["range"];
             Radius = data["radius"];
             Effect.Duration = data["duration"];
             Effect.DamageMin = data["damageMin"];
             Effect.DamageMax = data["damageMax"];
         }
 
-        public override FeatureDTO ToDTO()
+        protected override Dictionary<string, int> SerializeData()
         {
-            return new FeatureDTO(TypeID, new Dictionary<string, int>()
-            {
-                { "range", Range },
-                { "radius", Radius },
-                { "duration", Effect.Duration },
-                { "damageMin", Effect.DamageMin },
-                { "damageMax", Effect.DamageMax },
-            });
+            var data = base.SerializeData();
+            data.Add("radius", Radius);
+            data.Add("duration", Effect.Duration);
+            data.Add("damageMin", Effect.DamageMin);
+            data.Add("damageMax", Effect.DamageMax);
+            return data;
         }
 
         public const string TypeID = "area dot";
 
-        public override string Name => "Area DoT";
+        protected override string Identifier => TypeID;
 
         public override string Description
         {
@@ -79,8 +77,6 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
                 return sb.ToString();
             }
         }
-
-        public override string Symbol => "♋";
 
         public int Radius { get; }
     }

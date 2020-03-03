@@ -6,28 +6,28 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
     public class Wall : TargettedCellEffectFeature<CellEffects.Wall>
     {
-        public Wall(int range, int duration)
+        public Wall(string name, string symbol, int manaCost, int? limitedUses, int? cooldown, int? range, int duration)
+            : base(name, symbol, manaCost, limitedUses, cooldown, range)
         {
-            Range = range;
             Effect.Duration = duration;
         }
 
-        public Wall(Dictionary<string, int> data)
+        public Wall(string name, string symbol, Dictionary<string, int> data)
+            : base(name, symbol, data)
         {
             Effect.Duration = data["duration"];
         }
 
-        public override FeatureDTO ToDTO()
+        protected override Dictionary<string, int> SerializeData()
         {
-            return new FeatureDTO(TypeID, new Dictionary<string, int>()
-            {
-                { "duration", Effect.Duration},
-            });
+            var data = base.SerializeData();
+            data.Add("duration", Effect.Duration);
+            return data;
         }
 
         public const string TypeID = "wall";
 
-        public override string Name => "Wall";
+        protected override string Identifier => TypeID;
 
         public override string Description
         {
@@ -53,7 +53,5 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
                 return sb.ToString();
             }
         }
-
-        public override string Symbol => "❒";
     }
 }

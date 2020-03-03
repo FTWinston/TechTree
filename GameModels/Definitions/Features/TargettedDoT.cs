@@ -8,35 +8,33 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
     public class TargettedDoT : TargettedStatusEffectFeature<DamageOverTime>
     {
-        public TargettedDoT(int range, int duration, int damageMin, int damageMax)
+        public TargettedDoT(string name, string symbol, int manaCost, int? limitedUses, int? cooldown, int range, int duration, int damageMin, int damageMax)
+            : base(name, symbol, manaCost, limitedUses, cooldown, range)
         {
-            Range = range;
             Effect.Duration = duration;
             Effect.DamageMin = damageMin;
             Effect.DamageMax = damageMax;
         }
-        public TargettedDoT(Dictionary<string, int> data)
+        public TargettedDoT(string name, string symbol, Dictionary<string, int> data)
+            : base(name, symbol, data)
         {
-            Range = data["range"];
             Effect.Duration = data["duration"];
             Effect.DamageMin = data["damageMin"];
             Effect.DamageMax = data["damageMax"];
         }
 
-        public override FeatureDTO ToDTO()
+        protected override Dictionary<string, int> SerializeData()
         {
-            return new FeatureDTO(TypeID, new Dictionary<string, int>()
-            {
-                { "range", Range },
-                { "duration", Effect.Duration },
-                { "damageMin", Effect.DamageMin },
-                { "damageMax", Effect.DamageMax },
-            });
+            var data = base.SerializeData();
+            data.Add("duration", Effect.Duration);
+            data.Add("damageMin", Effect.DamageMin);
+            data.Add("damageMax", Effect.DamageMax);
+            return data;
         }
 
         public const string TypeID = "targetted dot";
 
-        public override string Name => "Targetted DoT";
+        protected override string Identifier => TypeID;
 
         public override string Description
         {
@@ -58,8 +56,6 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
                 return sb.ToString();
             }
         }
-
-        public override string Symbol => "♅";
 
         public override TargetingOptions AllowedTargets => TargetingOptions.Enemies | TargetingOptions.Units;
     }

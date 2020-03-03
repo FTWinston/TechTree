@@ -15,16 +15,16 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             DamagePerMana = damagePerMana;
         }
 
-        public ManaBurn(Dictionary<string, int> data)
+        public ManaBurn(string name, string symbol, Dictionary<string, int> data)
         {
             Range = data["range"];
             MaxMana = data["maxMana"];
             DamagePerMana = data["damagePerMana"] / 100f;
         }
 
-        public override FeatureDTO ToDTO()
+        protected override Dictionary<string, int> SerializeData()
         {
-            return new FeatureDTO(TypeID, new Dictionary<string, int>()
+            var data = base.SerializeData()
             {
                 { "range", Range },
                 { "maxMana", MaxMana },
@@ -34,7 +34,7 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 
         public const string TypeID = "mana burn";
 
-        public override string Name => "Mana Burn";
+        protected override string Identifier => TypeID;
 
         public override string Description
         {
@@ -68,8 +68,6 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
                 return sb.ToString();
             }
         }
-
-        public override string Symbol => "⚳";
 
         public int MaxMana { get; }
 

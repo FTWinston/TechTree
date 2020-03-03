@@ -7,36 +7,34 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
     public class DrainHealth : TargettedStatusEffectFeature<HealthDrain>
     {
-        public DrainHealth(int range, int duration, int damagePerTurn, float manaPerHitpoint)
+        public DrainHealth(string name, string symbol, int manaCost, int? limitedUses, int? cooldown, int range, int duration, int damagePerTurn, float manaPerHitpoint)
+            : base(name, symbol, manaCost, limitedUses, cooldown, range)
         {
-            Range = range;
             Effect.Duration = duration;
             Effect.DamagePerTurn = damagePerTurn;
             Effect.ManaPerHitpoint = manaPerHitpoint;
         }
 
-        public DrainHealth(Dictionary<string, int> data)
+        public DrainHealth(string name, string symbol, Dictionary<string, int> data)
+            : base(name, symbol, data)
         {
-            Range = data["range"];
             Effect.Duration = data["duration"];
             Effect.DamagePerTurn = data["damagePerTurn"];
             Effect.ManaPerHitpoint = data["manaPerHp"] / 100f;
         }
 
-        public override FeatureDTO ToDTO()
+        protected override Dictionary<string, int> SerializeData()
         {
-            return new FeatureDTO(TypeID, new Dictionary<string, int>()
-            {
-                { "range", Range },
-                { "duration", Effect.Duration },
-                { "damagePerTurn", Effect.DamagePerTurn },
-                { "manaPerHp", (int)(Effect.ManaPerHitpoint * 100) },
-            });
+            var data = base.SerializeData();
+            data.Add("duration", Effect.Duration);
+            data.Add("damagePerTurn", Effect.DamagePerTurn);
+            data.Add("manaPerHp", (int)(Effect.ManaPerHitpoint * 100));
+            return data;
         }
 
         public const string TypeID = "drain health";
 
-        public override string Name => "Drain Health";
+        protected override string Identifier => TypeID;
 
         public override string Description
         {
@@ -73,8 +71,6 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
                 return sb.ToString();
             }
         }
-
-        public override string Symbol => "⛎";
 
         public override TargetingOptions AllowedTargets => TargetingOptions.AnyOwner | TargetingOptions.Units;
     }

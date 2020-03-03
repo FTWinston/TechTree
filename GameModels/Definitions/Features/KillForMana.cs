@@ -14,15 +14,15 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             ManaPerHitpoint = manaPerHitpoint;
         }
 
-        public KillForMana(Dictionary<string, int> data)
+        public KillForMana(string name, string symbol, Dictionary<string, int> data)
         {
             Range = data["range"];
             ManaPerHitpoint = data["manaPerHp"] / 100f;
         }
 
-        public override FeatureDTO ToDTO()
+        protected override Dictionary<string, int> SerializeData()
         {
-            return new FeatureDTO(TypeID, new Dictionary<string, int>()
+            var data = base.SerializeData()
             {
                 { "range", Range },
                 { "manaPerHp", (int)(ManaPerHitpoint * 100)},
@@ -31,7 +31,7 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 
         public const string TypeID = "kill for mana";
 
-        public override string Name => "Kill for Mana";
+        protected override string Identifier => TypeID;
 
         public override string Description
         {
@@ -57,8 +57,6 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
                 return sb.ToString();
             }
         }
-
-        public override string Symbol => "♏";
 
         public float ManaPerHitpoint { get; }
 

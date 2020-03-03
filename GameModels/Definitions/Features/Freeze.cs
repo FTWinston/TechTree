@@ -14,16 +14,16 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             Effect.Duration = duration;
         }
 
-        public Freeze(Dictionary<string, int> data)
+        public Freeze(string name, string symbol, Dictionary<string, int> data)
         {
             Range = data["range"];
             Radius = data["radius"];
             Effect.Duration = data["duration"];
         }
 
-        public override FeatureDTO ToDTO()
+        protected override Dictionary<string, int> SerializeData()
         {
-            return new FeatureDTO(TypeID, new Dictionary<string, int>()
+            var data = base.SerializeData()
             {
                 { "range", Range },
                 { "radius", Radius },
@@ -33,7 +33,7 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 
         public const string TypeID = "freeze";
 
-        public override string Name => "Freeze";
+        protected override string Identifier => TypeID;
 
         public override string Description
         {
@@ -70,8 +70,6 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
                 return sb.ToString();
             }
         }
-
-        public override string Symbol => "⚴";
 
         public int Radius { get; }
 

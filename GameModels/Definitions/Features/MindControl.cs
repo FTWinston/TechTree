@@ -8,33 +8,38 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
     public class MindControl : EntityTargettedFeature
     {
-        public MindControl(int range, int? duration, int? maxControlRange)
+        public MindControl(string name, string symbol, int manaCost, int? limitedUses, int? cooldown, int range, int? duration, int? maxControlRange)
+            : base(name, symbol, manaCost, limitedUses, cooldown, range)
         {
-            Range = range;
             Duration = duration;
             MaxControlRange = maxControlRange;
         }
 
-        public MindControl(Dictionary<string, int> data)
+        public MindControl(string name, string symbol, Dictionary<string, int> data)
+            : base(name, symbol, data)
         {
-            Range = data["range"];
-            Duration = data["duration"];
-            MaxControlRange = data["controlRange"];
+            if (data.TryGetValue("duration", out var duration))
+                Duration = Duration;
+
+            if (data.TryGetValue("controlRange", out var range))
+                MaxControlRange = range;
         }
 
-        public override FeatureDTO ToDTO()
+        protected override Dictionary<string, int> SerializeData()
         {
-            return new FeatureDTO(TypeID, new Dictionary<string, int>()
-            {
-                { "range", Range },
-                { "duration", Duration },
-                { "controlRange", MaxControlRange },
-            });
+            var data = base.SerializeData();
+            
+            if (Duration.HasValue)
+                data.Add("duration", Duration.Value);
+
+            if (MaxControlRange.HasValue)
+                data.Add("controlRange", MaxControlRange.Value);
+            return data;
         }
 
         public const string TypeID = "mind control";
 
-        public override string Name => "Mind Control";
+        protected override string Identifier => TypeID;
 
         public override string Description
         {
@@ -70,8 +75,6 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
                 return sb.ToString();
             }
         }
-
-        public override string Symbol => "♍";
 
         public int? Duration { get; }
 

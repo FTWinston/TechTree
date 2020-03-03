@@ -14,15 +14,15 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             Effect.Duration = duration;
         }
 
-        public StealVision(Dictionary<string, int> data)
+        public StealVision(string name, string symbol, Dictionary<string, int> data)
         {
             Range = data["range"];
             Effect.Duration = data["duration"];
         }
 
-        public override FeatureDTO ToDTO()
+        protected override Dictionary<string, int> SerializeData()
         {
-            return new FeatureDTO(TypeID, new Dictionary<string, int>()
+            var data = base.SerializeData()
             {
                 { "range", Range },
                 { "duration", Effect.Duration },
@@ -31,7 +31,7 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 
         public const string TypeID = "steal vision";
 
-        public override string Name => "Steal Vision";
+        protected override string Identifier => TypeID;
 
         public override string Description
         {
@@ -59,8 +59,6 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
                 return sb.ToString();
             }
         }
-
-        public override string Symbol => "⚯";
 
         public override TargetingOptions AllowedTargets => TargetingOptions.Enemies | TargetingOptions.Units;
     }

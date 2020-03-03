@@ -1,5 +1,4 @@
 ﻿using ObjectiveStrategy.GameModels.Instances;
-using ObjectiveStrategy.GameModels.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -8,18 +7,28 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
     public class AreaManaDrain : TargettedFeature
     {
-        public AreaManaDrain() { }
-
-        public AreaManaDrain(Dictionary<string, int> data) { }
-
-        public override FeatureDTO ToDTO()
+        public AreaManaDrain(string name, string symbol, int manaCost, int? limitedUses, int? cooldown, int? range, int radius, int damageMin, int damageMax)
+            : base(name, symbol, manaCost, limitedUses, cooldown, range)
         {
-            return new FeatureDTO(TypeID, new Dictionary<string, int>());
+            Radius = radius;
+        }
+
+        public AreaManaDrain(string name, string symbol, Dictionary<string, int> data)
+            : base(name, symbol, data)
+        {
+            Radius = data["radius"];
+        }
+
+        protected override Dictionary<string, int> SerializeData()
+        {
+            var data = base.SerializeData();
+            data.Add("radius", Radius);
+            return data;
         }
 
         public const string TypeID = "area mana drain";
 
-        public override string Name => "Mana Drain";
+        protected override string Identifier => TypeID;
 
         public override string Description
         {
@@ -44,15 +53,7 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             }
         }
 
-        public override string Symbol => "♊";
-
         public int Radius { get; internal set; }
-
-        public AreaManaDrain(int range, int radius, int damageMin, int damageMax)
-        {
-            Range = range;
-            Radius = radius;
-        }
 
         protected override bool Trigger(Entity entity, Cell target, Dictionary<string, int> data)
         {

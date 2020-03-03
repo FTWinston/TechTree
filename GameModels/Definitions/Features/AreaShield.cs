@@ -6,39 +6,37 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
     public class AreaShield : TargettedCellEffectFeature<CellEffects.Shield>
     {
-        public AreaShield(int range, int radius, int duration, int extraHealth, int extraArmor)
+        public AreaShield(string name, string symbol, int manaCost, int? limitedUses, int? cooldown, int range, int radius, int duration, int extraHealth, int extraArmor)
+            : base(name, symbol, manaCost, limitedUses, cooldown, range)
         {
-            Range = range;
             Radius = radius;
             Effect.Duration = duration;
             Effect.ExtraHealth = extraHealth;
             Effect.ExtraArmor = extraArmor;
         }
 
-        public AreaShield(Dictionary<string, int> data)
+        public AreaShield(string name, string symbol, Dictionary<string, int> data)
+            : base(name, symbol, data)
         {
-            Range = data["range"];
             Radius = data["radius"];
             Effect.Duration = data["duration"];
             Effect.ExtraHealth = data["health"];
             Effect.ExtraArmor = data["armor"];
         }
 
-        public override FeatureDTO ToDTO()
+        protected override Dictionary<string, int> SerializeData()
         {
-            return new FeatureDTO(TypeID, new Dictionary<string, int>()
-            {
-                { "range", Range },
-                { "radius", Radius },
-                { "duration", Effect.Duration },
-                { "health", Effect.ExtraHealth },
-                { "armor", Effect.ExtraArmor },
-            });
+            var data = base.SerializeData();
+            data.Add("radius", Radius);
+            data.Add("duration", Effect.Duration);
+            data.Add("health", Effect.ExtraHealth);
+            data.Add("armor", Effect.ExtraArmor);
+            return data;
         }
 
         public const string TypeID = "area shield";
 
-        public override string Name => "Area Shield";
+        protected override string Identifier => TypeID;
 
         public override string Description
         {
@@ -89,8 +87,6 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
                 return sb.ToString();
             }
         }
-
-        public override string Symbol => "♎";
 
         public int Radius { get; }
     }

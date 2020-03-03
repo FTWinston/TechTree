@@ -7,9 +7,9 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
     public class AreaHealthReduction : TargettedStatusEffectFeature<ReducedHealth>
     {
-        public AreaHealthReduction(int range, int radius, int duration, int hitpointsDrained, int minHitpoints, int drainPerTurn)
+        public AreaHealthReduction(string name, string symbol, int manaCost, int? limitedUses, int? cooldown, int? range, int radius, int duration, int hitpointsDrained, int minHitpoints, int drainPerTurn)
+            : base(name, symbol, manaCost, limitedUses, cooldown, range)
         {
-            Range = range;
             Radius = radius;
 
             Effect.Duration = duration;
@@ -18,9 +18,9 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             Effect.HealthDrainPerTurn = drainPerTurn;
         }
 
-        public AreaHealthReduction(Dictionary<string, int> data)
+        public AreaHealthReduction(string name, string symbol, Dictionary<string, int> data)
+            : base(name, symbol, data)
         {
-            Range = data["range"];
             Radius = data["radius"];
             Effect.Duration = data["duration"];
             Effect.ReductionMax = data["maxReduction"];
@@ -28,22 +28,20 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             Effect.HealthDrainPerTurn = data["hpPerTurn"];
         }
 
-        public override FeatureDTO ToDTO()
+        protected override Dictionary<string, int> SerializeData()
         {
-            return new FeatureDTO(TypeID, new Dictionary<string, int>()
-            {
-                { "range", Range },
-                { "radius", Radius },
-                { "duration", Effect.Duration },
-                { "maxReduction", Effect.ReductionMax },
-                { "minRemainingHp", Effect.MinRemainingHitpoints },
-                { "hpPerTurn", Effect.HealthDrainPerTurn },
-            });
+            var data = base.SerializeData();
+            data.Add("radius", Radius);
+            data.Add("duration", Effect.Duration);
+            data.Add("maxReduction", Effect.ReductionMax);
+            data.Add("minRemainingHp", Effect.MinRemainingHitpoints);
+            data.Add("hpPerTurn", Effect.HealthDrainPerTurn);
+            return data;
         }
 
         public const string TypeID = "area health reduction";
 
-        public override string Name => "Health Reduction";
+        protected override string Identifier => TypeID;
 
         public override string Description
         {
@@ -91,8 +89,6 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             }
 
         }
-
-        public override string Symbol => "♓";
 
         public int Radius { get; }
 
