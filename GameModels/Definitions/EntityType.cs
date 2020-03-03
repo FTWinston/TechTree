@@ -44,52 +44,10 @@ namespace ObjectiveStrategy.GameModels.Definitions
 
         public uint? UpgradesFrom { get; }
 
-        [JsonIgnore]
+        [JsonConverter(typeof(FeatureListConverter))]
         public List<Feature> Features { get; }
 
-        [JsonIgnore]
+        [JsonConverter(typeof(FeatureListConverter))]
         public List<Feature> LockedFeatures { get; }
-
-        [JsonPropertyName("Features")]
-        public List<FeatureDTO> FeatureDTOs
-        {
-            get
-            {
-                return Features
-                    .Select(f => f.ToDTO())
-                    .ToList();
-            }
-            set
-            {
-                Features.Clear();
-                Features.AddRange
-                (
-                    value
-                        .Select(f => f.ToFeature())
-                        .ToList()
-                );
-            }
-        }
-
-        [JsonPropertyName("LockedFeatures")]
-        public List<FeatureDTO> LockedFeatureDTOs
-        {
-            get
-            {
-                return LockedFeatures
-                    .Select(f => f.ToDTO())
-                    .ToList();
-            }
-            set
-            {
-                LockedFeatures.Clear();
-                LockedFeatures.AddRange
-                (
-                    value
-                        .Select(f => f.ToFeature())
-                        .ToList()
-                );
-            }
-        }
     }
 }
