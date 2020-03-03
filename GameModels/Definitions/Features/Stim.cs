@@ -1,5 +1,4 @@
 ﻿using ObjectiveStrategy.GameModels.Definitions.StatusEffects;
-using ObjectiveStrategy.GameModels.Serialization;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -33,7 +32,7 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             return data;
         }
 
-        public const string TypeID = "own health drain";
+        internal const string TypeID = "own health drain";
 
         protected override string Identifier => TypeID;
 

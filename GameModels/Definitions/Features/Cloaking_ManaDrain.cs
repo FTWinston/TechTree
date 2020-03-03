@@ -1,5 +1,4 @@
 ﻿using ObjectiveStrategy.GameModels.Definitions.StatusEffects;
-using ObjectiveStrategy.GameModels.Serialization;
 using System.Collections.Generic;
 
 namespace ObjectiveStrategy.GameModels.Definitions.Features
@@ -12,7 +11,7 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
         public Cloaking_ManaDrain(string name, string symbol, Dictionary<string, int> data)
             : base(name, symbol, data) { }
 
-        public const string TypeID = "toggleable cloak";
+        internal const string TypeID = "toggleable cloak";
 
         protected override string Identifier => TypeID;
 

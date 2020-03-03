@@ -23,7 +23,7 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             return data;
         }
 
-        public const string TypeID = "transport";
+        internal const string TypeID = "transport";
 
         protected override string Identifier => TypeID;
 

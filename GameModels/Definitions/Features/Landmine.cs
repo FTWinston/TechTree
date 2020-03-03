@@ -1,5 +1,4 @@
 ﻿using ObjectiveStrategy.GameModels.Instances;
-using ObjectiveStrategy.GameModels.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -8,13 +7,15 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
     public class Landmine : ActivatedFeature
     {
-        public Landmine(int damageMin, int damageMax)
+        public Landmine(string name, string symbol, int manaCost, int? limitedUses, int? cooldown, int damageMin, int damageMax)
+            : base(name, symbol, manaCost, limitedUses, cooldown)
         {
             DamageMin = damageMin;
             DamageMax = damageMax;
         }
 
         public Landmine(string name, string symbol, Dictionary<string, int> data)
+            : base(name, symbol, data)
         {
             DamageMin = data["damageMin"];
             DamageMax = data["damageMax"];
@@ -22,14 +23,13 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 
         protected override Dictionary<string, int> SerializeData()
         {
-            var data = base.SerializeData()
-            {
-                { "damageMin", DamageMin },
-                { "damageMax", DamageMax },
-            });
+            var data = base.SerializeData();
+            data.Add("damageMin", DamageMin);
+            data.Add("damageMax", DamageMax);
+            return data;
         }
 
-        public const string TypeID = "landmine";
+        internal const string TypeID = "landmine";
 
         protected override string Identifier => TypeID;
 

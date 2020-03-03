@@ -1,5 +1,4 @@
 ﻿using ObjectiveStrategy.GameModels.Instances;
-using ObjectiveStrategy.GameModels.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -8,25 +7,15 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
     public class Possession : EntityTargettedFeature
     {
-        public Possession(int range)
-        {
-            Range = range;
-        }
+        public Possession(string name, string symbol, int manaCost, int? limitedUses, int? cooldown, int range)
+            : base(name, symbol, manaCost, limitedUses, cooldown, range)
+        { }
 
         public Possession(string name, string symbol, Dictionary<string, int> data)
-        {
-            Range = data["range"];
-        }
+            : base(name, symbol, data)
+        { }
 
-        protected override Dictionary<string, int> SerializeData()
-        {
-            var data = base.SerializeData()
-            {
-                { "range", Range },
-            });
-        }
-
-        public const string TypeID = "possession";
+        internal const string TypeID = "possession";
 
         protected override string Identifier => TypeID;
 

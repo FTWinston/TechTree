@@ -1,25 +1,22 @@
 ﻿using ObjectiveStrategy.GameModels.Definitions.StatusEffects;
-using ObjectiveStrategy.GameModels.Serialization;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
     public class HealOverTime : TargettedStatusEffectFeature<Healing>
     {
-        public HealOverTime(int range, int duration, int damageMin, int damageMax)
+        public HealOverTime(string name, string symbol, int manaCost, int? limitedUses, int? cooldown, int range, int duration, int damageMin, int damageMax)
+            : base(name, symbol, manaCost, limitedUses, cooldown, range)
         {
-            Range = range;
             Effect.Duration = duration;
             Effect.DamageMin = damageMin;
             Effect.DamageMax = damageMax;
         }
 
         public HealOverTime(string name, string symbol, Dictionary<string, int> data)
+            : base(name, symbol, data)
         {
-            Range = data["range"];
             Effect.Duration = data["duration"];
             Effect.DamageMin = data["damageMin"];
             Effect.DamageMax = data["damageMax"];
@@ -27,16 +24,14 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 
         protected override Dictionary<string, int> SerializeData()
         {
-            var data = base.SerializeData()
-            {
-                { "range", Range },
-                { "duration", Effect.Duration },
-                { "damageMin", Effect.DamageMin },
-                { "damageMax", Effect.DamageMax },
-            });
+            var data = base.SerializeData();
+            data.Add("duration", Effect.Duration);
+            data.Add("damageMin", Effect.DamageMin);
+            data.Add("damageMax", Effect.DamageMax);
+            return data;
         }
 
-        public const string TypeID = "heal over time";
+        internal const string TypeID = "heal over time";
 
         protected override string Identifier => TypeID;
 

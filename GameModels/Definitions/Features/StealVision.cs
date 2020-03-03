@@ -1,35 +1,31 @@
 ﻿using ObjectiveStrategy.GameModels.Definitions.StatusEffects;
-using ObjectiveStrategy.GameModels.Serialization;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
     public class StealVision : TargettedStatusEffectFeature<StolenVision>
     {
-        public StealVision(int range, int duration)
+        public StealVision(string name, string symbol, int manaCost, int? limitedUses, int? cooldown, int range, int duration)
+            : base(name, symbol, manaCost, limitedUses, cooldown, range)
         {
-            Range = range;
             Effect.Duration = duration;
         }
 
         public StealVision(string name, string symbol, Dictionary<string, int> data)
+            : base(name, symbol, data)
         {
-            Range = data["range"];
             Effect.Duration = data["duration"];
         }
 
         protected override Dictionary<string, int> SerializeData()
         {
-            var data = base.SerializeData()
-            {
-                { "range", Range },
-                { "duration", Effect.Duration },
-            });
+            var data = base.SerializeData();
+            data.Add("duration", Effect.Duration);
+            return data;
         }
 
-        public const string TypeID = "steal vision";
+        internal const string TypeID = "steal vision";
 
         protected override string Identifier => TypeID;
 

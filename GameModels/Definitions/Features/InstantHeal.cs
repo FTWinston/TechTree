@@ -1,5 +1,4 @@
 ﻿using ObjectiveStrategy.GameModels.Instances;
-using ObjectiveStrategy.GameModels.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -8,7 +7,8 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
     public class InstantHeal : EntityTargettedFeature
     {
-        public InstantHeal(int range, int damageMin, int damageMax)
+        public InstantHeal(string name, string symbol, int manaCost, int? limitedUses, int? cooldown, int range, int damageMin, int damageMax)
+            : base(name, symbol, manaCost, limitedUses, cooldown, range)
         {
             Range = range;
             DamageMin = damageMin;
@@ -16,23 +16,21 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
         }
 
         public InstantHeal(string name, string symbol, Dictionary<string, int> data)
+            : base(name, symbol, data)
         {
-            Range = data["range"];
             DamageMin = data["damageMin"];
             DamageMax = data["damageMax"];
         }
 
         protected override Dictionary<string, int> SerializeData()
         {
-            var data = base.SerializeData()
-            {
-                { "range", Range },
-                { "damageMin", DamageMin },
-                { "damageMax", DamageMax },
-            });
+            var data = base.SerializeData();
+            data.Add("damageMin", DamageMin);
+            data.Add("damageMax", DamageMax);
+            return data;
         }
 
-        public const string TypeID = "instant heal";
+        internal const string TypeID = "instant heal";
 
         protected override string Identifier => TypeID;
 

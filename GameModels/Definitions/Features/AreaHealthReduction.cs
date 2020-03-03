@@ -1,5 +1,4 @@
 ﻿using ObjectiveStrategy.GameModels.Definitions.StatusEffects;
-using ObjectiveStrategy.GameModels.Serialization;
 using System.Collections.Generic;
 using System.Text;
 
@@ -39,7 +38,7 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             return data;
         }
 
-        public const string TypeID = "area health reduction";
+        internal const string TypeID = "area health reduction";
 
         protected override string Identifier => TypeID;
 

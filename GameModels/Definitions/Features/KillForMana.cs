@@ -1,5 +1,4 @@
 ﻿using ObjectiveStrategy.GameModels.Instances;
-using ObjectiveStrategy.GameModels.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -8,28 +7,26 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
     public class KillForMana : EntityTargettedFeature
     {
-        public KillForMana(int range, float manaPerHitpoint)
+        public KillForMana(string name, string symbol, int manaCost, int? limitedUses, int? cooldown, int range, float manaPerHitpoint)
+            : base(name, symbol, manaCost, limitedUses, cooldown, range)
         {
-            Range = range;
             ManaPerHitpoint = manaPerHitpoint;
         }
 
         public KillForMana(string name, string symbol, Dictionary<string, int> data)
+            : base(name, symbol, data)
         {
-            Range = data["range"];
             ManaPerHitpoint = data["manaPerHp"] / 100f;
         }
 
         protected override Dictionary<string, int> SerializeData()
         {
-            var data = base.SerializeData()
-            {
-                { "range", Range },
-                { "manaPerHp", (int)(ManaPerHitpoint * 100)},
-            });
+            var data = base.SerializeData();
+            data.Add("manaPerHp", (int)(ManaPerHitpoint * 100));
+            return data;
         }
 
-        public const string TypeID = "kill for mana";
+        internal const string TypeID = "kill for mana";
 
         protected override string Identifier => TypeID;
 

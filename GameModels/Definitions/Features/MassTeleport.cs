@@ -1,5 +1,4 @@
 ﻿using ObjectiveStrategy.GameModels.Definitions.StatusEffects;
-using ObjectiveStrategy.GameModels.Serialization;
 using System.Collections.Generic;
 using System.Text;
 
@@ -7,20 +6,26 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
     public class MassTeleport : TargettedStatusEffectFeature<Teleporting>
     {
-        public MassTeleport(int range, int radius)
+        public MassTeleport(string name, string symbol, int manaCost, int? limitedUses, int? cooldown, int range, int radius)
+            : base(name, symbol, manaCost, limitedUses, cooldown, range)
         {
-            Range = range;
             Radius = radius;
         }
 
-        public MassTeleport(string name, string symbol, Dictionary<string, int> data) { }
+        public MassTeleport(string name, string symbol, Dictionary<string, int> data)
+            : base(name, symbol, data)
+        {
+            Radius = data["radius"];
+        }
 
         protected override Dictionary<string, int> SerializeData()
         {
-            var data = base.SerializeData());
+            var data = base.SerializeData();
+            data.Add("radius", Radius);
+            return data;
         }
 
-        public const string TypeID = "mass teleport";
+        internal const string TypeID = "mass teleport";
 
         protected override string Identifier => TypeID;
 

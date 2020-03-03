@@ -1,5 +1,4 @@
 ﻿using ObjectiveStrategy.GameModels.Definitions.StatusEffects;
-using ObjectiveStrategy.GameModels.Serialization;
 using System.Collections.Generic;
 
 namespace ObjectiveStrategy.GameModels.Definitions.Features
@@ -22,7 +21,7 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             // TODO: work out how to actually apply this effect to units}
         }
 
-        public const string TypeID = "permanent cloak";
+        internal const string TypeID = "permanent cloak";
 
         protected override string Identifier => TypeID;
 

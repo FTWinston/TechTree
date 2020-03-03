@@ -1,5 +1,4 @@
 ﻿using ObjectiveStrategy.GameModels.Instances;
-using ObjectiveStrategy.GameModels.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -33,7 +32,7 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             return data;
         }
 
-        public const string TypeID = "area damage";
+        internal const string TypeID = "area damage";
 
         protected override string Identifier => TypeID;
 

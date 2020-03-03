@@ -4,6 +4,7 @@ using ObjectiveStrategy.GameModels.Extensions;
 using System.Collections.Generic;
 
 using FeatureData = System.Collections.Generic.Dictionary<string, int>;
+using System;
 
 namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
@@ -19,7 +20,8 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             : base(name, symbol)
         {
             int unitTypeID = data["unit"];
-            Unit = something();
+            //Unit = something();
+            throw new NotImplementedException();
         }
 
         protected override Dictionary<string, int> SerializeData()
@@ -29,7 +31,7 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             return data;
         }
 
-        public const string TypeID = "build";
+        internal const string TypeID = "build";
 
         protected override string Identifier => TypeID;
 

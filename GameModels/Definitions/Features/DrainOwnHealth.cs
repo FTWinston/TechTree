@@ -1,6 +1,5 @@
 ﻿using ObjectiveStrategy.GameModels.Definitions.StatusEffects;
 using ObjectiveStrategy.GameModels.Instances;
-using ObjectiveStrategy.GameModels.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,7 +34,7 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             return data;
         }
 
-        public const string TypeID = "drain own health";
+        internal const string TypeID = "drain own health";
 
         protected override string Identifier => TypeID;
 

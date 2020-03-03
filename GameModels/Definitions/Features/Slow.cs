@@ -1,24 +1,22 @@
 ﻿using ObjectiveStrategy.GameModels.Definitions.StatusEffects;
-using ObjectiveStrategy.GameModels.Serialization;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
     public class Slow : TargettedStatusEffectFeature<Slowed>
     {
-        public Slow(int range, int radius, int duration, int reducedPoints)
+        public Slow(string name, string symbol, int manaCost, int? limitedUses, int? cooldown, int range, int radius, int duration, int reducedPoints)
+            : base(name, symbol, manaCost, limitedUses, cooldown, range)
         {
-            Range = range;
             Radius = radius;
             Effect.Duration = duration;
             Effect.ReducedPoints = reducedPoints;
         }
 
         public Slow(string name, string symbol, Dictionary<string, int> data)
+            : base(name, symbol, data)
         {
-            Range = data["range"];
             Radius = data["radius"];
             Effect.Duration = data["duration"];
             Effect.ReducedPoints = data["reducedPoints"];
@@ -26,16 +24,14 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 
         protected override Dictionary<string, int> SerializeData()
         {
-            var data = base.SerializeData()
-            {
-                { "range", Range },
-                { "radius", Radius },
-                { "duration", Effect.Duration },
-                { "reducedPoints", Effect.ReducedPoints},
-            });
+            var data = base.SerializeData();
+            data.Add("radius", Radius);
+            data.Add("duration", Effect.Duration);
+            data.Add("reducedPoints", Effect.ReducedPoints);
+            return data;
         }
 
-        public const string TypeID = "slow";
+        internal const string TypeID = "slow";
 
         protected override string Identifier => TypeID;
 

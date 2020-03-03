@@ -1,5 +1,4 @@
 ﻿using ObjectiveStrategy.GameModels.Definitions.StatusEffects;
-using ObjectiveStrategy.GameModels.Serialization;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -32,7 +31,7 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             return data;
         }
 
-        public const string TypeID = "targetted dot";
+        internal const string TypeID = "targetted dot";
 
         protected override string Identifier => TypeID;
 

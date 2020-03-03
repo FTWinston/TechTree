@@ -26,7 +26,7 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             return data;
         }
 
-        public const string TypeID = "area mana drain";
+        internal const string TypeID = "area mana drain";
 
         protected override string Identifier => TypeID;
 

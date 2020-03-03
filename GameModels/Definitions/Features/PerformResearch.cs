@@ -2,32 +2,35 @@
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using ObjectiveStrategy.GameModels.Extensions;
-using ObjectiveStrategy.GameModels.Serialization;
+using System;
 
 namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
     public class PerformResearch : Feature
     {
-        public PerformResearch(Research research)
+        public PerformResearch(string name, string symbol, Research research)
+            : base(name, symbol)
         {
             Research = research;
         }
 
         public PerformResearch(string name, string symbol, Dictionary<string, int> data)
+            : base(name, symbol)
         {
             int researchID = data["research"];
-            Research = something;
+            // Research = something;
+            throw new NotImplementedException();
         }
 
         protected override Dictionary<string, int> SerializeData()
         {
-            var data = base.SerializeData()
-            {
-                { "research", Research.ID },
-            });
+            var data = base.SerializeData();
+            //data.Add("research", Research.ID);
+            throw new NotImplementedException();
+            return data;
         }
 
-        public const string TypeID = "research";
+        internal const string TypeID = "research";
 
         protected override string Identifier => TypeID;
 

@@ -11,7 +11,7 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
         public Burrow(string name, string symbol, Dictionary<string, int> data)
             : base(name, symbol, data) { }
 
-        public const string TypeID = "burrow";
+        internal const string TypeID = "burrow";
 
         protected override string Identifier => TypeID;
 

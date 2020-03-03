@@ -1,5 +1,4 @@
 ﻿using ObjectiveStrategy.GameModels.Definitions.StatusEffects;
-using ObjectiveStrategy.GameModels.Serialization;
 using System.Collections.Generic;
 
 namespace ObjectiveStrategy.GameModels.Definitions.Features
@@ -31,7 +30,7 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             return data;
         }
 
-        public const string TypeID = "permanent aoe cloak";
+        internal const string TypeID = "permanent aoe cloak";
 
         protected override string Identifier => TypeID;
 

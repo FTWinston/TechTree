@@ -31,7 +31,7 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             return data;
         }
 
-        public const string TypeID = "reveal";
+        internal const string TypeID = "reveal";
         
         protected override string Identifier => TypeID;
 

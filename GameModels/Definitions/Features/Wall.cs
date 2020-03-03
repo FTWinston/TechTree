@@ -1,5 +1,4 @@
-﻿using ObjectiveStrategy.GameModels.Serialization;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Text;
 
 namespace ObjectiveStrategy.GameModels.Definitions.Features
@@ -25,7 +24,7 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             return data;
         }
 
-        public const string TypeID = "wall";
+        internal const string TypeID = "wall";
 
         protected override string Identifier => TypeID;
 

@@ -12,7 +12,7 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
         public Construction(string name, string symbol, Dictionary<string, int> data)
             : base(name, symbol, data) { }
 
-        public const string TypeID = "construct";
+        internal const string TypeID = "construct";
 
         protected override string Identifier => TypeID;
 

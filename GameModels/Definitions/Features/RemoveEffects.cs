@@ -1,5 +1,4 @@
 ﻿using ObjectiveStrategy.GameModels.Instances;
-using ObjectiveStrategy.GameModels.Serialization;
 using System.Collections.Generic;
 using System.Text;
 
@@ -7,25 +6,15 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
     public class RemoveEffects : EntityTargettedFeature
     {
-        public RemoveEffects(int range)
-        {
-            Range = range;
-        }
+        public RemoveEffects(string name, string symbol, int manaCost, int? limitedUses, int? cooldown, int range)
+            : base(name, symbol, manaCost, limitedUses, cooldown, range)
+        { }
 
         public RemoveEffects(string name, string symbol, Dictionary<string, int> data)
-        {
-            Range = data["range"];
-        }
+            : base(name, symbol, data)
+        { }
 
-        protected override Dictionary<string, int> SerializeData()
-        {
-            var data = base.SerializeData()
-            {
-                { "range", Range },
-            });
-        }
-
-        public const string TypeID = "remove effects";
+        internal const string TypeID = "remove effects";
 
         protected override string Identifier => TypeID;
 

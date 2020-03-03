@@ -1,14 +1,13 @@
 ﻿using ObjectiveStrategy.GameModels.Definitions.StatusEffects;
-using ObjectiveStrategy.GameModels.Serialization;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
     public class Suicide : StatusEffectFeature<Exploding>
     {
-        public Suicide(int duration, int damageMin, int damageMax, int damageDistance)
+        public Suicide(string name, string symbol, int manaCost, int? limitedUses, int? cooldown, int duration, int damageMin, int damageMax, int damageDistance)
+            : base(name, symbol, manaCost, limitedUses, cooldown)
         {
             Effect.Duration = duration;
             Effect.DamageMin = damageMin;
@@ -17,6 +16,7 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
         }
 
         public Suicide(string name, string symbol, Dictionary<string, int> data)
+            : base(name, symbol, data)
         {
             Effect.Duration = data["duration"];
             Effect.DamageMin = data["damageMin"];
@@ -26,16 +26,15 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 
         protected override Dictionary<string, int> SerializeData()
         {
-            var data = base.SerializeData()
-            {
-                { "duration", Effect.Duration },
-                { "damageMin", Effect.DamageMin },
-                { "damageMax", Effect.DamageMax },
-                { "damageDistance", Effect.DamageDistance },
-            });
+            var data = base.SerializeData();
+            data.Add("duration", Effect.Duration);
+            data.Add("damageMin", Effect.DamageMin);
+            data.Add("damageMax", Effect.DamageMax);
+            data.Add("damageDistance", Effect.DamageDistance);
+            return data;
         }
 
-        public const string TypeID = "suicide";
+        internal const string TypeID = "suicide";
 
         protected override string Identifier => TypeID;
 

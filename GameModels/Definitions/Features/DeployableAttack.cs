@@ -13,7 +13,7 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
         public DeployableAttack(string name, string symbol, Dictionary<string, int> data) 
             : base(name, symbol, data) { }
 
-        public const string TypeID = "deployable attack";
+        internal const string TypeID = "deployable attack";
 
         protected override string Identifier => TypeID;
 

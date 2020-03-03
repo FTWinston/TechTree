@@ -1,6 +1,5 @@
 ﻿using ObjectiveStrategy.GameModels.Extensions;
 using ObjectiveStrategy.GameModels.Instances;
-using ObjectiveStrategy.GameModels.Serialization;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -8,25 +7,26 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
     public class HigherHealth : PassiveFeature
     {
-        public HigherHealth(int extraPoints)
+        public HigherHealth(string name, string symbol, int extraPoints)
+            : base(name, symbol)
         {
             ExtraPoints = extraPoints;
         }
 
         public HigherHealth(string name, string symbol, Dictionary<string, int> data)
+            : base(name, symbol)
         {
             ExtraPoints = data["points"];
         }
 
         protected override Dictionary<string, int> SerializeData()
         {
-            var data = base.SerializeData()
-            {
-                { "points", ExtraPoints },
-            });
+            var data = base.SerializeData();
+            data.Add("points", ExtraPoints);
+            return data;
         }
 
-        public const string TypeID = "passive health";
+        internal const string TypeID = "passive health";
 
         protected override string Identifier => TypeID;
 
@@ -47,25 +47,26 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
     
     public class Armored : PassiveFeature
     {
-        public Armored(int extraPoints)
+        public Armored(string name, string symbol, int extraPoints)
+            : base(name, symbol)
         {
             ExtraPoints = extraPoints;
         }
 
         public Armored(string name, string symbol, Dictionary<string, int> data)
+            : base(name, symbol)
         {
             ExtraPoints = data["points"];
         }
 
         protected override Dictionary<string, int> SerializeData()
         {
-            var data = base.SerializeData()
-            {
-                { "points", ExtraPoints },
-            });
+            var data = base.SerializeData();
+            data.Add("points", ExtraPoints);
+            return data;
         }
 
-        public const string TypeID = "passive armor";
+        internal const string TypeID = "passive armor";
 
         protected override string Identifier => TypeID;
 
@@ -81,25 +82,26 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 
     public class GreaterMobility : PassiveFeature
     {
-        public GreaterMobility(int extraPoints)
+        public GreaterMobility(string name, string symbol, int extraPoints)
+            : base(name, symbol)
         {
             ExtraPoints = extraPoints;
         }
 
         public GreaterMobility(string name, string symbol, Dictionary<string, int> data)
+            : base(name, symbol)
         {
             ExtraPoints = data["points"];
         }
 
         protected override Dictionary<string, int> SerializeData()
         {
-            var data = base.SerializeData()
-            {
-                { "points", ExtraPoints },
-            });
+            var data = base.SerializeData();
+            data.Add("points", ExtraPoints);
+            return data;
         }
 
-        public const string TypeID = "passive movement";
+        internal const string TypeID = "passive movement";
 
         protected override string Identifier => TypeID;
 
@@ -123,25 +125,26 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 
     public class GreaterVisibility : PassiveFeature
     {
-        public GreaterVisibility(int extraPoints)
+        public GreaterVisibility(string name, string symbol, int extraPoints)
+            : base(name, symbol)
         {
             ExtraPoints = extraPoints;
         }
 
         public GreaterVisibility(string name, string symbol, Dictionary<string, int> data)
+            : base(name, symbol)
         {
             ExtraPoints = data["points"];
         }
 
         protected override Dictionary<string, int> SerializeData()
         {
-            var data = base.SerializeData()
-            {
-                { "points", ExtraPoints },
-            });
+            var data = base.SerializeData();
+            data.Add("points", ExtraPoints);
+            return data;
         }
 
-        public const string TypeID = "passive vision";
+        internal const string TypeID = "passive vision";
 
         protected override string Identifier => TypeID;
 
@@ -157,25 +160,26 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 
 	public class HigherMana : PassiveFeature
     {
-        public HigherMana(int extraPoints)
+        public HigherMana(string name, string symbol, int extraPoints)
+            : base(name, symbol)
         {
             ExtraPoints = extraPoints;
         }
 
         public HigherMana(string name, string symbol, Dictionary<string, int> data)
+            : base(name, symbol)
         {
             ExtraPoints = data["points"];
         }
 
         protected override Dictionary<string, int> SerializeData()
         {
-            var data = base.SerializeData()
-            {
-                { "points", ExtraPoints },
-            });
+            var data = base.SerializeData();
+            data.Add("points", ExtraPoints);
+            return data;
         }
 
-        public const string TypeID = "passive mana";
+        internal const string TypeID = "passive mana";
 
         protected override string Identifier => TypeID;
 
@@ -198,16 +202,15 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 
     public class Detector : PassiveFeature
     {
-        public Detector() { }
+        public Detector(string name, string symbol)
+            : base(name, symbol)
+        { }
 
-        public Detector(string name, string symbol, Dictionary<string, int> data) { }
+        public Detector(string name, string symbol, Dictionary<string, int> data)
+            : base(name, symbol)
+        { }
 
-        protected override Dictionary<string, int> SerializeData()
-        {
-            var data = base.SerializeData());
-        }
-
-        public const string TypeID = "detector";
+        internal const string TypeID = "detector";
 
         protected override string Identifier => TypeID;
 
@@ -228,25 +231,26 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 
     public class Supply : PassiveFeature
     {
-        public Supply(int points)
+        public Supply(string name, string symbol, int points)
+            : base(name, symbol)
         {
             Points = points;
         }
 
         public Supply(string name, string symbol, Dictionary<string, int> data)
+            : base(name, symbol)
         {
             Points = data["points"];
         }
 
         protected override Dictionary<string, int> SerializeData()
         {
-            var data = base.SerializeData()
-            {
-                { "points", Points },
-            });
+            var data = base.SerializeData();
+            data.Add("points", Points);
+            return data;
         }
 
-        public const string TypeID = "supply";
+        internal const string TypeID = "supply";
 
         protected override string Identifier => TypeID;
 
@@ -268,25 +272,26 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 
     public class LongerRange : PassiveFeature
     {
-        public LongerRange(int extraPoints)
+        public LongerRange(string name, string symbol, int extraPoints)
+            : base(name, symbol)
         {
             ExtraPoints = extraPoints;
         }
 
         public LongerRange(string name, string symbol, Dictionary<string, int> data)
+            : base(name, symbol)
         {
             ExtraPoints = data["points"];
         }
 
         protected override Dictionary<string, int> SerializeData()
         {
-            var data = base.SerializeData()
-            {
-                { "points", ExtraPoints },
-            });
+            var data = base.SerializeData();
+            data.Add("points", ExtraPoints);
+            return data;
         }
 
-        public const string TypeID = "passive attack range";
+        internal const string TypeID = "passive attack range";
 
         protected override string Identifier => TypeID;
 

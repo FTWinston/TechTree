@@ -1,7 +1,6 @@
 ﻿using ObjectiveStrategy.GameModels.Definitions;
 using ObjectiveStrategy.GameModels.Definitions.Features;
 using ObjectiveStrategy.GameModels.Instances;
-using ObjectiveStrategy.GameModels.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,7 +33,7 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             return data;
         }
 
-        public const string TypeID = "attack";
+        internal const string TypeID = "attack";
 
         protected override string Identifier => TypeID;
 

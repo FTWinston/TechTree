@@ -1,5 +1,4 @@
 ﻿using ObjectiveStrategy.GameModels.Definitions.StatusEffects;
-using ObjectiveStrategy.GameModels.Serialization;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -26,7 +25,7 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             return data;
         }
 
-        public const string TypeID = "toggleable aoe cloak";
+        internal const string TypeID = "toggleable aoe cloak";
 
         protected override string Identifier => TypeID;
 

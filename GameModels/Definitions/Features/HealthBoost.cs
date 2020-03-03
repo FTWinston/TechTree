@@ -1,5 +1,4 @@
-﻿using ObjectiveStrategy.GameModels.Serialization;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
@@ -7,18 +6,17 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
     public class HealthBoost : TargettedStatusEffectFeature<StatusEffects.HealthBoost>
     {
-        public HealthBoost(int range, int duration, int healthBoost, int armorBoost)
+        public HealthBoost(string name, string symbol, int manaCost, int? limitedUses, int? cooldown, int range, int duration, int healthBoost, int armorBoost)
+            : base(name, symbol, manaCost, limitedUses, cooldown, range)
         {
-            Range = range;
-
             Effect.Duration = duration;
             Effect.ExtraHealth = healthBoost;
             Effect.ExtraArmor = armorBoost;
         }
 
         public HealthBoost(string name, string symbol, Dictionary<string, int> data)
+            : base(name, symbol, data)
         {
-            Range = data["range"];
             Effect.Duration = data["duration"];
             Effect.ExtraHealth = data["health"];
             Effect.ExtraArmor = data["armor"];
@@ -26,16 +24,14 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 
         protected override Dictionary<string, int> SerializeData()
         {
-            var data = base.SerializeData()
-            {
-                { "range", Range },
-                { "duration", Effect.Duration },
-                { "health", Effect.ExtraHealth },
-                { "armor", Effect.ExtraArmor },
-            });
+            var data = base.SerializeData();
+            data.Add("duration", Effect.Duration);
+            data.Add("health", Effect.ExtraHealth);
+            data.Add("armor", Effect.ExtraArmor);
+            return data;
         }
 
-        public const string TypeID = "health boost";
+        internal const string TypeID = "health boost";
 
         protected override string Identifier => TypeID;
 
