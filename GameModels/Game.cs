@@ -1,8 +1,8 @@
-﻿using Newtonsoft.Json;
-using ObjectiveStrategy.GameModels.Events;
+﻿using ObjectiveStrategy.GameModels.Events;
 using ObjectiveStrategy.GameModels.Instances;
 using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace ObjectiveStrategy.GameModels
 {
@@ -29,7 +29,7 @@ namespace ObjectiveStrategy.GameModels
 
         public Player[] Players { get; }
 
-        [JsonProperty(PropertyName = "CurrentPlayer")]
+        [JsonPropertyName("CurrentPlayer")]
         public int CurrentPlayerIndex { get; set; } = 0;
 
         [JsonIgnore]

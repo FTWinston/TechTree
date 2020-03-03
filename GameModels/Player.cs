@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using ObjectiveStrategy.GameModels.Definitions;
+﻿using ObjectiveStrategy.GameModels.Definitions;
 using ObjectiveStrategy.GameModels.Instances;
 using System;
 using System.Collections.Generic;

@@ -1,8 +1,8 @@
 ﻿using ObjectiveStrategy.GameModels.Instances;
-using Newtonsoft.Json;
-using System.Collections.Generic;
 using ObjectiveStrategy.GameModels.Extensions;
 using System;
+using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace ObjectiveStrategy.GameModels.Definitions.Features
 {

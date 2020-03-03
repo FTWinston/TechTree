@@ -1,7 +1,9 @@
 ﻿using ObjectiveStrategy.GameModels.Instances;
+using ObjectiveStrategy.GameModels.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 
 namespace ObjectiveStrategy.GameModels
 {
@@ -42,6 +44,7 @@ namespace ObjectiveStrategy.GameModels
 
         public bool RelativeToOpponent { get; set; }
 
+        [JsonConverter(typeof(ObjectiveCellsConverter))]
         public Dictionary<int, int[]>? CellsByPlayer { get; set; }
 
         public bool IsSatisfied(Game game, Player player)

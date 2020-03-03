@@ -31,6 +31,8 @@ namespace ObjectiveStrategy.GameGeneration
 
             Random random = new Random(seed);
 
+            int turnLimit = complexity; // TODO: this is now how turn limit should be calculated
+
             var techTree = new TreeGenerator(complexity, random.Next())
                 .Generate();
 
@@ -41,7 +43,7 @@ namespace ObjectiveStrategy.GameGeneration
 
             var objectives = new Objective[] { }; // TODO: actually generate these
 
-            return new GameDefinition(seed, complexity, techTree, battlefield, objectives);
+            return new GameDefinition(seed, complexity, turnLimit, techTree, battlefield, objectives);
         }
     }
 }

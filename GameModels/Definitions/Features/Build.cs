@@ -1,10 +1,10 @@
 ﻿using ObjectiveStrategy.GameModels.Instances;
-using Newtonsoft.Json;
 using ObjectiveStrategy.GameModels.Extensions;
+using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 using FeatureData = System.Collections.Generic.Dictionary<string, int>;
-using System;
 
 namespace ObjectiveStrategy.GameModels.Definitions.Features
 {

@@ -9,7 +9,7 @@ namespace ObjectiveStrategy.GameModels.Definitions
 
         internal abstract IEnumerable<KeyValuePair<uint, IUnitType>> AllUnits { get; }
 
-        public abstract Dictionary<uint, Research> Research { get; }
+        public abstract Dictionary<uint, Research> Research { get; set; }
     }
 
     public abstract class BaseTechTree<TBuildingType, TUnitType> : BaseTechTree
@@ -35,11 +35,11 @@ namespace ObjectiveStrategy.GameModels.Definitions
             Research = research;
         }
 
-        public Dictionary<uint, TBuildingType> Buildings { get; }
+        public Dictionary<uint, TBuildingType> Buildings { get; set; }
 
-        public Dictionary<uint, TUnitType> Units { get; }
+        public Dictionary<uint, TUnitType> Units { get; set; }
 
-        public override Dictionary<uint, Research> Research { get; }
+        public override Dictionary<uint, Research> Research { get; set; }
 
         internal override IEnumerable<KeyValuePair<uint, IBuildingType>> AllBuildings =>
             Buildings.Select(kvp => new KeyValuePair<uint, IBuildingType>(kvp.Key, kvp.Value));

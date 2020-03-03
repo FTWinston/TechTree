@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using System.Linq;
 using ObjectiveStrategy.GameGeneration;
 using ObjectiveStrategy.GameLogic.Factories;
+using System.Text.Json;
 
 namespace ObjectiveStrategy.Site.Controllers
 {

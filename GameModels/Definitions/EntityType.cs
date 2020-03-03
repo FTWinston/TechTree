@@ -1,7 +1,7 @@
-﻿using Newtonsoft.Json;
-using ObjectiveStrategy.GameModels.Serialization;
+﻿using ObjectiveStrategy.GameModels.Serialization;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 
 namespace ObjectiveStrategy.GameModels.Definitions
 {
@@ -50,7 +50,7 @@ namespace ObjectiveStrategy.GameModels.Definitions
         [JsonIgnore]
         public List<Feature> LockedFeatures { get; }
 
-        [JsonProperty(PropertyName = "Features")]
+        [JsonPropertyName("Features")]
         public List<FeatureDTO> FeatureDTOs
         {
             get
@@ -71,7 +71,7 @@ namespace ObjectiveStrategy.GameModels.Definitions
             }
         }
 
-        [JsonProperty(PropertyName = "LockedFeatures")]
+        [JsonPropertyName("LockedFeatures")]
         public List<FeatureDTO> LockedFeatureDTOs
         {
             get

@@ -1,9 +1,12 @@
 ﻿using ObjectiveStrategy.GameModels.Definitions;
+using ObjectiveStrategy.GameModels.Serialization;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 
 namespace ObjectiveStrategy.GameModels
 {
+    [JsonConverter(typeof(TechTreeConverter))]
     public class TechTree : BaseTechTree<BuildingType, UnitType>
     {
         public TechTree()
