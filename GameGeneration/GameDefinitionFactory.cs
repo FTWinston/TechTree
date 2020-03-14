@@ -43,7 +43,15 @@ namespace ObjectiveStrategy.GameGeneration
 
             var objectives = new Objective[] { }; // TODO: actually generate these
 
-            return new GameDefinition(seed, complexity, turnLimit, techTree, battlefield, objectives);
+            return new GameDefinition
+            (
+                complexity: complexity,
+                seed: seed,
+                turnLimit: turnLimit,
+                techTree: techTree,
+                battlefield: battlefield,
+                objectives: objectives
+            );
         }
     }
 }

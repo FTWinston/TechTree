@@ -86,7 +86,15 @@ namespace ObjectiveStrategy.GameModels.Serialization
             if (!complexity.HasValue || !seed.HasValue || !turnLimit.HasValue || battlefield == null || techTree == null || objectives.Count == 0)
                 throw new JsonException();
 
-            return new GameDefinition(complexity.Value, seed.Value, turnLimit.Value, techTree, battlefield, objectives.ToArray());
+            return new GameDefinition
+            (
+                complexity: complexity.Value,
+                seed: seed.Value,
+                turnLimit: turnLimit.Value,
+                techTree: techTree,
+                battlefield: battlefield,
+                objectives: objectives.ToArray()
+            );
         }
 
         public override void Write(Utf8JsonWriter writer, GameDefinition value, JsonSerializerOptions options)
