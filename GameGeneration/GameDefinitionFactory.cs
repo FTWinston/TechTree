@@ -41,7 +41,8 @@ namespace ObjectiveStrategy.GameGeneration
             var battlefield = new BattlefieldGenerator(complexity, random.Next())
                 .Generate();
 
-            var objectives = new Objective[] { }; // TODO: actually generate these
+            var objectives = new ObjectiveGenerator(complexity, random.Next())
+                .Generate();
 
             return new GameDefinition
             (

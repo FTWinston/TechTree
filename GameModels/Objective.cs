@@ -44,7 +44,7 @@ namespace ObjectiveStrategy.GameModels
 
         public bool RelativeToOpponent { get; set; }
 
-        [JsonConverter(typeof(ObjectiveCellsConverter))]
+        [JsonConverter(typeof(IntDictionaryConverter<int[]>))]
         public Dictionary<int, int[]>? CellsByPlayer { get; set; }
 
         public bool IsSatisfied(Game game, Player player)
