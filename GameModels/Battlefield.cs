@@ -1,12 +1,9 @@
 ﻿using ObjectiveStrategy.GameModels.Instances;
 using ObjectiveStrategy.GameModels.Map;
-using ObjectiveStrategy.GameModels.Serialization;
 using System.Collections.Generic;
-using System.Text.Json.Serialization;
 
 namespace ObjectiveStrategy.GameModels
 {
-    //[JsonConverter(typeof(BattlefieldConverter))]
     public class Battlefield : HexMap<Cell>
     {
         public Battlefield(int width, int height)

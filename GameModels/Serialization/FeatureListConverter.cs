@@ -11,7 +11,7 @@ namespace ObjectiveStrategy.GameModels.Serialization
     {
         public override List<Feature> Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            return JsonSerializer.Deserialize<FeatureDTO[]>(ref reader)
+            return JsonSerializer.Deserialize<FeatureDTO[]>(ref reader, options)
                 .Select(feature => feature.ToFeature())
                 .ToList();
         }
@@ -22,8 +22,7 @@ namespace ObjectiveStrategy.GameModels.Serialization
                 .Select(feature => feature.ToDTO())
                 .ToArray();
 
-            // Don't pass in options when recursively calling Serialize.
-            JsonSerializer.Serialize(writer, features);
+            JsonSerializer.Serialize(writer, features, options);
         }
     }
 }

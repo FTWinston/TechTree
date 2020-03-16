@@ -21,13 +21,13 @@ namespace ObjectiveStrategy.GameModels.Serialization
             if (value.Building != null)
             {
                 writer.WritePropertyName(nameof(Cell.Building));
-                JsonSerializer.Serialize(value.Building);
+                JsonSerializer.Serialize(value.Building, options);
             }
 
             if (value.Units.Count > 0)
             {
                 writer.WritePropertyName(nameof(Cell.Units));
-                JsonSerializer.Serialize(value.Units);
+                JsonSerializer.Serialize(value.Units, options);
             }
 
             writer.WriteEndObject();

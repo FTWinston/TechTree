@@ -1,93 +1,48 @@
 ﻿using ObjectiveStrategy.GameModels.Definitions;
 using System;
-using System.Collections.Generic;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace ObjectiveStrategy.GameModels.Serialization
 {
-    public class GameDefinitionReadConverter : PropertyDictionaryConverter<GameDefinition>
+    public class GameDefinitionReadConverter : JsonConverter<GameDefinition>
     {
+        private class DTO
+        {
+            public int Complexity { get; set; }
+            
+            public int Seed { get; set; }
+            
+            public int TurnLimit { get; set; }
+
+            public Battlefield? Battlefield { get; set; }
+
+            public TechTree? TechTree { get; set; }
+
+            public Objective[]? Objectives { get; set; }
+        }
+
         public override GameDefinition Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            if (reader.TokenType != JsonTokenType.StartObject)
-                throw new JsonException();
+            var dto = JsonSerializer.Deserialize<DTO>(ref reader, options);
 
-            int? complexity = 0;
-            int? seed = 0;
-            int? turnLimit = 0;
-            Battlefield? battlefield = null;
-            TechTree? techTree = null;
-            var objectives = new List<Objective>();
-
-            ReadProperties(ref reader, new Dictionary<string, FieldReader>
-            {
-                {
-                    nameof(GameDefinition.Seed), (ref Utf8JsonReader r) => {
-                        if (r.TokenType != JsonTokenType.Number)
-                            throw new JsonException();
-                        seed = r.GetInt32();
-                    }
-                },
-                {
-                    nameof(GameDefinition.Complexity), (ref Utf8JsonReader r) =>
-                    {
-                        if (r.TokenType != JsonTokenType.Number)
-                            throw new JsonException();
-                        complexity = r.GetInt32();
-                    }
-                },
-                {
-                    nameof(GameDefinition.TurnLimit), (ref Utf8JsonReader r) =>
-                    {
-                        if (r.TokenType != JsonTokenType.Number)
-                            throw new JsonException();
-                        turnLimit = r.GetInt32();
-                    }
-                },
-                {
-                    nameof(GameDefinition.Battlefield), (ref Utf8JsonReader r) =>
-                    {
-                        if (r.TokenType != JsonTokenType.StartObject)
-                            throw new JsonException();
-                        battlefield = JsonSerializer.Deserialize<Battlefield>(ref r);
-                    }
-                },
-                {
-                    nameof(GameDefinition.TechTree), (ref Utf8JsonReader r) =>
-                    {
-                        if (r.TokenType != JsonTokenType.StartObject)
-                            throw new JsonException();
-                        techTree = JsonSerializer.Deserialize<TechTree>(ref r);
-                    }
-                },
-                {
-                    nameof(GameDefinition.Objectives), (ref Utf8JsonReader r) =>
-                    {
-                        if (r.TokenType != JsonTokenType.StartArray)
-                            throw new JsonException();
-
-                        r.Read();
-
-                        while (r.TokenType != JsonTokenType.EndArray)
-                            objectives.Add(JsonSerializer.Deserialize<Objective>(ref r));
-                        
-                        r.Read();
-                    }
-                },
-            });
-
-            if (!complexity.HasValue || !seed.HasValue || !turnLimit.HasValue || battlefield == null || techTree == null || objectives.Count == 0)
+            if (dto.Battlefield == null || dto.TechTree == null || dto.Objectives == null || dto.Objectives.Length == 0)
                 throw new JsonException();
 
             return new GameDefinition
             (
-                complexity: complexity.Value,
-                seed: seed.Value,
-                turnLimit: turnLimit.Value,
-                techTree: techTree,
-                battlefield: battlefield,
-                objectives: objectives.ToArray()
+                complexity: dto.Complexity,
+                seed: dto.Seed,
+                turnLimit: dto.TurnLimit,
+                techTree: dto.TechTree,
+                battlefield: dto.Battlefield,
+                objectives: dto.Objectives
             );
+        }
+
+        public override void Write(Utf8JsonWriter writer, GameDefinition value, JsonSerializerOptions options)
+        {
+            throw new NotImplementedException();
         }
     }
 }
