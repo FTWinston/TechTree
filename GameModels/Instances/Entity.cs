@@ -1,4 +1,5 @@
 ﻿using ObjectiveStrategy.GameModels.Definitions;
+using ObjectiveStrategy.GameModels.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
@@ -29,7 +30,8 @@ namespace ObjectiveStrategy.GameModels.Instances
         [JsonIgnore]
         public HashSet<Cell> VisibleCells { get; set; } = new HashSet<Cell>();
 
-        public Dictionary<Feature, Dictionary<string, int>> FeatureData { get; } = new Dictionary<Feature, Dictionary<string, int>>();
+        [JsonConverter(typeof(UintDictionaryConverter<Dictionary<string, int>>))]
+        public Dictionary<uint, Dictionary<string, int>> FeatureData { get; } = new Dictionary<uint, Dictionary<string, int>>();
 
         public List<Tuple<IStatusEffect, int>> StatusEffects { get; } = new List<Tuple<IStatusEffect, int>>();
 

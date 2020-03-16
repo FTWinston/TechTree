@@ -7,15 +7,15 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
     public class AreaDetection : TargettedFeature
     {
-        public AreaDetection(string name, string symbol, int manaCost, int? limitedUses, int? cooldown, int? range, int radius, int duration)
-            : base(name, symbol, manaCost, limitedUses, cooldown, range)
+        public AreaDetection(uint id, string name, string symbol, int manaCost, int? limitedUses, int? cooldown, int? range, int radius, int duration)
+            : base(id, name, symbol, manaCost, limitedUses, cooldown, range)
         {
             Radius = radius;
             Duration = duration;
         }
 
-        public AreaDetection(string name, string symbol, Dictionary<string, int> data)
-            : base(name, symbol, data)
+        public AreaDetection(uint id, string name, string symbol, Dictionary<string, int> data)
+            : base(id, name, symbol, data)
         {
             Radius = data["radius"];
             Duration = data["duration"];
@@ -33,7 +33,7 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 
         internal const string TypeID = "reveal";
         
-        protected override string Identifier => TypeID;
+        protected override string TypeIdentifier => TypeID;
 
         public override string Description
         {

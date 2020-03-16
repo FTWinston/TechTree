@@ -7,15 +7,15 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
     public class Landmine : ActivatedFeature
     {
-        public Landmine(string name, string symbol, int manaCost, int? limitedUses, int? cooldown, int damageMin, int damageMax)
-            : base(name, symbol, manaCost, limitedUses, cooldown)
+        public Landmine(uint id, string name, string symbol, int manaCost, int? limitedUses, int? cooldown, int damageMin, int damageMax)
+            : base(id, name, symbol, manaCost, limitedUses, cooldown)
         {
             DamageMin = damageMin;
             DamageMax = damageMax;
         }
 
-        public Landmine(string name, string symbol, Dictionary<string, int> data)
-            : base(name, symbol, data)
+        public Landmine(uint id, string name, string symbol, Dictionary<string, int> data)
+            : base(id, name, symbol, data)
         {
             DamageMin = data["damageMin"];
             DamageMax = data["damageMax"];
@@ -31,7 +31,7 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 
         internal const string TypeID = "landmine";
 
-        protected override string Identifier => TypeID;
+        protected override string TypeIdentifier => TypeID;
 
         public override string Description
         {

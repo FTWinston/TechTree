@@ -6,8 +6,8 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
     public class Suicide : StatusEffectFeature<Exploding>
     {
-        public Suicide(string name, string symbol, int manaCost, int? limitedUses, int? cooldown, int duration, int damageMin, int damageMax, int damageDistance)
-            : base(name, symbol, manaCost, limitedUses, cooldown)
+        public Suicide(uint id, string name, string symbol, int manaCost, int? limitedUses, int? cooldown, int duration, int damageMin, int damageMax, int damageDistance)
+            : base(id, name, symbol, manaCost, limitedUses, cooldown)
         {
             Effect.Duration = duration;
             Effect.DamageMin = damageMin;
@@ -15,8 +15,8 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             Effect.DamageDistance = damageDistance;
         }
 
-        public Suicide(string name, string symbol, Dictionary<string, int> data)
-            : base(name, symbol, data)
+        public Suicide(uint id, string name, string symbol, Dictionary<string, int> data)
+            : base(id, name, symbol, data)
         {
             Effect.Duration = data["duration"];
             Effect.DamageMin = data["damageMin"];
@@ -36,7 +36,7 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 
         internal const string TypeID = "suicide";
 
-        protected override string Identifier => TypeID;
+        protected override string TypeIdentifier => TypeID;
 
         public override string Description
         {

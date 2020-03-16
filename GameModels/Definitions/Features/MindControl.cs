@@ -7,15 +7,15 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
     public class MindControl : EntityTargettedFeature
     {
-        public MindControl(string name, string symbol, int manaCost, int? limitedUses, int? cooldown, int range, int? duration, int? maxControlRange)
-            : base(name, symbol, manaCost, limitedUses, cooldown, range)
+        public MindControl(uint id, string name, string symbol, int manaCost, int? limitedUses, int? cooldown, int range, int? duration, int? maxControlRange)
+            : base(id, name, symbol, manaCost, limitedUses, cooldown, range)
         {
             Duration = duration;
             MaxControlRange = maxControlRange;
         }
 
-        public MindControl(string name, string symbol, Dictionary<string, int> data)
-            : base(name, symbol, data)
+        public MindControl(uint id, string name, string symbol, Dictionary<string, int> data)
+            : base(id, name, symbol, data)
         {
             if (data.TryGetValue("duration", out var duration))
                 Duration = Duration;
@@ -38,7 +38,7 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 
         internal const string TypeID = "mind control";
 
-        protected override string Identifier => TypeID;
+        protected override string TypeIdentifier => TypeID;
 
         public override string Description
         {

@@ -7,15 +7,15 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
     public class ManaBurn : EntityTargettedFeature
     {
-        public ManaBurn(string name, string symbol, int manaCost, int? limitedUses, int? cooldown, int range, int maxMana, float damagePerMana)
-            : base(name, symbol, manaCost, limitedUses, cooldown, range)
+        public ManaBurn(uint id, string name, string symbol, int manaCost, int? limitedUses, int? cooldown, int range, int maxMana, float damagePerMana)
+            : base(id, name, symbol, manaCost, limitedUses, cooldown, range)
         {
             MaxMana = maxMana;
             DamagePerMana = damagePerMana;
         }
 
-        public ManaBurn(string name, string symbol, Dictionary<string, int> data)
-            : base(name, symbol, data)
+        public ManaBurn(uint id, string name, string symbol, Dictionary<string, int> data)
+            : base(id, name, symbol, data)
         {
             MaxMana = data["maxMana"];
             DamagePerMana = data["damagePerMana"] / 100f;
@@ -31,7 +31,7 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 
         internal const string TypeID = "mana burn";
 
-        protected override string Identifier => TypeID;
+        protected override string TypeIdentifier => TypeID;
 
         public override string Description
         {

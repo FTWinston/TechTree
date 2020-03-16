@@ -7,15 +7,15 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
     public class TargettedInstant : EntityTargettedFeature
     {
-        public TargettedInstant(string name, string symbol, int manaCost, int? limitedUses, int? cooldown, int range, int damageMin, int damageMax)
-            : base(name, symbol, manaCost, limitedUses, cooldown, range)
+        public TargettedInstant(uint id, string name, string symbol, int manaCost, int? limitedUses, int? cooldown, int range, int damageMin, int damageMax)
+            : base(id, name, symbol, manaCost, limitedUses, cooldown, range)
         {
             DamageMin = damageMin;
             DamageMax = damageMax;
         }
 
-        public TargettedInstant(string name, string symbol, Dictionary<string, int> data)
-            : base(name, symbol, data)
+        public TargettedInstant(uint id, string name, string symbol, Dictionary<string, int> data)
+            : base(id, name, symbol, data)
         {
             DamageMin = data["damageMin"];
             DamageMax = data["damageMax"];
@@ -31,7 +31,7 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 
         internal const string TypeID = "targetted instant";
 
-        protected override string Identifier => TypeID;
+        protected override string TypeIdentifier => TypeID;
 
         public override string Description
         {

@@ -7,16 +7,16 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
     public class AreaInstant : TargettedFeature
     {
-        public AreaInstant(string name, string symbol, int manaCost, int? limitedUses, int? cooldown, int range, int radius, int damageMin, int damageMax)
-            : base(name, symbol, manaCost, limitedUses, cooldown, range)
+        public AreaInstant(uint id, string name, string symbol, int manaCost, int? limitedUses, int? cooldown, int range, int radius, int damageMin, int damageMax)
+            : base(id, name, symbol, manaCost, limitedUses, cooldown, range)
         {
             Radius = radius;
             DamageMin = damageMin;
             DamageMax = damageMax;
         }
 
-        public AreaInstant(string name, string symbol, Dictionary<string, int> data)
-            : base(name, symbol, data)
+        public AreaInstant(uint id, string name, string symbol, Dictionary<string, int> data)
+            : base(id, name, symbol, data)
         {
             Radius = data["radius"];
             DamageMin = data["damageMin"];
@@ -34,7 +34,7 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 
         internal const string TypeID = "area damage";
 
-        protected override string Identifier => TypeID;
+        protected override string TypeIdentifier => TypeID;
 
         public override string Description
         {

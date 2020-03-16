@@ -6,15 +6,15 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
     public class Construction : ActivatedFeature
     {
-        public Construction(string name, string symbol)
-            : base(name, symbol, 0, null, null) { }
+        public Construction(uint id, string name, string symbol)
+            : base(id, name, symbol, 0, null, null) { }
 
-        public Construction(string name, string symbol, Dictionary<string, int> data)
-            : base(name, symbol, data) { }
+        public Construction(uint id, string name, string symbol, Dictionary<string, int> data)
+            : base(id, name, symbol, data) { }
 
         internal const string TypeID = "construct";
 
-        protected override string Identifier => TypeID;
+        protected override string TypeIdentifier => TypeID;
 
         public override string Description => "Constructs buildings";
 

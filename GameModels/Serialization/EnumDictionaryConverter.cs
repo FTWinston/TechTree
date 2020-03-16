@@ -1,36 +1,34 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Globalization;
-using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace ObjectiveStrategy.GameModels.Serialization
 {
-    sealed class IntDictionaryConverter<TValue> : JsonConverter<Dictionary<int, TValue>?>
+    sealed class EnumDictionaryConverter<TKey, TValue> : JsonConverter<Dictionary<TKey, TValue>?>
+        where TKey : struct, Enum
     {
-        public override Dictionary<int, TValue>? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        public override Dictionary<TKey, TValue>? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             var stringDictionary = JsonSerializer.Deserialize<Dictionary<string, TValue>?>(ref reader, options);
 
             if (stringDictionary == null)
                 return null;
 
-            var intDictionary = new Dictionary<int, TValue>();
+            var enumDictionary = new Dictionary<TKey, TValue>();
 
             var enumerator = stringDictionary.GetEnumerator();
 
             while (enumerator.MoveNext())
             {
                 var element = enumerator.Current;
-                intDictionary.Add(int.Parse(element.Key), element.Value);
+                enumDictionary.Add(Enum.Parse<TKey>(element.Key), element.Value);
             }
 
-            return intDictionary;
+            return enumDictionary;
         }
 
-        public override void Write(Utf8JsonWriter writer, Dictionary<int, TValue>? value, JsonSerializerOptions options)
+        public override void Write(Utf8JsonWriter writer, Dictionary<TKey, TValue>? value, JsonSerializerOptions options)
         {
             if (value == null)
             {

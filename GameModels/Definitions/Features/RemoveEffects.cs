@@ -6,17 +6,17 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
     public class RemoveEffects : EntityTargettedFeature
     {
-        public RemoveEffects(string name, string symbol, int manaCost, int? limitedUses, int? cooldown, int range)
-            : base(name, symbol, manaCost, limitedUses, cooldown, range)
+        public RemoveEffects(uint id, string name, string symbol, int manaCost, int? limitedUses, int? cooldown, int range)
+            : base(id, name, symbol, manaCost, limitedUses, cooldown, range)
         { }
 
-        public RemoveEffects(string name, string symbol, Dictionary<string, int> data)
-            : base(name, symbol, data)
+        public RemoveEffects(uint id, string name, string symbol, Dictionary<string, int> data)
+            : base(id, name, symbol, data)
         { }
 
         internal const string TypeID = "remove effects";
 
-        protected override string Identifier => TypeID;
+        protected override string TypeIdentifier => TypeID;
 
         public override string Description
         {

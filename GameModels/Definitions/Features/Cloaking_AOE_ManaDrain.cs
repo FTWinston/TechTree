@@ -6,14 +6,14 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
     public class Cloaking_AOE_ManaDrain : EffectToggleFeature<AreaInvisible>
     {
-        public Cloaking_AOE_ManaDrain(string name, string symbol, int activateManaCost, int manaCostPerTurn, int radius)
-            : base(name, symbol, activateManaCost, manaCostPerTurn)
+        public Cloaking_AOE_ManaDrain(uint id, string name, string symbol, int activateManaCost, int manaCostPerTurn, int radius)
+            : base(id, name, symbol, activateManaCost, manaCostPerTurn)
         {
             Radius = radius;
         }
 
-        public Cloaking_AOE_ManaDrain(string name, string symbol, Dictionary<string, int> data)
-            : base(name, symbol, data)
+        public Cloaking_AOE_ManaDrain(uint id, string name, string symbol, Dictionary<string, int> data)
+            : base(id, name, symbol, data)
         {
             Radius = data["radius"];
         }
@@ -27,7 +27,7 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 
         internal const string TypeID = "toggleable aoe cloak";
 
-        protected override string Identifier => TypeID;
+        protected override string TypeIdentifier => TypeID;
 
         public override string Description => "Prevents this unit from being seen by enemy units that lack the [detector] feature";
 

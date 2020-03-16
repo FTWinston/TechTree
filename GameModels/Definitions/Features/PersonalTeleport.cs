@@ -7,17 +7,17 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
     public class PersonalTeleport : TargettedFeature
     {
-        public PersonalTeleport(string name, string symbol, int manaCost, int? limitedUses, int? cooldown, int range)
-            : base(name, symbol, manaCost, limitedUses, cooldown, range)
+        public PersonalTeleport(uint id, string name, string symbol, int manaCost, int? limitedUses, int? cooldown, int range)
+            : base(id, name, symbol, manaCost, limitedUses, cooldown, range)
         { }
 
-        public PersonalTeleport(string name, string symbol, Dictionary<string, int> data)
-            : base(name, symbol, data)
+        public PersonalTeleport(uint id, string name, string symbol, Dictionary<string, int> data)
+            : base(id, name, symbol, data)
         { }
 
         internal const string TypeID = "personal teleport";
 
-        protected override string Identifier => TypeID;
+        protected override string TypeIdentifier => TypeID;
 
         public override string Description
         {

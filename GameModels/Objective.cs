@@ -29,7 +29,7 @@ namespace ObjectiveStrategy.GameModels
             FeatureTypeID = copyFrom.FeatureTypeID;
             TargetQuantity = copyFrom.TargetQuantity;
             RelativeToOpponent = copyFrom.RelativeToOpponent;
-            CellsByPlayer = new Dictionary<int, int[]>(copyFrom.CellsByPlayer);
+            CellsByPlayer = new Dictionary<uint, int[]>(copyFrom.CellsByPlayer);
         }
 
         public string Description { get; set; } = string.Empty;
@@ -44,8 +44,8 @@ namespace ObjectiveStrategy.GameModels
 
         public bool RelativeToOpponent { get; set; }
 
-        [JsonConverter(typeof(IntDictionaryConverter<int[]>))]
-        public Dictionary<int, int[]>? CellsByPlayer { get; set; }
+        [JsonConverter(typeof(UintDictionaryConverter<int[]>))]
+        public Dictionary<uint, int[]>? CellsByPlayer { get; set; }
 
         public bool IsSatisfied(Game game, Player player)
         {

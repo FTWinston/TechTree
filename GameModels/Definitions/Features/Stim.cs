@@ -7,16 +7,16 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
     public class Stim : StatusEffectFeature<Stimmed>
     {
-        public Stim(string name, string symbol, int manaCost, int? limitedUses, int? cooldown, int duration, int initialHealthDrain, int extraPoints)
-            : base(name, symbol, manaCost, limitedUses, cooldown)
+        public Stim(uint id, string name, string symbol, int manaCost, int? limitedUses, int? cooldown, int duration, int initialHealthDrain, int extraPoints)
+            : base(id, name, symbol, manaCost, limitedUses, cooldown)
         {
             Effect.Duration = duration;
             Effect.InitialHealthDrain = initialHealthDrain;
             Effect.ExtraPoints = extraPoints;
         }
 
-        public Stim(string name, string symbol, Dictionary<string, int> data)
-            : base(name, symbol, data)
+        public Stim(uint id, string name, string symbol, Dictionary<string, int> data)
+            : base(id, name, symbol, data)
         {
             Effect.Duration = data["duration"];
             Effect.InitialHealthDrain = data["initialDrain"];
@@ -34,7 +34,7 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 
         internal const string TypeID = "own health drain";
 
-        protected override string Identifier => TypeID;
+        protected override string TypeIdentifier => TypeID;
 
         public override string Description
         {

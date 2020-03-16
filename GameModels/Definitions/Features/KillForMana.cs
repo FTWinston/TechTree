@@ -7,14 +7,14 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
     public class KillForMana : EntityTargettedFeature
     {
-        public KillForMana(string name, string symbol, int manaCost, int? limitedUses, int? cooldown, int range, float manaPerHitpoint)
-            : base(name, symbol, manaCost, limitedUses, cooldown, range)
+        public KillForMana(uint id, string name, string symbol, int manaCost, int? limitedUses, int? cooldown, int range, float manaPerHitpoint)
+            : base(id, name, symbol, manaCost, limitedUses, cooldown, range)
         {
             ManaPerHitpoint = manaPerHitpoint;
         }
 
-        public KillForMana(string name, string symbol, Dictionary<string, int> data)
-            : base(name, symbol, data)
+        public KillForMana(uint id, string name, string symbol, Dictionary<string, int> data)
+            : base(id, name, symbol, data)
         {
             ManaPerHitpoint = data["manaPerHp"] / 100f;
         }
@@ -28,7 +28,7 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 
         internal const string TypeID = "kill for mana";
 
-        protected override string Identifier => TypeID;
+        protected override string TypeIdentifier => TypeID;
 
         public override string Description
         {

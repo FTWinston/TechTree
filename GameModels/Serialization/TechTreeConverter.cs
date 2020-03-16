@@ -16,9 +16,9 @@ namespace ObjectiveStrategy.GameModels.Serialization
         public override void Write(Utf8JsonWriter writer, TechTree value, JsonSerializerOptions options)
         {
             // Don't pass in options when recursively calling Serialize.
-            // JsonSerializer.Serialize(writer, value);
-            writer.WriteStartObject();
-            writer.WriteEndObject();
+            JsonSerializer.Serialize(writer, value, options);
+            // writer.WriteStartObject();
+            // writer.WriteEndObject();
         }
     }
 }

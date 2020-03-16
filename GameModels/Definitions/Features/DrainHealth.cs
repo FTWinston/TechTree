@@ -6,16 +6,16 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
     public class DrainHealth : TargettedStatusEffectFeature<HealthDrain>
     {
-        public DrainHealth(string name, string symbol, int manaCost, int? limitedUses, int? cooldown, int range, int duration, int damagePerTurn, float manaPerHitpoint)
-            : base(name, symbol, manaCost, limitedUses, cooldown, range)
+        public DrainHealth(uint id, string name, string symbol, int manaCost, int? limitedUses, int? cooldown, int range, int duration, int damagePerTurn, float manaPerHitpoint)
+            : base(id, name, symbol, manaCost, limitedUses, cooldown, range)
         {
             Effect.Duration = duration;
             Effect.DamagePerTurn = damagePerTurn;
             Effect.ManaPerHitpoint = manaPerHitpoint;
         }
 
-        public DrainHealth(string name, string symbol, Dictionary<string, int> data)
-            : base(name, symbol, data)
+        public DrainHealth(uint id, string name, string symbol, Dictionary<string, int> data)
+            : base(id, name, symbol, data)
         {
             Effect.Duration = data["duration"];
             Effect.DamagePerTurn = data["damagePerTurn"];
@@ -33,7 +33,7 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 
         internal const string TypeID = "drain health";
 
-        protected override string Identifier => TypeID;
+        protected override string TypeIdentifier => TypeID;
 
         public override string Description
         {

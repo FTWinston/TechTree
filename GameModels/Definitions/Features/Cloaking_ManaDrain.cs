@@ -5,15 +5,15 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
     public class Cloaking_ManaDrain : EffectToggleFeature<Invisible>
     {
-        public Cloaking_ManaDrain(string name, string symbol, int activateManaCost, int manaCostPerTurn)
-            : base(name, symbol, activateManaCost, manaCostPerTurn) { }
+        public Cloaking_ManaDrain(uint id, string name, string symbol, int activateManaCost, int manaCostPerTurn)
+            : base(id, name, symbol, activateManaCost, manaCostPerTurn) { }
 
-        public Cloaking_ManaDrain(string name, string symbol, Dictionary<string, int> data)
-            : base(name, symbol, data) { }
+        public Cloaking_ManaDrain(uint id, string name, string symbol, Dictionary<string, int> data)
+            : base(id, name, symbol, data) { }
 
         internal const string TypeID = "toggleable cloak";
 
-        protected override string Identifier => TypeID;
+        protected override string TypeIdentifier => TypeID;
 
         public override string Description => "Prevents this unit from being seen by enemy units that lack the [detector] feature";
 

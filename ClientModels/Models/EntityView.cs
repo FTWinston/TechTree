@@ -11,7 +11,7 @@ namespace ObjectiveStrategy.ClientModels.Models
 
         public abstract uint ID { get; }
 
-        public abstract int Owner { get; }
+        public abstract uint Owner { get; }
 
         public abstract int Health { get; }
 
@@ -41,7 +41,7 @@ namespace ObjectiveStrategy.ClientModels.Models
 
         public override uint ID => Entity.ID;
 
-        public override int Owner => Entity.Owner.ID;
+        public override uint Owner => Entity.Owner.ID;
 
         public override int Health => Entity.Health;
 

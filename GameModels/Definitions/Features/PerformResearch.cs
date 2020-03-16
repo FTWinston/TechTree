@@ -8,14 +8,14 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
     public class PerformResearch : Feature
     {
-        public PerformResearch(string name, string symbol, Research research)
-            : base(name, symbol)
+        public PerformResearch(uint id, string name, string symbol, Research research)
+            : base(id, name, symbol)
         {
             Research = research;
         }
 
-        public PerformResearch(string name, string symbol, Dictionary<string, int> data)
-            : base(name, symbol)
+        public PerformResearch(uint id, string name, string symbol, Dictionary<string, int> data)
+            : base(id, name, symbol)
         {
             int researchID = data["research"];
             // Research = something;
@@ -32,7 +32,7 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 
         internal const string TypeID = "research";
 
-        protected override string Identifier => TypeID;
+        protected override string TypeIdentifier => TypeID;
 
         public override FeatureMode Mode => FeatureMode.Purchased;
 

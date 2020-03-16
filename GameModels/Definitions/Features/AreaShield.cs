@@ -5,8 +5,8 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
     public class AreaShield : TargettedCellEffectFeature<CellEffects.Shield>
     {
-        public AreaShield(string name, string symbol, int manaCost, int? limitedUses, int? cooldown, int range, int radius, int duration, int extraHealth, int extraArmor)
-            : base(name, symbol, manaCost, limitedUses, cooldown, range)
+        public AreaShield(uint id, string name, string symbol, int manaCost, int? limitedUses, int? cooldown, int range, int radius, int duration, int extraHealth, int extraArmor)
+            : base(id, name, symbol, manaCost, limitedUses, cooldown, range)
         {
             Radius = radius;
             Effect.Duration = duration;
@@ -14,8 +14,8 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             Effect.ExtraArmor = extraArmor;
         }
 
-        public AreaShield(string name, string symbol, Dictionary<string, int> data)
-            : base(name, symbol, data)
+        public AreaShield(uint id, string name, string symbol, Dictionary<string, int> data)
+            : base(id, name, symbol, data)
         {
             Radius = data["radius"];
             Effect.Duration = data["duration"];
@@ -35,7 +35,7 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 
         internal const string TypeID = "area shield";
 
-        protected override string Identifier => TypeID;
+        protected override string TypeIdentifier => TypeID;
 
         public override string Description
         {

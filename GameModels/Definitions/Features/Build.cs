@@ -10,14 +10,14 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
     public class Build : Feature
     {
-        public Build(string name, string symbol, UnitType unit)
-            : base(name, symbol)
+        public Build(uint id, string name, string symbol, UnitType unit)
+            : base(id, name, symbol)
         {
             Unit = unit;
         }
 
-        public Build(string name, string symbol, Dictionary<string, int> data)
-            : base(name, symbol)
+        public Build(uint id, string name, string symbol, Dictionary<string, int> data)
+            : base(id, name, symbol)
         {
             int unitTypeID = data["unit"];
             //Unit = something();
@@ -33,7 +33,7 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 
         internal const string TypeID = "build";
 
-        protected override string Identifier => TypeID;
+        protected override string TypeIdentifier => TypeID;
 
         public override FeatureMode Mode { get { return FeatureMode.Purchased; } }
 

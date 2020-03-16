@@ -15,7 +15,7 @@ namespace ObjectiveStrategy.ClientModels.Models
 
         public override uint ID => Building.ID;
 
-        public override int Owner => Building.Owner.ID;
+        public override uint Owner => Building.Owner.ID;
 
         public override int Health => Building.Health;
 

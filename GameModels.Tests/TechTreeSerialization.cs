@@ -10,7 +10,7 @@ namespace GameModels.Tests
         [Fact]
         public void Test1()
         {
-            var techTree = new TechTree();
+            // var techTree = new TechTree();
 
             // var building = new BuildingType()
         }

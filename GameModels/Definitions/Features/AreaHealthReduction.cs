@@ -6,8 +6,8 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
     public class AreaHealthReduction : TargettedStatusEffectFeature<ReducedHealth>
     {
-        public AreaHealthReduction(string name, string symbol, int manaCost, int? limitedUses, int? cooldown, int? range, int radius, int duration, int hitpointsDrained, int minHitpoints, int drainPerTurn)
-            : base(name, symbol, manaCost, limitedUses, cooldown, range)
+        public AreaHealthReduction(uint id, string name, string symbol, int manaCost, int? limitedUses, int? cooldown, int? range, int radius, int duration, int hitpointsDrained, int minHitpoints, int drainPerTurn)
+            : base(id, name, symbol, manaCost, limitedUses, cooldown, range)
         {
             Radius = radius;
 
@@ -17,8 +17,8 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             Effect.HealthDrainPerTurn = drainPerTurn;
         }
 
-        public AreaHealthReduction(string name, string symbol, Dictionary<string, int> data)
-            : base(name, symbol, data)
+        public AreaHealthReduction(uint id, string name, string symbol, Dictionary<string, int> data)
+            : base(id, name, symbol, data)
         {
             Radius = data["radius"];
             Effect.Duration = data["duration"];
@@ -40,7 +40,7 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 
         internal const string TypeID = "area health reduction";
 
-        protected override string Identifier => TypeID;
+        protected override string TypeIdentifier => TypeID;
 
         public override string Description
         {

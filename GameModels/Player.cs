@@ -8,7 +8,7 @@ namespace ObjectiveStrategy.GameModels
 {
     public class Player
     {
-        public int ID { get; }
+        public uint ID { get; }
 
         public TechTree TechTree { get; }
 
@@ -28,7 +28,7 @@ namespace ObjectiveStrategy.GameModels
 
         public Dictionary<Cell, BuildingSnapshot?> SeenCells { get; } = new Dictionary<Cell, BuildingSnapshot?>();
 
-        public Player(int id, TechTree tree)
+        public Player(uint id, TechTree tree)
         {
             ID = id;
             TechTree = tree;

@@ -3,34 +3,37 @@ using ObjectiveStrategy.GameModels.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-
+using System.Text.Json.Serialization;
 using EntityData = System.Collections.Generic.Dictionary<string, int>;
 
 namespace ObjectiveStrategy.GameModels.Definitions
 {
     public abstract class Feature : ISelectable
     {
-        protected Feature(string name, string symbol)
+        protected Feature(uint id, string name, string symbol)
         {
+            ID = id;
             Name = name;
             Symbol = symbol;
         }
 
         public FeatureDTO ToDTO()
         {
-            return new FeatureDTO(Name, Symbol, Identifier, SerializeData());
+            return new FeatureDTO(ID, Name, Symbol, TypeIdentifier, SerializeData());
         }
 
         protected virtual Dictionary<string, int> SerializeData()
         {
             return new Dictionary<string, int>();
         }
+        
+        public uint ID { get; }
 
         public string Name { get; }
 
         public string Symbol { get; }
 
-        protected abstract string Identifier { get; }
+        protected abstract string TypeIdentifier { get; }
 
         public abstract string Description { get; }
 
@@ -77,10 +80,10 @@ namespace ObjectiveStrategy.GameModels.Definitions
 
         protected EntityData GetEntityData(Entity entity)
         {
-            if (!entity.FeatureData.TryGetValue(this, out var featureData))
+            if (!entity.FeatureData.TryGetValue(ID, out var featureData))
             {
                 featureData = new EntityData();
-                entity.FeatureData.Add(this, featureData);
+                entity.FeatureData.Add(ID, featureData);
             }
 
             return featureData;
@@ -89,8 +92,8 @@ namespace ObjectiveStrategy.GameModels.Definitions
 
     public abstract class PassiveFeature : Feature
     {
-        protected PassiveFeature(string name, string symbol)
-            : base(name, symbol) { }
+        protected PassiveFeature(uint id, string name, string symbol)
+            : base(id, name, symbol) { }
 
         public override FeatureMode Mode => FeatureMode.Passive;
 
@@ -112,16 +115,16 @@ namespace ObjectiveStrategy.GameModels.Definitions
 
     public abstract class ActivatedFeature : Feature
     {
-        protected ActivatedFeature(string name, string symbol, int manaCost, int? limitedUses, int? cooldownTurns)
-            : base(name, symbol)
+        protected ActivatedFeature(uint id, string name, string symbol, int manaCost, int? limitedUses, int? cooldownTurns)
+            : base(id, name, symbol)
         {
             ManaCost = manaCost;
             LimitedUses = limitedUses;
             CooldownTurns = cooldownTurns;
         }
 
-        protected ActivatedFeature(string name, string symbol, Dictionary<string, int> data)
-            : base(name, symbol)
+        protected ActivatedFeature(uint id, string name, string symbol, Dictionary<string, int> data)
+            : base(id, name, symbol)
         {
             ManaCost = data.TryGetValue("manaCost", out int manaCost)
                 ? manaCost
@@ -209,14 +212,14 @@ namespace ObjectiveStrategy.GameModels.Definitions
 
     public abstract class TargettedFeature : ActivatedFeature
     {
-        protected TargettedFeature(string name, string symbol, int manaCost, int? limitedUses, int? cooldown, int? range)
-            : base(name, symbol, manaCost, limitedUses, cooldown)
+        protected TargettedFeature(uint id, string name, string symbol, int manaCost, int? limitedUses, int? cooldown, int? range)
+            : base(id, name, symbol, manaCost, limitedUses, cooldown)
         {
             Range = range;
         }
 
-        protected TargettedFeature(string name, string symbol, Dictionary<string, int> data)
-            : base(name, symbol, data)
+        protected TargettedFeature(uint id, string name, string symbol, Dictionary<string, int> data)
+            : base(id, name, symbol, data)
         {
             if (data.TryGetValue("range", out int range))
                 Range = range;
@@ -253,11 +256,11 @@ namespace ObjectiveStrategy.GameModels.Definitions
 
     public abstract class EntityTargettedFeature : TargettedFeature
     {
-        protected EntityTargettedFeature(string name, string symbol, int manaCost, int? limitedUses, int? cooldown, int? range)
-            : base(name, symbol, manaCost, limitedUses, cooldown, range) { }
+        protected EntityTargettedFeature(uint id, string name, string symbol, int manaCost, int? limitedUses, int? cooldown, int? range)
+            : base(id, name, symbol, manaCost, limitedUses, cooldown, range) { }
         
-        protected EntityTargettedFeature(string name, string symbol, Dictionary<string, int> data)
-            : base(name, symbol, data) { }
+        protected EntityTargettedFeature(uint id, string name, string symbol, Dictionary<string, int> data)
+            : base(id, name, symbol, data) { }
 
         protected override bool CanTrigger(Entity entity, Cell target, EntityData data)
         {
@@ -303,15 +306,15 @@ namespace ObjectiveStrategy.GameModels.Definitions
 
     public abstract class ToggleFeature : Feature
     {
-        protected ToggleFeature(string name, string symbol, int activateManaCost, int manaCostPerTurn)
-            : base(name, symbol)
+        protected ToggleFeature(uint id, string name, string symbol, int activateManaCost, int manaCostPerTurn)
+            : base(id, name, symbol)
         {
             ActivateManaCost = activateManaCost;
             ManaCostPerTurn = manaCostPerTurn;
         }
 
-        protected ToggleFeature(string name, string symbol, Dictionary<string, int> data)
-            : base(name, symbol)
+        protected ToggleFeature(uint id, string name, string symbol, Dictionary<string, int> data)
+            : base(id, name, symbol)
         {
             ActivateManaCost = data.TryGetValue("activateManaCost", out int activateManaCost)
                 ? activateManaCost
@@ -409,11 +412,11 @@ namespace ObjectiveStrategy.GameModels.Definitions
     public abstract class EffectToggleFeature<TEffect> : ToggleFeature
         where TEffect : IStatusEffect, new ()
     {
-        protected EffectToggleFeature(string name, string symbol, int activateManaCost, int manaCostPerTurn)
-            : base(name, symbol, activateManaCost, manaCostPerTurn) { }
+        protected EffectToggleFeature(uint id, string name, string symbol, int activateManaCost, int manaCostPerTurn)
+            : base(id, name, symbol, activateManaCost, manaCostPerTurn) { }
 
-        protected EffectToggleFeature(string name, string symbol, Dictionary<string, int> data)
-            : base(name, symbol, data)
+        protected EffectToggleFeature(uint id, string name, string symbol, Dictionary<string, int> data)
+            : base(id, name, symbol, data)
         {
             // if (data.TryGetValue("effect", out int effect))
                 // Effect = new TEffect(Oops, effect);
@@ -444,11 +447,11 @@ namespace ObjectiveStrategy.GameModels.Definitions
     public abstract class StatusEffectFeature<TEffect> : ActivatedFeature
         where TEffect : IStatusEffect, new()
     {
-        protected StatusEffectFeature(string name, string symbol, int manaCost, int? limitedUses, int? cooldownTurns)
-            : base(name, symbol, manaCost, limitedUses, cooldownTurns) { }
+        protected StatusEffectFeature(uint id, string name, string symbol, int manaCost, int? limitedUses, int? cooldownTurns)
+            : base(id, name, symbol, manaCost, limitedUses, cooldownTurns) { }
 
-        protected StatusEffectFeature(string name, string symbol, Dictionary<string, int> data)
-            : base(name, symbol, data)
+        protected StatusEffectFeature(uint id, string name, string symbol, Dictionary<string, int> data)
+            : base(id, name, symbol, data)
         {
             // if (data.TryGetValue("effect", out int effect))
             // Effect = new TEffect(Oops, effect);
@@ -475,11 +478,11 @@ namespace ObjectiveStrategy.GameModels.Definitions
     public abstract class TargettedStatusEffectFeature<TEffect> : EntityTargettedFeature
         where TEffect : IStatusEffect, new()
     {
-        protected TargettedStatusEffectFeature(string name, string symbol, int manaCost, int? limitedUses, int? cooldown, int? range)
-            : base(name, symbol, manaCost, limitedUses, cooldown, range) { }
+        protected TargettedStatusEffectFeature(uint id, string name, string symbol, int manaCost, int? limitedUses, int? cooldown, int? range)
+            : base(id, name, symbol, manaCost, limitedUses, cooldown, range) { }
 
-        protected TargettedStatusEffectFeature(string name, string symbol, Dictionary<string, int> data)
-            : base(name, symbol, data)
+        protected TargettedStatusEffectFeature(uint id, string name, string symbol, Dictionary<string, int> data)
+            : base(id, name, symbol, data)
         {
             // if (data.TryGetValue("effect", out int effect))
             // Effect = new TEffect(Oops, effect);
@@ -523,11 +526,11 @@ namespace ObjectiveStrategy.GameModels.Definitions
     public abstract class SelfCellEffectFeature<TEffect> : ActivatedFeature
         where TEffect : ICellEffect, new()
     {
-        protected SelfCellEffectFeature(string name, string symbol, int manaCost, int? limitedUses, int? cooldownTurns)
-            : base(name, symbol, manaCost, limitedUses, cooldownTurns) { }
+        protected SelfCellEffectFeature(uint id, string name, string symbol, int manaCost, int? limitedUses, int? cooldownTurns)
+            : base(id, name, symbol, manaCost, limitedUses, cooldownTurns) { }
 
-        protected SelfCellEffectFeature(string name, string symbol, Dictionary<string, int> data)
-            : base(name, symbol, data)
+        protected SelfCellEffectFeature(uint id, string name, string symbol, Dictionary<string, int> data)
+            : base(id, name, symbol, data)
         {
             // if (data.TryGetValue("effect", out int effect))
             // Effect = new TEffect(Oops, effect);
@@ -555,11 +558,11 @@ namespace ObjectiveStrategy.GameModels.Definitions
     public abstract class TargettedCellEffectFeature<TEffect> : TargettedFeature
         where TEffect : ICellEffect, new()
     {
-        protected TargettedCellEffectFeature(string name, string symbol, int manaCost, int? limitedUses, int? cooldown, int? range)
-            : base(name, symbol, manaCost, limitedUses, cooldown, range) { }
+        protected TargettedCellEffectFeature(uint id, string name, string symbol, int manaCost, int? limitedUses, int? cooldown, int? range)
+            : base(id, name, symbol, manaCost, limitedUses, cooldown, range) { }
 
-        protected TargettedCellEffectFeature(string name, string symbol, Dictionary<string, int> data)
-            : base(name, symbol, data)
+        protected TargettedCellEffectFeature(uint id, string name, string symbol, Dictionary<string, int> data)
+            : base(id, name, symbol, data)
         {
             // if (data.TryGetValue("effect", out int effect))
             // Effect = new TEffect(Oops, effect);

@@ -6,14 +6,14 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
     public class MassTeleport : TargettedStatusEffectFeature<Teleporting>
     {
-        public MassTeleport(string name, string symbol, int manaCost, int? limitedUses, int? cooldown, int range, int radius)
-            : base(name, symbol, manaCost, limitedUses, cooldown, range)
+        public MassTeleport(uint id, string name, string symbol, int manaCost, int? limitedUses, int? cooldown, int range, int radius)
+            : base(id, name, symbol, manaCost, limitedUses, cooldown, range)
         {
             Radius = radius;
         }
 
-        public MassTeleport(string name, string symbol, Dictionary<string, int> data)
-            : base(name, symbol, data)
+        public MassTeleport(uint id, string name, string symbol, Dictionary<string, int> data)
+            : base(id, name, symbol, data)
         {
             Radius = data["radius"];
         }
@@ -27,7 +27,7 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 
         internal const string TypeID = "mass teleport";
 
-        protected override string Identifier => TypeID;
+        protected override string TypeIdentifier => TypeID;
 
         public override string Description
         {

@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using ObjectiveStrategy.GameModels.Serialization;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 
 namespace ObjectiveStrategy.GameModels.Definitions
 {
@@ -22,6 +24,7 @@ namespace ObjectiveStrategy.GameModels.Definitions
 
         public int BuildTime { get; internal set; }
 
+        [JsonConverter(typeof(EnumDictionaryConverter<ResourceType, int>))]
         public Dictionary<ResourceType, int> Cost { get; } = new Dictionary<ResourceType, int>();
 
         public uint? Prerequisite { get; internal set; }

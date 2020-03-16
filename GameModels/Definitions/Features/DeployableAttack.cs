@@ -7,15 +7,15 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
     public class DeployableAttack : ToggleFeature
     {
-        public DeployableAttack(string name, string symbol, int activateManaCost, int manaCostPerTurn)
-            : base(name, symbol, activateManaCost, manaCostPerTurn) { }
+        public DeployableAttack(uint id, string name, string symbol, int activateManaCost, int manaCostPerTurn)
+            : base(id, name, symbol, activateManaCost, manaCostPerTurn) { }
 
-        public DeployableAttack(string name, string symbol, Dictionary<string, int> data) 
-            : base(name, symbol, data) { }
+        public DeployableAttack(uint id, string name, string symbol, Dictionary<string, int> data) 
+            : base(id, name, symbol, data) { }
 
         internal const string TypeID = "deployable attack";
 
-        protected override string Identifier => TypeID;
+        protected override string TypeIdentifier => TypeID;
 
         public override string Description
         {

@@ -24,7 +24,7 @@ namespace ObjectiveStrategy.ClientModels.Models
 
         private Player Player { get; }
 
-        public int LocalPlayerID => Player.ID;
+        public uint LocalPlayerID => Player.ID;
 
         public BattlefieldView Battlefield { get; }
 

@@ -7,16 +7,16 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
     public class InstantHeal : EntityTargettedFeature
     {
-        public InstantHeal(string name, string symbol, int manaCost, int? limitedUses, int? cooldown, int range, int damageMin, int damageMax)
-            : base(name, symbol, manaCost, limitedUses, cooldown, range)
+        public InstantHeal(uint id, string name, string symbol, int manaCost, int? limitedUses, int? cooldown, int range, int damageMin, int damageMax)
+            : base(id, name, symbol, manaCost, limitedUses, cooldown, range)
         {
             Range = range;
             DamageMin = damageMin;
             DamageMax = damageMax;
         }
 
-        public InstantHeal(string name, string symbol, Dictionary<string, int> data)
-            : base(name, symbol, data)
+        public InstantHeal(uint id, string name, string symbol, Dictionary<string, int> data)
+            : base(id, name, symbol, data)
         {
             DamageMin = data["damageMin"];
             DamageMax = data["damageMax"];
@@ -32,7 +32,7 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 
         internal const string TypeID = "instant heal";
 
-        protected override string Identifier => TypeID;
+        protected override string TypeIdentifier => TypeID;
 
         public override string Description
         {

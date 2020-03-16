@@ -31,7 +31,7 @@ namespace ObjectiveStrategy.GameGeneration
 
             results.Add(new Objective
             {
-                CellsByPlayer = new Dictionary<int, int[]>
+                CellsByPlayer = new Dictionary<uint, int[]>
                 {
                     { 0, new int[] { 4, 5, 6 } },
                     { 1, new int[] { 1, 2, 3 } },

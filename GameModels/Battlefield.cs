@@ -6,7 +6,7 @@ using System.Text.Json.Serialization;
 
 namespace ObjectiveStrategy.GameModels
 {
-    [JsonConverter(typeof(BattlefieldConverter))]
+    //[JsonConverter(typeof(BattlefieldConverter))]
     public class Battlefield : HexMap<Cell>
     {
         public Battlefield(int width, int height)

@@ -6,14 +6,14 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
     public class StealVision : TargettedStatusEffectFeature<StolenVision>
     {
-        public StealVision(string name, string symbol, int manaCost, int? limitedUses, int? cooldown, int range, int duration)
-            : base(name, symbol, manaCost, limitedUses, cooldown, range)
+        public StealVision(uint id, string name, string symbol, int manaCost, int? limitedUses, int? cooldown, int range, int duration)
+            : base(id, name, symbol, manaCost, limitedUses, cooldown, range)
         {
             Effect.Duration = duration;
         }
 
-        public StealVision(string name, string symbol, Dictionary<string, int> data)
-            : base(name, symbol, data)
+        public StealVision(uint id, string name, string symbol, Dictionary<string, int> data)
+            : base(id, name, symbol, data)
         {
             Effect.Duration = data["duration"];
         }
@@ -27,7 +27,7 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 
         internal const string TypeID = "steal vision";
 
-        protected override string Identifier => TypeID;
+        protected override string TypeIdentifier => TypeID;
 
         public override string Description
         {

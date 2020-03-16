@@ -7,14 +7,14 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
     public class HigherHealth : PassiveFeature
     {
-        public HigherHealth(string name, string symbol, int extraPoints)
-            : base(name, symbol)
+        public HigherHealth(uint id, string name, string symbol, int extraPoints)
+            : base(id, name, symbol)
         {
             ExtraPoints = extraPoints;
         }
 
-        public HigherHealth(string name, string symbol, Dictionary<string, int> data)
-            : base(name, symbol)
+        public HigherHealth(uint id, string name, string symbol, Dictionary<string, int> data)
+            : base(id, name, symbol)
         {
             ExtraPoints = data["points"];
         }
@@ -28,7 +28,7 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 
         internal const string TypeID = "passive health";
 
-        protected override string Identifier => TypeID;
+        protected override string TypeIdentifier => TypeID;
 
         public override string Description => $"Adds {ExtraPoints} hitpoints";
 
@@ -47,14 +47,14 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
     
     public class Armored : PassiveFeature
     {
-        public Armored(string name, string symbol, int extraPoints)
-            : base(name, symbol)
+        public Armored(uint id, string name, string symbol, int extraPoints)
+            : base(id, name, symbol)
         {
             ExtraPoints = extraPoints;
         }
 
-        public Armored(string name, string symbol, Dictionary<string, int> data)
-            : base(name, symbol)
+        public Armored(uint id, string name, string symbol, Dictionary<string, int> data)
+            : base(id, name, symbol)
         {
             ExtraPoints = data["points"];
         }
@@ -68,7 +68,7 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 
         internal const string TypeID = "passive armor";
 
-        protected override string Identifier => TypeID;
+        protected override string TypeIdentifier => TypeID;
 
         public override string Description => $"Adds {ExtraPoints} armor points";
 
@@ -82,14 +82,14 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 
     public class GreaterMobility : PassiveFeature
     {
-        public GreaterMobility(string name, string symbol, int extraPoints)
-            : base(name, symbol)
+        public GreaterMobility(uint id, string name, string symbol, int extraPoints)
+            : base(id, name, symbol)
         {
             ExtraPoints = extraPoints;
         }
 
-        public GreaterMobility(string name, string symbol, Dictionary<string, int> data)
-            : base(name, symbol)
+        public GreaterMobility(uint id, string name, string symbol, Dictionary<string, int> data)
+            : base(id, name, symbol)
         {
             ExtraPoints = data["points"];
         }
@@ -103,7 +103,7 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 
         internal const string TypeID = "passive movement";
 
-        protected override string Identifier => TypeID;
+        protected override string TypeIdentifier => TypeID;
 
         public override string Description => $"Increases movement range by {ExtraPoints} cells";
 
@@ -125,14 +125,14 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 
     public class GreaterVisibility : PassiveFeature
     {
-        public GreaterVisibility(string name, string symbol, int extraPoints)
-            : base(name, symbol)
+        public GreaterVisibility(uint id, string name, string symbol, int extraPoints)
+            : base(id, name, symbol)
         {
             ExtraPoints = extraPoints;
         }
 
-        public GreaterVisibility(string name, string symbol, Dictionary<string, int> data)
-            : base(name, symbol)
+        public GreaterVisibility(uint id, string name, string symbol, Dictionary<string, int> data)
+            : base(id, name, symbol)
         {
             ExtraPoints = data["points"];
         }
@@ -146,7 +146,7 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 
         internal const string TypeID = "passive vision";
 
-        protected override string Identifier => TypeID;
+        protected override string TypeIdentifier => TypeID;
 
         public override string Description => $"Increases vision range by {ExtraPoints} tiles";
 
@@ -160,14 +160,14 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 
 	public class HigherMana : PassiveFeature
     {
-        public HigherMana(string name, string symbol, int extraPoints)
-            : base(name, symbol)
+        public HigherMana(uint id, string name, string symbol, int extraPoints)
+            : base(id, name, symbol)
         {
             ExtraPoints = extraPoints;
         }
 
-        public HigherMana(string name, string symbol, Dictionary<string, int> data)
-            : base(name, symbol)
+        public HigherMana(uint id, string name, string symbol, Dictionary<string, int> data)
+            : base(id, name, symbol)
         {
             ExtraPoints = data["points"];
         }
@@ -181,7 +181,7 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 
         internal const string TypeID = "passive mana";
 
-        protected override string Identifier => TypeID;
+        protected override string TypeIdentifier => TypeID;
 
         public override string Description => $"Adds {ExtraPoints} mana points";
 
@@ -202,17 +202,17 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 
     public class Detector : PassiveFeature
     {
-        public Detector(string name, string symbol)
-            : base(name, symbol)
+        public Detector(uint id, string name, string symbol)
+            : base(id, name, symbol)
         { }
 
-        public Detector(string name, string symbol, Dictionary<string, int> data)
-            : base(name, symbol)
+        public Detector(uint id, string name, string symbol, Dictionary<string, int> data)
+            : base(id, name, symbol)
         { }
 
         internal const string TypeID = "detector";
 
-        protected override string Identifier => TypeID;
+        protected override string TypeIdentifier => TypeID;
 
         public override string Description => "Allows detection of invisible units";
 
@@ -231,14 +231,14 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 
     public class Supply : PassiveFeature
     {
-        public Supply(string name, string symbol, int points)
-            : base(name, symbol)
+        public Supply(uint id, string name, string symbol, int points)
+            : base(id, name, symbol)
         {
             Points = points;
         }
 
-        public Supply(string name, string symbol, Dictionary<string, int> data)
-            : base(name, symbol)
+        public Supply(uint id, string name, string symbol, Dictionary<string, int> data)
+            : base(id, name, symbol)
         {
             Points = data["points"];
         }
@@ -252,7 +252,7 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 
         internal const string TypeID = "supply";
 
-        protected override string Identifier => TypeID;
+        protected override string TypeIdentifier => TypeID;
 
         public override string Description => $"Provides {Points} supply points, allowing units to be built";
         
@@ -272,14 +272,14 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 
     public class LongerRange : PassiveFeature
     {
-        public LongerRange(string name, string symbol, int extraPoints)
-            : base(name, symbol)
+        public LongerRange(uint id, string name, string symbol, int extraPoints)
+            : base(id, name, symbol)
         {
             ExtraPoints = extraPoints;
         }
 
-        public LongerRange(string name, string symbol, Dictionary<string, int> data)
-            : base(name, symbol)
+        public LongerRange(uint id, string name, string symbol, Dictionary<string, int> data)
+            : base(id, name, symbol)
         {
             ExtraPoints = data["points"];
         }
@@ -293,7 +293,7 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 
         internal const string TypeID = "passive attack range";
 
-        protected override string Identifier => TypeID;
+        protected override string TypeIdentifier => TypeID;
 
         public override string Description => $"Increases attack range by {ExtraPoints} tiles";
 

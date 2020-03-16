@@ -6,15 +6,15 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
     public class Immobilize : TargettedStatusEffectFeature<Immobilized>
     {
-        public Immobilize(string name, string symbol, int manaCost, int? limitedUses, int? cooldown, int range, int radius, int duration)
-            : base(name, symbol, manaCost, limitedUses, cooldown, range)
+        public Immobilize(uint id, string name, string symbol, int manaCost, int? limitedUses, int? cooldown, int range, int radius, int duration)
+            : base(id, name, symbol, manaCost, limitedUses, cooldown, range)
         {
             Radius = radius;
             Effect.Duration = duration;
         }
 
-        public Immobilize(string name, string symbol, Dictionary<string, int> data)
-            : base(name, symbol, data)
+        public Immobilize(uint id, string name, string symbol, Dictionary<string, int> data)
+            : base(id, name, symbol, data)
         {
             Radius = data["radius"];
             Effect.Duration = data["duration"];
@@ -30,7 +30,7 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 
         internal const string TypeID = "immobilize";
 
-        protected override string Identifier => TypeID;
+        protected override string TypeIdentifier => TypeID;
 
         public override string Description
         {

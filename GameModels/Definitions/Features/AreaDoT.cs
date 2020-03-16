@@ -6,8 +6,8 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
     public class AreaDoT : TargettedCellEffectFeature<DamageOverTime>
     {
-        public AreaDoT(string name, string symbol, int manaCost, int? limitedUses, int? cooldown, int range, int radius, int duration, int damageMin, int damageMax)
-            : base(name, symbol, manaCost, limitedUses, cooldown, range)
+        public AreaDoT(uint id, string name, string symbol, int manaCost, int? limitedUses, int? cooldown, int range, int radius, int duration, int damageMin, int damageMax)
+            : base(id, name, symbol, manaCost, limitedUses, cooldown, range)
         {
             Radius = radius;
             Effect.DamageMin = damageMin;
@@ -15,8 +15,8 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
             Effect.Duration = duration;
         }
 
-        public AreaDoT(string name, string symbol, Dictionary<string, int> data)
-            : base(name, symbol, data)
+        public AreaDoT(uint id, string name, string symbol, Dictionary<string, int> data)
+            : base(id, name, symbol, data)
         {
             Radius = data["radius"];
             Effect.Duration = data["duration"];
@@ -36,7 +36,7 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 
         internal const string TypeID = "area dot";
 
-        protected override string Identifier => TypeID;
+        protected override string TypeIdentifier => TypeID;
 
         public override string Description
         {

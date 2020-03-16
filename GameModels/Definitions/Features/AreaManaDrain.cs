@@ -7,14 +7,14 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
     public class AreaManaDrain : TargettedFeature
     {
-        public AreaManaDrain(string name, string symbol, int manaCost, int? limitedUses, int? cooldown, int? range, int radius, int damageMin, int damageMax)
-            : base(name, symbol, manaCost, limitedUses, cooldown, range)
+        public AreaManaDrain(uint id, string name, string symbol, int manaCost, int? limitedUses, int? cooldown, int? range, int radius, int damageMin, int damageMax)
+            : base(id, name, symbol, manaCost, limitedUses, cooldown, range)
         {
             Radius = radius;
         }
 
-        public AreaManaDrain(string name, string symbol, Dictionary<string, int> data)
-            : base(name, symbol, data)
+        public AreaManaDrain(uint id, string name, string symbol, Dictionary<string, int> data)
+            : base(id, name, symbol, data)
         {
             Radius = data["radius"];
         }
@@ -28,7 +28,7 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 
         internal const string TypeID = "area mana drain";
 
-        protected override string Identifier => TypeID;
+        protected override string TypeIdentifier => TypeID;
 
         public override string Description
         {

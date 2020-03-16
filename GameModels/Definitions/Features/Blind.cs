@@ -7,15 +7,15 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 {
     public class Blind : TargettedStatusEffectFeature<Blinded>
     {
-        public Blind(string name, string symbol, int manaCost, int? limitedUses, int? cooldown, int? range, int duration)
-            : base(name, symbol, manaCost, limitedUses, cooldown, range)
+        public Blind(uint id, string name, string symbol, int manaCost, int? limitedUses, int? cooldown, int? range, int duration)
+            : base(id, name, symbol, manaCost, limitedUses, cooldown, range)
         {
             Range = range;
             Effect.Duration = duration;
         }
 
-        public Blind(string name, string symbol, Dictionary<string, int> data)
-            : base(name, symbol, data)
+        public Blind(uint id, string name, string symbol, Dictionary<string, int> data)
+            : base(id, name, symbol, data)
         {
             Range = data["range"];
             Effect.Duration = data["duration"];
@@ -30,7 +30,7 @@ namespace ObjectiveStrategy.GameModels.Definitions.Features
 
         internal const string TypeID = "blind";
 
-        protected override string Identifier => TypeID;
+        protected override string TypeIdentifier => TypeID;
 
         public override string Description
         {
