@@ -81,7 +81,7 @@ namespace ObjectiveStrategy.GameGeneration
         {
             foreach (var position in GetValidCellPositions(battlefield.Width, battlefield.Height))
             {
-                int index = position.GetCellIndex(battlefield.Width);
+                int index = battlefield.GetIndex(position.Col, position.Row);
                 var cell = new Cell(index, position.Row, position.Col, CellType.Flat);
                 battlefield.Cells[index] = cell;
             }
@@ -280,11 +280,6 @@ namespace ObjectiveStrategy.GameGeneration
         {
             public int Row { get; set; }
             public int Col { get; set; }
-
-            public int GetCellIndex(int mapWidth)
-            {
-                return Col + Row * mapWidth;
-            }
         }
     }
 }

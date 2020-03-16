@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 
 namespace ObjectiveStrategy.GameModels.Serialization
 {
-    public class TechTreeConverter : JsonConverter<TechTree>
+    public class TechTreeReadConverter : JsonConverter<TechTree>
     {
         public override TechTree Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
@@ -15,10 +15,7 @@ namespace ObjectiveStrategy.GameModels.Serialization
 
         public override void Write(Utf8JsonWriter writer, TechTree value, JsonSerializerOptions options)
         {
-            // Don't pass in options when recursively calling Serialize.
-            JsonSerializer.Serialize(writer, value, options);
-            // writer.WriteStartObject();
-            // writer.WriteEndObject();
+            throw new NotImplementedException();
         }
     }
 }

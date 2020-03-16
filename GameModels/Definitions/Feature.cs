@@ -17,7 +17,7 @@ namespace ObjectiveStrategy.GameModels.Definitions
             Symbol = symbol;
         }
 
-        public FeatureDTO ToDTO()
+        internal FeatureDTO ToDTO()
         {
             return new FeatureDTO(ID, Name, Symbol, TypeIdentifier, SerializeData());
         }

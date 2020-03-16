@@ -22,6 +22,16 @@ namespace ObjectiveStrategy.GameModels.Map
             return col + row * Width;
         }
 
+        public int GetRow(int index)
+        {
+            return index / Width;
+        }
+
+        public int GetCol(int index)
+        {
+            return index % Width;
+        }
+
         private TCell? GetCell(int col, int row)
         {
             int index = GetIndex(col, row);

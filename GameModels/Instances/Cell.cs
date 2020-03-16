@@ -1,5 +1,6 @@
 ﻿using ObjectiveStrategy.GameModels.Definitions;
 using ObjectiveStrategy.GameModels.Map;
+using ObjectiveStrategy.GameModels.Serialization;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
@@ -20,6 +21,7 @@ namespace ObjectiveStrategy.GameModels.Instances
             // Note: we don't copy Building or Units from annother cell (which would be the initial definition, and won't have those).
         }
 
+        [JsonIgnore]
         public int ID { get; }
 
         public Building? Building { get; set; }

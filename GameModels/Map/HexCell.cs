@@ -1,4 +1,6 @@
-﻿namespace ObjectiveStrategy.GameModels.Map
+﻿using System.Text.Json.Serialization;
+
+namespace ObjectiveStrategy.GameModels.Map
 {
     public class HexCell
     {
@@ -8,7 +10,10 @@
             Col = col;
         }
 
+        [JsonIgnore]
         public int Row { get; }
+        
+        [JsonIgnore]
         public int Col { get; }
     }
 }

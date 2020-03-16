@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace ObjectiveStrategy.GameModels.Serialization
 {
-    public class FeatureDTO
+    internal class FeatureDTO
     {
         public FeatureDTO(uint id, string name, string symbol, string type, Dictionary<string, int> data)
         {
