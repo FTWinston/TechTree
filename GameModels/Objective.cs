@@ -7,7 +7,7 @@ using System.Text.Json.Serialization;
 
 namespace ObjectiveStrategy.GameModels
 {
-    public enum ObjectiveFeature
+    public enum ObjectiveSubject
     {
         Units,
         ResourceReserves,
@@ -25,8 +25,8 @@ namespace ObjectiveStrategy.GameModels
         {
             Description = copyFrom.Description;
             Value = copyFrom.Value;
-            Feature = copyFrom.Feature;
-            FeatureTypeID = copyFrom.FeatureTypeID;
+            Subject = copyFrom.Subject;
+            SubjectTypeID = copyFrom.SubjectTypeID;
             TargetQuantity = copyFrom.TargetQuantity;
             RelativeToOpponent = copyFrom.RelativeToOpponent;
             CellsByPlayer = new Dictionary<uint, int[]>(copyFrom.CellsByPlayer);
@@ -36,9 +36,9 @@ namespace ObjectiveStrategy.GameModels
 
         public int Value { get; set; }
 
-        public ObjectiveFeature Feature { get; set; }
+        public ObjectiveSubject Subject { get; set; }
 
-        public uint? FeatureTypeID { get; set; }
+        public uint? SubjectTypeID { get; set; }
 
         public int TargetQuantity { get; set; }
 
@@ -49,9 +49,9 @@ namespace ObjectiveStrategy.GameModels
 
         public bool IsSatisfied(Game game, Player player)
         {
-            switch (Feature)
+            switch (Subject)
             {
-                case ObjectiveFeature.Units:
+                case ObjectiveSubject.Units:
                     return IsUnitQuantitySatisfied(game, player);
                 default:
                     throw new NotImplementedException();
@@ -62,9 +62,9 @@ namespace ObjectiveStrategy.GameModels
         {
             Func<Unit, bool> unitFilter = unit => true;
 
-            if (FeatureTypeID.HasValue)
+            if (SubjectTypeID.HasValue)
             {
-                unitFilter = unit => /*unitFilter(unit) &&*/ unit.Definition.ID == FeatureTypeID.Value;
+                unitFilter = unit => /*unitFilter(unit) &&*/ unit.Definition.ID == SubjectTypeID.Value;
             }
 
             if (CellsByPlayer != null)

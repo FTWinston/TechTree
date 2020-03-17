@@ -39,7 +39,7 @@ namespace ObjectiveStrategy.GameGeneration
                 },
                 Value = 5,
                 Description = "Test objective, no real meaning, just setting all the fields",
-                Feature = ObjectiveFeature.Units,
+                Subject = ObjectiveSubject.Units,
                 // FeatureTypeID = 1,
                 RelativeToOpponent = true,
                 TargetQuantity = 10,
