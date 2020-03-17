@@ -54,6 +54,8 @@ namespace ObjectiveStrategy.GameModels.Definitions
             options.Converters.Add(new GameDefinitionReadConverter());
             options.Converters.Add(new TechTreeReadConverter());
             options.Converters.Add(new BattlefieldReadConverter());
+            options.Converters.Add(new BuildingTypeReadConverter());
+            options.Converters.Add(new UnitTypeReadConverter());
 
             return JsonSerializer.Deserialize<GameDefinition>(json, options);
         }
